@@ -1,0 +1,11 @@
+{
+  "name": "smart-classroom-booking-system",
+  "version": "1.0.0",
+  "description": "Smart Classroom & Lab Booking System (London Met)",
+  "scripts": {
+    "server": "npm run dev --prefix server",
+    "client": "npm run dev --prefix client",
+    "seed": "npm run seed --prefix server",
+    "build": "npm run build --prefix client"
+  }
+}

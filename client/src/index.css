@@ -1,0 +1,197 @@
+@import "tailwindcss";
+
+@layer base {
+  body {
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    background-color: #0b0f19;
+    color: #f1f5f9;
+    background-image: 
+      radial-gradient(circle at 50% 50%, rgba(34, 197, 94, 0.05) 0%, transparent 80%),
+      linear-gradient(rgba(15, 23, 42, 0.94), rgba(11, 15, 25, 0.98)),
+      repeating-linear-gradient(0deg, transparent, transparent 32px, rgba(255, 255, 255, 0.02) 32px, rgba(255, 255, 255, 0.02) 33px),
+      repeating-linear-gradient(90deg, transparent, transparent 32px, rgba(255, 255, 255, 0.02) 32px, rgba(255, 255, 255, 0.02) 33px);
+    background-size: 100% 100%, 100% 100%, 33px 33px, 33px 33px;
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3, h4, .font-pixel {
+    font-family: 'Pixelify Sans', cursive, sans-serif;
+  }
+
+  .font-arcade {
+    font-family: 'Press Start 2P', monospace;
+  }
+
+  .font-silk {
+    font-family: 'Silkscreen', monospace;
+  }
+}
+
+/* Retro RPG Pixel Containers */
+.pixel-box {
+  background: #111827;
+  border: 3px solid #000;
+  box-shadow: 4px 4px 0px 0px #000, inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+  image-rendering: pixelated;
+}
+
+.pixel-box-hover {
+  background: #111827;
+  border: 3px solid #000;
+  box-shadow: 4px 4px 0px 0px #000, inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+  transition: transform 0.12s ease, box-shadow 0.12s ease, border-color 0.12s ease;
+  image-rendering: pixelated;
+}
+
+.pixel-box-hover:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0px 0px #000, inset 0 0 0 1px rgba(34, 197, 94, 0.4);
+}
+
+.pixel-box-green {
+  background: #064e3b;
+  border: 3px solid #000;
+  box-shadow: 4px 4px 0px 0px #10b981;
+}
+
+.pixel-box-red {
+  background: #4c0519;
+  border: 3px solid #000;
+  box-shadow: 4px 4px 0px 0px #f43f5e;
+}
+
+.pixel-box-blue {
+  background: #172554;
+  border: 3px solid #000;
+  box-shadow: 4px 4px 0px 0px #3b82f6;
+}
+
+.pixel-dialog {
+  background: #0f172a;
+  border: 4px solid #000;
+  box-shadow: 6px 6px 0px 0px #000, inset 0 0 0 2px #475569;
+}
+
+/* Retro RPG Clickable Pixel Buttons */
+.pixel-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-family: 'Pixelify Sans', cursive;
+  font-size: 0.875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.5rem 1rem;
+  border: 2px solid #000;
+  box-shadow: 3px 3px 0px 0px #000;
+  transition: transform 0.08s ease, box-shadow 0.08s ease;
+  cursor: pointer;
+  user-select: none;
+}
+
+.pixel-btn:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0px 0px #000;
+}
+
+.pixel-btn:active {
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0px 0px #000;
+}
+
+.pixel-btn-green {
+  background: #22c55e;
+  color: #052e16;
+}
+.pixel-btn-green:hover {
+  background: #4ade80;
+}
+
+.pixel-btn-indigo {
+  background: #6366f1;
+  color: #ffffff;
+}
+.pixel-btn-indigo:hover {
+  background: #818cf8;
+}
+
+.pixel-btn-purple {
+  background: #a855f7;
+  color: #ffffff;
+}
+.pixel-btn-purple:hover {
+  background: #c084fc;
+}
+
+.pixel-btn-rose {
+  background: #f43f5e;
+  color: #ffffff;
+}
+.pixel-btn-rose:hover {
+  background: #fb7185;
+}
+
+.pixel-btn-amber {
+  background: #f59e0b;
+  color: #451a03;
+}
+.pixel-btn-amber:hover {
+  background: #fbbf24;
+}
+
+.pixel-btn-dark {
+  background: #1e293b;
+  color: #e2e8f0;
+}
+.pixel-btn-dark:hover {
+  background: #334155;
+}
+
+/* Retro HP/XP Status bar */
+.pixel-bar-bg {
+  background: #000;
+  border: 2px solid #000;
+  height: 12px;
+  overflow: hidden;
+}
+
+.pixel-bar-fill-green {
+  background: linear-gradient(90deg, #15803d, #22c55e);
+  height: 100%;
+}
+
+.pixel-bar-fill-red {
+  background: linear-gradient(90deg, #be123c, #f43f5e);
+  height: 100%;
+}
+
+/* Custom 8-bit Scrollbars */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #000;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #334155;
+  border: 1px solid #000;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #64748b;
+}
+
+/* 8-bit pulsing indicator */
+@keyframes pixel-blink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+
+.pixel-blink {
+  animation: pixel-blink 1s steps(1) infinite;
+}
