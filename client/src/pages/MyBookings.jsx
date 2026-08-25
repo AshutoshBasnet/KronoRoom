@@ -227,6 +227,12 @@ export const MyBookings = () => {
                       {booking.bookingType}
                     </span>
 
+                    {booking.seatNumber && (
+                      <span className="px-2 py-0.5 text-[10px] font-bold uppercase rounded-md bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 font-mono">
+                        Seat #{booking.seatNumber}
+                      </span>
+                    )}
+
                     {/* Status Pill */}
                     {booking.status === 'confirmed' ? (
                       <span className="px-2 py-0.5 text-[10px] font-semibold uppercase rounded-md bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">

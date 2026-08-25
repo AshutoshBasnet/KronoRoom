@@ -7,7 +7,7 @@ import { emitEvent } from '../socket.js';
 // @access  Private
 export const createBooking = async (req, res, next) => {
   try {
-    const { roomId, startTime, endTime, purpose, bookingType } = req.body;
+    const { roomId, startTime, endTime, purpose, bookingType, seatNumber, selectedSeats } = req.body;
     const userId = req.user._id;
     const userRole = req.user.role;
 
@@ -131,6 +131,8 @@ export const createBooking = async (req, res, next) => {
       endTime: end,
       purpose: purpose.trim(),
       bookingType: bookingType || (userRole === 'student' ? 'Study Session' : 'Regular Class'),
+      seatNumber: seatNumber || null,
+      selectedSeats: Array.isArray(selectedSeats) ? selectedSeats : selectedSeats ? [selectedSeats] : [],
       status: 'confirmed',
       checkedIn: false
     });

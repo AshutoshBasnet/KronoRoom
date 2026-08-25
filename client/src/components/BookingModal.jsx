@@ -8,13 +8,23 @@ import {
   AlertTriangle,
   CheckCircle2,
   Sparkles,
-  Info
+  Info,
+  Armchair,
+  ChevronDown,
+  ChevronUp
 } from 'lucide-react';
 import { format, addDays } from 'date-fns';
 import api from '../utils/api';
 import { useAuth } from '../context/AuthContext';
+import SeatMap from './SeatMap';
 
-export const BookingModal = ({ isOpen, onClose, room, onBookingSuccess }) => {
+export const BookingModal = ({
+  isOpen,
+  onClose,
+  room,
+  initialSeat = null,
+  onBookingSuccess
+}) => {
   const { user } = useAuth();
 
   const [date, setDate] = useState(() => format(new Date(), 'yyyy-MM-dd'));
@@ -24,6 +34,8 @@ export const BookingModal = ({ isOpen, onClose, room, onBookingSuccess }) => {
   const [bookingType, setBookingType] = useState(
     user?.role === 'student' ? 'Study Session' : 'Regular Class'
   );
+  const [selectedSeat, setSelectedSeat] = useState(initialSeat);
+  const [showSeatMap, setShowSeatMap] = useState(false);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState(null);
@@ -35,6 +47,7 @@ export const BookingModal = ({ isOpen, onClose, room, onBookingSuccess }) => {
       setErrorMsg(null);
       setConflictData(null);
       setSuccessMsg(null);
+      setSelectedSeat(initialSeat || null);
 
       const now = new Date();
       const nextHour = (now.getHours() + 1) % 24;
@@ -45,7 +58,7 @@ export const BookingModal = ({ isOpen, onClose, room, onBookingSuccess }) => {
       setEndTime(formatH(endHour === 0 ? 23 : endHour));
       setDate(format(now, 'yyyy-MM-dd'));
     }
-  }, [isOpen, user]);
+  }, [isOpen, initialSeat, user]);
 
   if (!isOpen || !room) return null;
 
@@ -80,13 +93,19 @@ export const BookingModal = ({ isOpen, onClose, room, onBookingSuccess }) => {
         startTime: startDateTime.toISOString(),
         endTime: endDateTime.toISOString(),
         purpose: purpose.trim(),
-        bookingType
+        bookingType,
+        seatNumber: selectedSeat || null,
+        selectedSeats: selectedSeat ? [selectedSeat] : []
       };
 
       const { data } = await api.post('/bookings', payload);
 
       if (data.success) {
-        setSuccessMsg('Room booked successfully!');
+        setSuccessMsg(
+          selectedSeat
+            ? `Room ${room.roomNumber} (Seat #${selectedSeat}) booked successfully!`
+            : `Room ${room.roomNumber} booked successfully!`
+        );
         if (onBookingSuccess) {
           onBookingSuccess(data.booking);
         }
@@ -110,7 +129,7 @@ export const BookingModal = ({ isOpen, onClose, room, onBookingSuccess }) => {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md overflow-y-auto">
-      <div className="krono-modal max-w-lg w-full rounded-2xl p-6 text-slate-100 relative my-6">
+      <div className="krono-modal max-w-2xl w-full rounded-2xl p-6 text-slate-100 relative my-6 max-h-[92vh] overflow-y-auto">
         {/* Header */}
         <div className="flex items-center justify-between pb-4 border-b border-white/10">
           <div className="flex items-center gap-3">
@@ -140,7 +159,7 @@ export const BookingModal = ({ isOpen, onClose, room, onBookingSuccess }) => {
           <span>
             {user?.role === 'student' && 'Student Policy: Max 2h session • Book up to 3 days in advance'}
             {user?.role === 'teacher' && 'Faculty Policy: Max 6h session • Book up to 30 days in advance'}
-            {user?.role === 'admin' && 'Administrator: Unrestricted Duration & Booking Window'}
+            {user?.role === 'admin' && 'Administrator: Unrestricted Duration & Scheduling'}
           </span>
         </div>
 
@@ -180,7 +199,7 @@ export const BookingModal = ({ isOpen, onClose, room, onBookingSuccess }) => {
             />
           </div>
 
-          {/* Time Picker */}
+          {/* Time Range */}
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="block text-slate-300 font-semibold uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
@@ -225,6 +244,42 @@ export const BookingModal = ({ isOpen, onClose, room, onBookingSuccess }) => {
             </select>
           </div>
 
+          {/* Interactive Seat Selector Collapsible */}
+          <div className="p-3.5 rounded-xl bg-slate-900 border border-white/10 space-y-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Armchair className="w-4 h-4 text-emerald-400" />
+                <span className="font-semibold text-slate-200">
+                  Interactive Cinema-Style Seat Selector
+                </span>
+                {selectedSeat && (
+                  <span className="px-2 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 font-mono font-bold text-[11px] border border-indigo-500/30">
+                    Seat #{selectedSeat}
+                  </span>
+                )}
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowSeatMap(!showSeatMap)}
+                className="text-xs text-indigo-400 hover:text-indigo-300 font-semibold flex items-center gap-1"
+              >
+                <span>{showSeatMap ? 'Hide Layout' : selectedSeat ? 'Change Seat' : 'Pick Seat Map'}</span>
+                {showSeatMap ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+              </button>
+            </div>
+
+            {showSeatMap && (
+              <div className="pt-2 border-t border-white/5">
+                <SeatMap
+                  room={room}
+                  selectedSeat={selectedSeat}
+                  onSelectSeat={(seat) => setSelectedSeat(seat)}
+                  interactive={true}
+                />
+              </div>
+            )}
+          </div>
+
           {/* Purpose */}
           <div>
             <label className="block text-slate-300 font-semibold uppercase tracking-wider mb-1.5">
@@ -252,9 +307,16 @@ export const BookingModal = ({ isOpen, onClose, room, onBookingSuccess }) => {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="krono-btn krono-btn-primary text-xs"
+              className="krono-btn krono-btn-primary text-xs flex items-center gap-2"
             >
-              {isSubmitting ? 'Checking Availability...' : 'Confirm Booking'}
+              {isSubmitting ? (
+                <>
+                  <div className="w-3.5 h-3.5 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
+                  <span>Checking Availability...</span>
+                </>
+              ) : (
+                <span>{selectedSeat ? `Confirm (Seat #${selectedSeat})` : 'Confirm Booking'}</span>
+              )}
             </button>
           </div>
         </form>

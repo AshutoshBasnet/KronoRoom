@@ -7,12 +7,13 @@ import {
   BookOpen,
   CalendarPlus,
   Sparkles,
-  UserCheck
+  UserCheck,
+  Armchair
 } from 'lucide-react';
 import LiveOccupancyBadge from './LiveOccupancyBadge';
 import TimeElapsedBadge from './TimeElapsedBadge';
 
-export const RoomCard = ({ roomData, onBookClick }) => {
+export const RoomCard = ({ roomData, onBookClick, onViewSeatsClick }) => {
   const { room, isOccupied, currentBooking, nextBooking } = roomData;
 
   const getTypeIcon = (type) => {
@@ -139,18 +140,27 @@ export const RoomCard = ({ roomData, onBookClick }) => {
         </div>
       </div>
 
-      {/* Action Button */}
-      <div className="pt-3 border-t border-white/10">
+      {/* Action Buttons */}
+      <div className="pt-3 border-t border-white/10 grid grid-cols-2 gap-2">
+        <button
+          onClick={() => onViewSeatsClick(roomData)}
+          className="krono-btn krono-btn-ghost text-xs flex items-center justify-center gap-1.5 py-2.5"
+          title="Inspect cinema seat layout and availability"
+        >
+          <Armchair className="w-3.5 h-3.5 text-emerald-400" />
+          <span>Seat Map</span>
+        </button>
+
         <button
           onClick={() => onBookClick(room)}
-          className={`w-full py-2.5 px-4 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 ${
+          className={`py-2.5 px-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 ${
             isOccupied
               ? 'krono-btn-ghost'
               : 'krono-btn-primary'
           }`}
         >
-          <CalendarPlus className="w-4 h-4" />
-          <span>{isOccupied ? 'Book Future Slot' : 'Book Room Now'}</span>
+          <CalendarPlus className="w-3.5 h-3.5" />
+          <span>{isOccupied ? 'Reserve Slot' : 'Book Room'}</span>
         </button>
       </div>
     </div>

@@ -9,7 +9,8 @@ import {
   RefreshCw,
   Building,
   Radio,
-  Layers
+  Layers,
+  Armchair
 } from 'lucide-react';
 import api from '../utils/api';
 import socket from '../utils/socket';
@@ -17,6 +18,7 @@ import { useAuth } from '../context/AuthContext';
 import RoomCard from '../components/RoomCard';
 import FilterBar from '../components/FilterBar';
 import BookingModal from '../components/BookingModal';
+import SeatLayoutModal from '../components/SeatLayoutModal';
 
 export const Dashboard = () => {
   const { user } = useAuth();
@@ -35,6 +37,8 @@ export const Dashboard = () => {
 
   // Modal State
   const [selectedRoomForBooking, setSelectedRoomForBooking] = useState(null);
+  const [initialSeatForBooking, setInitialSeatForBooking] = useState(null);
+  const [selectedRoomForSeatMap, setSelectedRoomForSeatMap] = useState(null);
 
   // Fetch Live Status Function
   const fetchLiveStatus = useCallback(async (showToast = null) => {
@@ -155,7 +159,7 @@ export const Dashboard = () => {
             </span>
           </div>
           <p className="text-xs text-slate-400">
-            Real-time classroom & laboratory occupancy across London Met campus.
+            Real-time classroom & laboratory occupancy across London Met campus with interactive cinema-style seat maps.
           </p>
         </div>
 
@@ -261,10 +265,12 @@ export const Dashboard = () => {
             <RoomCard
               key={roomData.room?._id || Math.random()}
               roomData={roomData}
+              onViewSeatsClick={(data) => setSelectedRoomForSeatMap(data)}
               onBookClick={(room) => {
                 if (!user) {
                   window.location.href = '/login/student';
                 } else {
+                  setInitialSeatForBooking(null);
                   setSelectedRoomForBooking(room);
                 }
               }}
@@ -273,11 +279,30 @@ export const Dashboard = () => {
         </div>
       )}
 
+      {/* Cinema Seat Layout Modal */}
+      <SeatLayoutModal
+        isOpen={!!selectedRoomForSeatMap}
+        onClose={() => setSelectedRoomForSeatMap(null)}
+        roomData={selectedRoomForSeatMap}
+        onBookRoom={(room, selectedSeat) => {
+          if (!user) {
+            window.location.href = '/login/student';
+          } else {
+            setInitialSeatForBooking(selectedSeat);
+            setSelectedRoomForBooking(room);
+          }
+        }}
+      />
+
       {/* Booking Modal */}
       <BookingModal
         isOpen={!!selectedRoomForBooking}
-        onClose={() => setSelectedRoomForBooking(null)}
+        onClose={() => {
+          setSelectedRoomForBooking(null);
+          setInitialSeatForBooking(null);
+        }}
         room={selectedRoomForBooking}
+        initialSeat={initialSeatForBooking}
         onBookingSuccess={() => {
           fetchLiveStatus('Booking submitted and confirmed!');
         }}

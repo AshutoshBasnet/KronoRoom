@@ -38,6 +38,15 @@ const bookingSchema = new mongoose.Schema(
     checkedIn: {
       type: Boolean,
       default: false
+    },
+    seatNumber: {
+      type: String,
+      default: null,
+      trim: true
+    },
+    selectedSeats: {
+      type: [String],
+      default: []
     }
   },
   {
