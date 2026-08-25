@@ -35,12 +35,12 @@ A production-ready, modular, intuitive, and fun **2D Pixel RPG-styled Full-Stack
 
 ## ⚡ Quick Start Guide
 
-### 1. MongoDB Atlas Configuration
-In `server/.env`:
+### 1. Environment Setup
+Create a `.env` file inside the `server/` directory based on `.env.example`:
 ```env
 PORT=5000
-MONGO_URI=mongodb+srv://romenrengs102_db_user:XvSWavVcpn370CXr@cluster0.s6wt3ki.mongodb.net/smart-classroom?retryWrites=true&w=majority&appName=Cluster0
-JWT_SECRET=london_met_smart_classroom_jwt_secret_key_2026_super_secure
+MONGO_URI=mongodb+srv://<your_mongodb_username>:<your_mongodb_password>@<your_cluster>.mongodb.net/smart-classroom?retryWrites=true&w=majority
+JWT_SECRET=your_jwt_secret_key_here
 CLIENT_URL=http://localhost:5173
 ```
 
@@ -51,7 +51,7 @@ CLIENT_URL=http://localhost:5173
 cd server
 npm run seed
 ```
-> Connected directly to MongoDB Atlas and preloaded with 6 users, 6 rooms, and sample live bookings!
+> Preloads the database with sample heroes, chambers, and live active bookings.
 
 ---
 
@@ -73,7 +73,7 @@ npm run dev
 
 ---
 
-## 🔑 Preloaded Test Credentials (Password: `Password123`)
+## 🔑 Preloaded Test Accounts (Password: `Password123`)
 
 | Role | Hero Name | Email | London Met ID | Department |
 |---|---|---|---|---|
