@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import {
   Activity,
-  Layers,
   Sparkles,
   CheckCircle2,
   AlertCircle,
@@ -10,9 +9,7 @@ import {
   RefreshCw,
   Building,
   Radio,
-  Swords,
-  Compass,
-  Map
+  Layers
 } from 'lucide-react';
 import api from '../utils/api';
 import socket from '../utils/socket';
@@ -28,7 +25,6 @@ export const Dashboard = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [lastUpdated, setLastUpdated] = useState(new Date());
   const [toastMessage, setToastMessage] = useState(null);
-  const [viewMode, setViewMode] = useState('grid'); // 'grid' or 'minimap'
 
   // Filters State
   const [search, setSearch] = useState('');
@@ -69,23 +65,23 @@ export const Dashboard = () => {
     fetchLiveStatus();
 
     const handleBookingCreated = (data) => {
-      fetchLiveStatus(`⚔️ Chamber ${data.roomNumber} claimed! Grid updated live.`);
+      fetchLiveStatus(`⚡ New booking made for Room ${data.roomNumber}! Grid updated live.`);
     };
 
     const handleBookingCancelled = (data) => {
-      fetchLiveStatus(`Chamber ${data.roomNumber || ''} freed up.`);
+      fetchLiveStatus(`Room ${data.roomNumber || ''} booking was cancelled and is now available.`);
     };
 
     const handleBookingCheckedIn = (data) => {
-      fetchLiveStatus(`Party checked in to Chamber ${data.roomNumber || ''}.`);
+      fetchLiveStatus(`User checked in to Room ${data.roomNumber || ''}. Occupancy confirmed.`);
     };
 
     const handleAutoReleased = (data) => {
-      fetchLiveStatus(`⏰ Auto-Release: Chamber ${data.roomNumber} reclaimed after 15m timeout!`);
+      fetchLiveStatus(`⏰ Auto-Release: Room ${data.roomNumber} reclaimed after 15m check-in timeout!`);
     };
 
     const handleRoomModified = () => {
-      fetchLiveStatus('Campus chamber database updated.');
+      fetchLiveStatus('Campus facility database updated.');
     };
 
     socket.on('booking:created', handleBookingCreated);
@@ -137,165 +133,86 @@ export const Dashboard = () => {
   const totalCapacity = liveRoomsData.reduce((acc, r) => acc + (r.room?.capacity || 0), 0);
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 px-4 sm:px-6 lg:px-8 py-6 max-w-7xl mx-auto space-y-6">
-      {/* 8-bit Notification Toast */}
+    <div className="min-h-screen bg-slate-950 text-slate-100 px-4 sm:px-6 lg:px-8 py-8 max-w-7xl mx-auto space-y-6">
+      {/* Toast Notification */}
       {toastMessage && (
-        <div className="fixed bottom-6 right-6 z-50 p-3 bg-black border-2 border-emerald-500 text-emerald-300 shadow-[4px_4px_0px_#000] flex items-center gap-2 text-xs font-pixel animate-bounce">
-          <Sparkles className="w-4 h-4 text-yellow-400 shrink-0" />
-          <span>{toastMessage}</span>
+        <div className="fixed bottom-6 right-6 z-50 p-4 rounded-2xl bg-indigo-900/90 backdrop-blur-xl border border-indigo-400/40 text-white shadow-2xl flex items-center gap-3 animate-bounce">
+          <Radio className="w-5 h-5 text-emerald-400 animate-pulse shrink-0" />
+          <span className="text-xs font-semibold">{toastMessage}</span>
         </div>
       )}
 
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2 flex-wrap">
-            <h1 className="text-2xl sm:text-3xl font-pixel font-bold text-white tracking-wide">
-              CAMPUS CHAMBER MATRIX
+          <div className="flex items-center gap-2 mb-1">
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-white font-heading tracking-tight">
+              KronoRoom Live Matrix
             </h1>
-            <span className="bg-emerald-500 text-black px-2 py-0.5 text-[10px] font-arcade border border-black shadow-[2px_2px_0px_#000]">
-              LIVE SYNCED
+            <span className="px-2.5 py-0.5 rounded-full text-[10px] uppercase font-bold tracking-wider bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 flex items-center gap-1">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+              Live Synced
             </span>
           </div>
-          <p className="text-xs font-pixel text-slate-400 mt-0.5">
-            Real-time classroom & laboratory occupancy across London Met facilities.
+          <p className="text-xs text-slate-400">
+            Real-time classroom & laboratory occupancy across London Met campus.
           </p>
         </div>
 
-        {/* Action Controls */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3">
+          <span className="text-[11px] text-slate-500 font-mono">
+            Synced: {lastUpdated.toLocaleTimeString()}
+          </span>
           <button
-            onClick={() => setViewMode(viewMode === 'grid' ? 'minimap' : 'grid')}
-            className="pixel-btn pixel-btn-dark text-xs"
-          >
-            <Map className="w-4 h-4 text-yellow-400" />
-            <span>{viewMode === 'grid' ? '2D Campus Map' : 'Chamber Grid'}</span>
-          </button>
-
-          <button
-            onClick={() => fetchLiveStatus('Matrix refreshed.')}
-            className="pixel-btn pixel-btn-dark text-xs p-2.5"
-            title="Refresh Matrix"
+            onClick={() => fetchLiveStatus('Data refreshed manually.')}
+            className="p-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-white/10 text-slate-300 hover:text-white transition-colors"
+            title="Refresh Live Data"
           >
             <RefreshCw className="w-4 h-4" />
           </button>
         </div>
       </div>
 
-      {/* 8-bit RPG Metric Gauges */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-        <div className="pixel-box p-3.5 space-y-1">
-          <span className="font-pixel text-xs text-slate-400 uppercase font-bold">Total Chambers</span>
-          <p className="font-arcade text-xl text-white">{totalRooms}</p>
+      {/* KPI Cards */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="krono-card p-4 rounded-2xl">
+          <div className="flex items-center justify-between text-slate-400 text-xs mb-1">
+            <span>Total Facilities</span>
+            <Building className="w-4 h-4 text-indigo-400" />
+          </div>
+          <p className="text-2xl font-bold font-mono text-white">{totalRooms}</p>
+          <p className="text-[10px] text-slate-500 mt-1">3 Campus Buildings</p>
         </div>
-        <div className="pixel-box-green p-3.5 space-y-1">
-          <span className="font-pixel text-xs text-emerald-300 uppercase font-bold">🟢 Available Now</span>
-          <p className="font-arcade text-xl text-emerald-300">{availableRooms}</p>
+
+        <div className="krono-card p-4 rounded-2xl border-emerald-500/20">
+          <div className="flex items-center justify-between text-emerald-400 text-xs mb-1">
+            <span>Available Now</span>
+            <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+          </div>
+          <p className="text-2xl font-bold font-mono text-emerald-400">{availableRooms}</p>
+          <p className="text-[10px] text-emerald-400/70 mt-1">Ready for walk-in or booking</p>
         </div>
-        <div className="pixel-box-red p-3.5 space-y-1">
-          <span className="font-pixel text-xs text-rose-300 uppercase font-bold">🔴 In Battle / Session</span>
-          <p className="font-arcade text-xl text-rose-300">{occupiedRooms}</p>
+
+        <div className="krono-card p-4 rounded-2xl border-rose-500/20">
+          <div className="flex items-center justify-between text-rose-400 text-xs mb-1">
+            <span>In Session</span>
+            <Activity className="w-4 h-4 text-rose-400" />
+          </div>
+          <p className="text-2xl font-bold font-mono text-rose-400">{occupiedRooms}</p>
+          <p className="text-[10px] text-rose-400/70 mt-1">Active lectures & labs</p>
         </div>
-        <div className="pixel-box p-3.5 space-y-1">
-          <span className="font-pixel text-xs text-yellow-400 uppercase font-bold">👥 Party Capacity</span>
-          <p className="font-arcade text-xl text-yellow-300">{totalCapacity}</p>
+
+        <div className="krono-card p-4 rounded-2xl border-purple-500/20">
+          <div className="flex items-center justify-between text-purple-400 text-xs mb-1">
+            <span>Total Seat Capacity</span>
+            <Users className="w-4 h-4 text-purple-400" />
+          </div>
+          <p className="text-2xl font-bold font-mono text-purple-300">{totalCapacity}</p>
+          <p className="text-[10px] text-purple-400/70 mt-1">Simultaneous capacity</p>
         </div>
       </div>
 
-      {/* 2D Mini-Map View (Interactive RPG Wing Map) */}
-      {viewMode === 'minimap' && (
-        <div className="pixel-box p-5 space-y-4 border-yellow-500/50">
-          <div className="flex items-center justify-between pb-2 border-b-2 border-slate-800">
-            <h3 className="font-pixel text-base font-bold text-yellow-400 flex items-center gap-2">
-              <Compass className="w-5 h-5 text-emerald-400" />
-              2D CAMPUS REALM OVERVIEW MAP
-            </h3>
-            <span className="text-[10px] font-arcade text-slate-400">SELECT A WING</span>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {/* Tower Building Wing */}
-            <div className="p-4 bg-slate-950 border-2 border-slate-700 space-y-2">
-              <div className="flex items-center justify-between">
-                <h4 className="font-pixel text-sm font-bold text-white">🏰 Tower Building</h4>
-                <span className="text-[10px] font-pixel text-slate-400">Wing 1</span>
-              </div>
-              <div className="space-y-1.5 pt-1">
-                {liveRoomsData
-                  .filter((r) => r.room?.building === 'Tower Building')
-                  .map((item) => (
-                    <button
-                      key={item.room?._id}
-                      onClick={() => setSelectedRoomForBooking(item.room)}
-                      className={`w-full p-2 border-2 border-black text-left flex items-center justify-between text-xs font-pixel ${
-                        item.isOccupied
-                          ? 'bg-rose-950/80 text-rose-200 border-rose-900'
-                          : 'bg-emerald-950/80 text-emerald-200 border-emerald-800 hover:bg-emerald-900'
-                      }`}
-                    >
-                      <span className="font-bold font-arcade text-[10px]">{item.room?.roomNumber}</span>
-                      <span>{item.isOccupied ? '🔴 OCCUPIED' : '🟢 FREE'}</span>
-                    </button>
-                  ))}
-              </div>
-            </div>
-
-            {/* Learning Centre Wing */}
-            <div className="p-4 bg-slate-950 border-2 border-slate-700 space-y-2">
-              <div className="flex items-center justify-between">
-                <h4 className="font-pixel text-sm font-bold text-white">📚 Learning Sanctum</h4>
-                <span className="text-[10px] font-pixel text-slate-400">Wing 2</span>
-              </div>
-              <div className="space-y-1.5 pt-1">
-                {liveRoomsData
-                  .filter((r) => r.room?.building === 'Learning Centre')
-                  .map((item) => (
-                    <button
-                      key={item.room?._id}
-                      onClick={() => setSelectedRoomForBooking(item.room)}
-                      className={`w-full p-2 border-2 border-black text-left flex items-center justify-between text-xs font-pixel ${
-                        item.isOccupied
-                          ? 'bg-rose-950/80 text-rose-200 border-rose-900'
-                          : 'bg-emerald-950/80 text-emerald-200 border-emerald-800 hover:bg-emerald-900'
-                      }`}
-                    >
-                      <span className="font-bold font-arcade text-[10px]">{item.room?.roomNumber}</span>
-                      <span>{item.isOccupied ? '🔴 OCCUPIED' : '🟢 FREE'}</span>
-                    </button>
-                  ))}
-              </div>
-            </div>
-
-            {/* Science Centre Wing */}
-            <div className="p-4 bg-slate-950 border-2 border-slate-700 space-y-2">
-              <div className="flex items-center justify-between">
-                <h4 className="font-pixel text-sm font-bold text-white">🧪 Science Guild</h4>
-                <span className="text-[10px] font-pixel text-slate-400">Wing 3</span>
-              </div>
-              <div className="space-y-1.5 pt-1">
-                {liveRoomsData
-                  .filter((r) => r.room?.building === 'Science Centre')
-                  .map((item) => (
-                    <button
-                      key={item.room?._id}
-                      onClick={() => setSelectedRoomForBooking(item.room)}
-                      className={`w-full p-2 border-2 border-black text-left flex items-center justify-between text-xs font-pixel ${
-                        item.isOccupied
-                          ? 'bg-rose-950/80 text-rose-200 border-rose-900'
-                          : 'bg-emerald-950/80 text-emerald-200 border-emerald-800 hover:bg-emerald-900'
-                      }`}
-                    >
-                      <span className="font-bold font-arcade text-[10px]">{item.room?.roomNumber}</span>
-                      <span>{item.isOccupied ? '🔴 OCCUPIED' : '🟢 FREE'}</span>
-                    </button>
-                  ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Filter Bar */}
+      {/* Filter Controls */}
       <FilterBar
         search={search}
         setSearch={setSearch}
@@ -314,16 +231,16 @@ export const Dashboard = () => {
 
       {/* Rooms Grid */}
       {isLoading ? (
-        <div className="py-20 flex flex-col items-center justify-center gap-3">
-          <div className="w-8 h-8 bg-emerald-500 animate-spin border border-black"></div>
-          <p className="font-pixel text-xs text-slate-400">Summoning chamber matrix...</p>
+        <div className="py-20 flex flex-col items-center justify-center gap-4">
+          <div className="w-10 h-10 border-4 border-indigo-500/20 border-t-indigo-500 rounded-full animate-spin"></div>
+          <p className="text-xs text-slate-400 font-medium">Aggregating live room statuses...</p>
         </div>
       ) : filteredRooms.length === 0 ? (
-        <div className="pixel-box p-12 text-center my-6 space-y-3">
-          <AlertCircle className="w-10 h-10 text-slate-500 mx-auto" />
-          <h3 className="font-pixel text-lg font-bold text-white">No Chambers Discovered</h3>
-          <p className="font-pixel text-xs text-slate-400 max-w-sm mx-auto">
-            Try adjusting your search criteria or resetting filters to find available rooms.
+        <div className="krono-card rounded-2xl p-12 text-center my-6 space-y-3">
+          <AlertCircle className="w-12 h-12 text-slate-500 mx-auto mb-2" />
+          <h3 className="text-lg font-bold text-white font-heading">No matching rooms found</h3>
+          <p className="text-xs text-slate-400 max-w-md mx-auto">
+            Try adjusting your search criteria or resetting filters to see available facilities.
           </p>
           <button
             onClick={() => {
@@ -333,7 +250,7 @@ export const Dashboard = () => {
               setMinCapacity(0);
               setOnlyAvailable(false);
             }}
-            className="pixel-btn pixel-btn-green text-xs"
+            className="krono-btn krono-btn-primary text-xs mt-2"
           >
             Reset Filters
           </button>
@@ -362,7 +279,7 @@ export const Dashboard = () => {
         onClose={() => setSelectedRoomForBooking(null)}
         room={selectedRoomForBooking}
         onBookingSuccess={() => {
-          fetchLiveStatus('Chamber claimed successfully!');
+          fetchLiveStatus('Booking submitted and confirmed!');
         }}
       />
     </div>

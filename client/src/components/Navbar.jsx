@@ -1,17 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import {
+  Clock,
+  LayoutDashboard,
+  Calendar,
   Shield,
   LogOut,
   Menu,
   X,
   Sparkles,
-  Swords,
-  Scroll,
-  Crown,
-  Gamepad2,
-  Compass,
-  User
+  Layers,
+  GraduationCap,
+  Activity
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import socket from '../utils/socket';
@@ -42,24 +42,24 @@ export const Navbar = () => {
     navigate('/');
   };
 
-  const getRoleHeroBadge = (role) => {
+  const getRoleBadge = (role) => {
     switch (role) {
       case 'admin':
         return (
-          <span className="px-2 py-0.5 text-[11px] font-pixel uppercase font-bold bg-rose-600 text-white border border-black shadow-[2px_2px_0px_#000]">
-            👑 Dungeon Master
+          <span className="px-2.5 py-0.5 text-[10px] uppercase font-bold tracking-wider rounded-full bg-rose-500/15 text-rose-300 border border-rose-500/30">
+            Admin
           </span>
         );
       case 'teacher':
         return (
-          <span className="px-2 py-0.5 text-[11px] font-pixel uppercase font-bold bg-purple-600 text-white border border-black shadow-[2px_2px_0px_#000]">
-            🔮 Archmage Faculty
+          <span className="px-2.5 py-0.5 text-[10px] uppercase font-bold tracking-wider rounded-full bg-purple-500/15 text-purple-300 border border-purple-500/30">
+            Faculty
           </span>
         );
       default:
         return (
-          <span className="px-2 py-0.5 text-[11px] font-pixel uppercase font-bold bg-emerald-600 text-black border border-black shadow-[2px_2px_0px_#000]">
-            🛡️ Scholar Knight (Student)
+          <span className="px-2.5 py-0.5 text-[10px] uppercase font-bold tracking-wider rounded-full bg-blue-500/15 text-blue-300 border border-blue-500/30">
+            Student
           </span>
         );
     }
@@ -68,105 +68,113 @@ export const Navbar = () => {
   const isActivePath = (path) => location.pathname === path;
 
   return (
-    <header className="sticky top-0 z-40 w-full border-b-4 border-black bg-slate-950/95 backdrop-blur-md shadow-[0_4px_0_0_#000]">
-      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+    <header className="sticky top-0 z-40 w-full border-b border-white/10 bg-slate-950/80 backdrop-blur-xl transition-all">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          {/* RPG Brand / Logo */}
+          {/* Brand / Logo */}
           <div className="flex items-center gap-3">
-            <Link to="/" className="flex items-center gap-2 group">
-              <div className="w-10 h-10 bg-emerald-500 border-2 border-black shadow-[3px_3px_0px_#000] flex items-center justify-center text-black group-hover:bg-emerald-400 group-hover:translate-y-[-1px] transition-all">
-                <Swords className="w-6 h-6" />
+            <Link to="/" className="flex items-center gap-3 group">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 via-indigo-500 to-emerald-400 p-[1px] shadow-lg shadow-indigo-500/20 group-hover:scale-105 transition-transform">
+                <div className="w-full h-full bg-slate-950 rounded-[11px] flex items-center justify-center">
+                  <Clock className="w-5 h-5 text-indigo-400 group-hover:text-emerald-400 transition-colors" />
+                </div>
               </div>
               <div>
-                <div className="flex items-center gap-1.5">
-                  <span className="font-pixel text-lg font-bold text-white tracking-wider">
-                    LONDON MET RPG
+                <div className="flex items-center gap-2">
+                  <span className="font-brand font-bold text-lg tracking-tight text-white">
+                    Krono<span className="text-indigo-400">Room</span>
                   </span>
-                  <span className="text-[10px] font-arcade px-1.5 py-0.5 bg-yellow-400 text-black border border-black shadow-[1px_1px_0px_#000]">
-                    2D
+                  <span className="text-[10px] font-semibold uppercase tracking-wider px-1.5 py-0.5 rounded-full bg-indigo-500/15 text-indigo-300 border border-indigo-500/30">
+                    London Met
                   </span>
                 </div>
-                <p className="text-[11px] font-pixel text-emerald-400 -mt-1">
-                  Classroom & Lab Quest
-                </p>
+                <p className="text-[11px] text-slate-400 -mt-0.5">Smart Classroom & Lab Booking</p>
               </div>
             </Link>
 
-            {/* Live Socket indicator */}
+            {/* Real-time Socket Indicator */}
             <div
-              className="hidden lg:flex items-center gap-1.5 ml-3 px-2.5 py-1 bg-black border-2 border-slate-800 text-[10px] font-pixel font-bold uppercase shadow-[2px_2px_0px_#000]"
-              title={isSocketConnected ? 'Live Quest Server Connected' : 'Connecting to Quest Realm...'}
+              className="hidden lg:flex items-center gap-1.5 ml-4 px-2.5 py-1 rounded-full bg-slate-900/80 border border-white/10 text-[11px] font-medium"
+              title={isSocketConnected ? 'Live updates synchronized' : 'Connecting to live updates...'}
             >
-              <span
-                className={`w-2 h-2 rounded-none border border-black ${
-                  isSocketConnected ? 'bg-emerald-400 pixel-blink' : 'bg-amber-500'
-                }`}
-              />
+              <span className="relative flex h-2 w-2">
+                {isSocketConnected && (
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                )}
+                <span
+                  className={`relative inline-flex rounded-full h-2 w-2 ${
+                    isSocketConnected ? 'bg-emerald-500' : 'bg-amber-500'
+                  }`}
+                ></span>
+              </span>
               <span className={isSocketConnected ? 'text-emerald-400' : 'text-amber-400'}>
-                {isSocketConnected ? 'ONLINE' : 'SYNCING'}
+                {isSocketConnected ? 'Live Sync' : 'Syncing...'}
               </span>
             </div>
           </div>
 
-          {/* Desktop RPG Navigation Tabs */}
-          <nav className="hidden md:flex items-center gap-2">
+          {/* Desktop Navigation Links */}
+          <nav className="hidden md:flex items-center gap-1.5">
             <Link
               to="/dashboard"
-              className={`pixel-btn text-xs ${
+              className={`px-3.5 py-2 rounded-xl text-xs font-semibold transition-all flex items-center gap-1.5 ${
                 isActivePath('/dashboard')
-                  ? 'pixel-btn-green'
-                  : 'pixel-btn-dark hover:text-white'
+                  ? 'bg-indigo-600/20 text-indigo-300 border border-indigo-500/30'
+                  : 'text-slate-300 hover:text-white hover:bg-white/5'
               }`}
             >
-              <Compass className="w-4 h-4" />
-              Chamber Matrix
+              <LayoutDashboard className="w-4 h-4" />
+              Live Rooms
             </Link>
 
             {isAuthenticated && (
               <Link
                 to="/my-bookings"
-                className={`pixel-btn text-xs ${
+                className={`px-3.5 py-2 rounded-xl text-xs font-semibold transition-all flex items-center gap-1.5 ${
                   isActivePath('/my-bookings')
-                    ? 'pixel-btn-indigo'
-                    : 'pixel-btn-dark hover:text-white'
+                    ? 'bg-indigo-600/20 text-indigo-300 border border-indigo-500/30'
+                    : 'text-slate-300 hover:text-white hover:bg-white/5'
                 }`}
               >
-                <Scroll className="w-4 h-4" />
-                Quest Log
+                <Calendar className="w-4 h-4" />
+                My Bookings
               </Link>
             )}
 
             {hasRole('admin') && (
               <Link
                 to="/admin"
-                className={`pixel-btn text-xs ${
+                className={`px-3.5 py-2 rounded-xl text-xs font-semibold transition-all flex items-center gap-1.5 ${
                   isActivePath('/admin')
-                    ? 'pixel-btn-rose'
-                    : 'pixel-btn-dark hover:text-rose-300'
+                    ? 'bg-rose-500/20 text-rose-300 border border-rose-500/30'
+                    : 'text-slate-300 hover:text-white hover:bg-white/5'
                 }`}
               >
-                <Crown className="w-4 h-4" />
-                Master Console
+                <Shield className="w-4 h-4" />
+                Admin Console
               </Link>
             )}
           </nav>
 
-          {/* Player Profile & Actions */}
+          {/* User Auth Section */}
           <div className="hidden md:flex items-center gap-3">
             {isAuthenticated ? (
-              <div className="flex items-center gap-3 pl-3 border-l-2 border-slate-800">
+              <div className="flex items-center gap-3 pl-3 border-l border-white/10">
                 <div className="text-right">
                   <div className="flex items-center gap-2 justify-end">
-                    <span className="font-pixel text-sm font-bold text-white max-w-[150px] truncate">
+                    <span className="text-xs font-bold text-white max-w-[140px] truncate">
                       {user.name}
                     </span>
+                    {getRoleBadge(user.role)}
                   </div>
-                  <div className="mt-0.5">{getRoleHeroBadge(user.role)}</div>
+                  <p className="text-[10px] text-slate-400 font-mono">
+                    {user.idCardNumber} • {user.department?.split(' ')[0]}
+                  </p>
                 </div>
                 <button
                   onClick={handleLogout}
-                  className="pixel-btn pixel-btn-rose text-xs p-2"
-                  title="Abandon Quest (Sign Out)"
+                  className="p-2 rounded-xl text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 border border-white/5 hover:border-rose-500/20 transition-all"
+                  title="Sign Out"
                 >
                   <LogOut className="w-4 h-4" />
                 </button>
@@ -175,25 +183,25 @@ export const Navbar = () => {
               <div className="flex items-center gap-2">
                 <Link
                   to="/login/student"
-                  className="pixel-btn pixel-btn-green text-xs"
+                  className="krono-btn krono-btn-ghost text-xs"
                 >
-                  Student Hero
+                  Student Portal
                 </Link>
                 <Link
                   to="/login/faculty"
-                  className="pixel-btn pixel-btn-purple text-xs"
+                  className="krono-btn krono-btn-primary text-xs"
                 >
-                  Faculty Mage
+                  Faculty & Staff
                 </Link>
               </div>
             )}
           </div>
 
-          {/* Mobile Menu Button */}
+          {/* Mobile menu button */}
           <div className="flex md:hidden items-center gap-2">
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="pixel-btn pixel-btn-dark p-2"
+              className="p-2 rounded-xl text-slate-400 hover:text-white bg-slate-900 border border-white/10"
             >
               {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
@@ -201,80 +209,80 @@ export const Navbar = () => {
         </div>
       </div>
 
-      {/* Mobile RPG Menu */}
+      {/* Mobile Dropdown Menu */}
       {isMobileMenuOpen && (
-        <div className="md:hidden border-t-2 border-black bg-slate-950 p-4 space-y-3">
+        <div className="md:hidden border-t border-white/10 bg-slate-950/95 backdrop-blur-xl px-4 pt-3 pb-5 space-y-3">
           {isAuthenticated && (
-            <div className="pixel-box p-3 space-y-1">
-              <p className="font-pixel text-sm font-bold text-white">{user.name}</p>
-              <p className="font-mono text-[10px] text-slate-400">{user.idCardNumber} • {user.department}</p>
-              <div className="pt-1">{getRoleHeroBadge(user.role)}</div>
+            <div className="p-3.5 rounded-xl bg-slate-900 border border-white/10 flex items-center justify-between">
+              <div>
+                <p className="text-xs font-bold text-white">{user.name}</p>
+                <p className="text-[10px] text-slate-400">{user.idCardNumber} • {user.department}</p>
+              </div>
+              {getRoleBadge(user.role)}
             </div>
           )}
 
-          <div className="flex flex-col gap-2">
+          <div className="space-y-1">
             <Link
               to="/dashboard"
               onClick={() => setIsMobileMenuOpen(false)}
-              className="pixel-btn pixel-btn-green w-full"
+              className="block px-3 py-2 rounded-xl text-sm font-semibold text-slate-200 hover:bg-white/5"
             >
-              <Compass className="w-4 h-4" /> Chamber Matrix (Dashboard)
+              Live Rooms Dashboard
             </Link>
-
             {isAuthenticated && (
               <Link
                 to="/my-bookings"
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="pixel-btn pixel-btn-indigo w-full"
+                className="block px-3 py-2 rounded-xl text-sm font-semibold text-slate-200 hover:bg-white/5"
               >
-                <Scroll className="w-4 h-4" /> Quest Log (My Bookings)
+                My Bookings
               </Link>
             )}
-
             {hasRole('admin') && (
               <Link
                 to="/admin"
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="pixel-btn pixel-btn-rose w-full"
+                className="block px-3 py-2 rounded-xl text-sm font-semibold text-rose-400 hover:bg-rose-500/10"
               >
-                <Crown className="w-4 h-4" /> Master Console (Admin)
+                Admin Management
               </Link>
             )}
           </div>
 
-          <div className="pt-2 border-t-2 border-slate-800 flex flex-col gap-2">
+          <div className="pt-2 border-t border-white/10 flex flex-col gap-2">
             {isAuthenticated ? (
               <button
                 onClick={() => {
                   handleLogout();
                   setIsMobileMenuOpen(false);
                 }}
-                className="pixel-btn pixel-btn-rose w-full"
+                className="krono-btn krono-btn-danger w-full text-xs"
               >
-                <LogOut className="w-4 h-4" /> Exit Realm (Sign Out)
+                <LogOut className="w-4 h-4" /> Sign Out
               </button>
             ) : (
               <>
                 <Link
                   to="/login/student"
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="pixel-btn pixel-btn-green w-full text-center"
+                  className="krono-btn krono-btn-ghost w-full text-xs text-center"
                 >
-                  Student Hero Login
+                  Student Portal Login
                 </Link>
                 <Link
                   to="/login/faculty"
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="pixel-btn pixel-btn-purple w-full text-center"
+                  className="krono-btn krono-btn-primary w-full text-xs text-center"
                 >
-                  Faculty Archmage Login
+                  Faculty & Staff Portal
                 </Link>
                 <Link
                   to="/register"
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="pixel-btn pixel-btn-dark w-full text-center text-xs"
+                  className="block text-center py-2 text-xs text-slate-400 hover:text-slate-200"
                 >
-                  Character Creation (Register)
+                  Create Account
                 </Link>
               </>
             )}

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Crown,
+  Shield,
   Plus,
   Edit2,
   Trash2,
@@ -15,7 +15,6 @@ import {
   Filter,
   Monitor,
   Sparkles,
-  Swords,
   X
 } from 'lucide-react';
 import { format } from 'date-fns';
@@ -29,7 +28,7 @@ export const AdminDashboard = () => {
   const [stats, setStats] = useState({ total: 0, confirmed: 0, completed: 0, cancelled: 0, checkedIn: 0 });
   const [isLoading, setIsLoading] = useState(true);
 
-  // Filters
+  // Filter state for bookings table
   const [statusFilter, setStatusFilter] = useState('all');
   const [bookingSearch, setBookingSearch] = useState('');
 
@@ -59,7 +58,10 @@ export const AdminDashboard = () => {
         api.get('/bookings/all')
       ]);
 
-      if (roomsRes.data.success) setRooms(roomsRes.data.rooms || []);
+      if (roomsRes.data.success) {
+        setRooms(roomsRes.data.rooms || []);
+      }
+
       if (bookingsRes.data.success) {
         setBookings(bookingsRes.data.bookings || []);
         setStats(bookingsRes.data.stats || {});
@@ -127,50 +129,50 @@ export const AdminDashboard = () => {
       if (editingRoom) {
         const { data } = await api.put(`/rooms/${editingRoom._id}`, roomFormData);
         if (data.success) {
-          showToast(`Chamber ${data.room.roomNumber} updated!`);
+          showToast(`Room ${data.room.roomNumber} updated successfully!`);
           setIsRoomModalOpen(false);
           fetchData();
         }
       } else {
         const { data } = await api.post('/rooms', roomFormData);
         if (data.success) {
-          showToast(`Chamber ${data.room.roomNumber} forged!`);
+          showToast(`Room ${data.room.roomNumber} created successfully!`);
           setIsRoomModalOpen(false);
           fetchData();
         }
       }
     } catch (error) {
-      alert(error.response?.data?.message || 'Failed to save chamber.');
+      alert(error.response?.data?.message || 'Failed to save room details.');
     } finally {
       setIsSubmitting(false);
     }
   };
 
   const handleDeleteRoom = async (roomId, roomNumber) => {
-    if (!window.confirm(`Deactivate Chamber ${roomNumber}? It will be hidden from new reservations.`)) {
+    if (!window.confirm(`Are you sure you want to deactivate Room ${roomNumber}? It will be hidden from new bookings.`)) {
       return;
     }
 
     try {
       const { data } = await api.delete(`/rooms/${roomId}`);
       if (data.success) {
-        showToast(`Chamber ${roomNumber} sealed.`);
+        showToast(`Room ${roomNumber} deactivated.`);
         fetchData();
       }
     } catch (error) {
-      alert(error.response?.data?.message || 'Failed to seal chamber.');
+      alert(error.response?.data?.message || 'Failed to deactivate room.');
     }
   };
 
   const handleAdminCancelBooking = async (bookingId, roomNumber) => {
-    if (!window.confirm(`Cast Override Cancel on Chamber ${roomNumber}?`)) {
+    if (!window.confirm(`Cancel booking for Room ${roomNumber}? This administrative override cannot be undone.`)) {
       return;
     }
 
     try {
       const { data } = await api.patch(`/bookings/${bookingId}/cancel`);
       if (data.success) {
-        showToast(`Reservation cancelled via Dungeon Master override.`);
+        showToast(`Booking cancelled via admin override.`);
         fetchData();
       }
     } catch (error) {
@@ -191,12 +193,12 @@ export const AdminDashboard = () => {
   });
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 px-4 sm:px-6 lg:px-8 py-6 max-w-7xl mx-auto space-y-6">
+    <div className="min-h-screen bg-slate-950 text-slate-100 px-4 sm:px-6 lg:px-8 py-8 max-w-7xl mx-auto space-y-8">
       {/* Toast Alert */}
       {toastMessage && (
-        <div className="fixed bottom-6 right-6 z-50 p-3 bg-black border-2 border-rose-500 text-rose-300 shadow-[4px_4px_0px_#000] flex items-center gap-2 text-xs font-pixel animate-bounce">
-          <Crown className="w-4 h-4 text-yellow-400 shrink-0" />
-          <span>{toastMessage}</span>
+        <div className="fixed bottom-6 right-6 z-50 p-4 rounded-2xl bg-rose-900/95 backdrop-blur-xl border border-rose-400/40 text-white shadow-2xl flex items-center gap-3 animate-bounce">
+          <Shield className="w-5 h-5 text-rose-400 shrink-0" />
+          <span className="text-xs font-semibold">{toastMessage}</span>
         </div>
       )}
 
@@ -204,103 +206,110 @@ export const AdminDashboard = () => {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">
-            <h1 className="text-2xl sm:text-3xl font-pixel font-bold text-white tracking-wide">
-              👑 DUNGEON MASTER CONSOLE
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-white font-heading">
+              KronoRoom Admin Console
             </h1>
-            <span className="bg-rose-600 text-white px-2 py-0.5 text-[10px] font-arcade border border-black shadow-[2px_2px_0px_#000]">
-              ADMIN LEVEL
+            <span className="px-2.5 py-0.5 rounded-full text-[10px] uppercase font-bold tracking-wider bg-rose-500/20 text-rose-300 border border-rose-500/30">
+              Admin Access
             </span>
           </div>
-          <p className="text-xs font-pixel text-slate-400 mt-0.5">
-            Forge chambers, monitor campus utilization, and exercise schedule override spells.
+          <p className="text-xs text-slate-400 mt-1">
+            Manage classrooms & labs, monitor campus-wide booking utilization, and oversee schedule overrides.
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3">
           <button
             onClick={fetchData}
-            className="pixel-btn pixel-btn-dark text-xs"
+            className="krono-btn krono-btn-ghost text-xs"
           >
-            <RefreshCw className="w-3.5 h-3.5" /> Refresh
+            <RefreshCw className="w-3.5 h-3.5" /> Refresh Data
           </button>
           <button
             onClick={openCreateRoomModal}
-            className="pixel-btn pixel-btn-green text-xs"
+            className="krono-btn krono-btn-primary text-xs"
           >
-            <Plus className="w-4 h-4" /> Forge Chamber
+            <Plus className="w-4 h-4" /> Add New Room
           </button>
         </div>
       </div>
 
-      {/* Statistics */}
-      <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 font-pixel">
-        <div className="pixel-box p-3">
-          <span className="text-xs text-slate-400 font-bold uppercase">Total Bookings</span>
-          <p className="font-arcade text-xl text-white mt-1">{stats.total || 0}</p>
+      {/* Statistics Cards */}
+      <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
+        <div className="krono-card p-4 rounded-2xl">
+          <span className="text-[11px] text-slate-400 uppercase font-semibold">Total Bookings</span>
+          <p className="text-2xl font-bold font-mono text-white mt-1">{stats.total || 0}</p>
         </div>
-        <div className="pixel-box-green p-3">
-          <span className="text-xs text-emerald-300 font-bold uppercase">Confirmed</span>
-          <p className="font-arcade text-xl text-emerald-300 mt-1">{stats.confirmed || 0}</p>
+        <div className="krono-card p-4 rounded-2xl border-emerald-500/20">
+          <span className="text-[11px] text-emerald-400 uppercase font-semibold">Confirmed</span>
+          <p className="text-2xl font-bold font-mono text-emerald-400 mt-1">{stats.confirmed || 0}</p>
         </div>
-        <div className="pixel-box-blue p-3">
-          <span className="text-xs text-blue-300 font-bold uppercase">Checked In</span>
-          <p className="font-arcade text-xl text-blue-300 mt-1">{stats.checkedIn || 0}</p>
+        <div className="krono-card p-4 rounded-2xl border-blue-500/20">
+          <span className="text-[11px] text-blue-400 uppercase font-semibold">Checked-In</span>
+          <p className="text-2xl font-bold font-mono text-blue-400 mt-1">{stats.checkedIn || 0}</p>
         </div>
-        <div className="pixel-box-red p-3">
-          <span className="text-xs text-rose-300 font-bold uppercase">Cancelled</span>
-          <p className="font-arcade text-xl text-rose-300 mt-1">{stats.cancelled || 0}</p>
+        <div className="krono-card p-4 rounded-2xl border-rose-500/20">
+          <span className="text-[11px] text-rose-400 uppercase font-semibold">Cancelled</span>
+          <p className="text-2xl font-bold font-mono text-rose-400 mt-1">{stats.cancelled || 0}</p>
         </div>
-        <div className="pixel-box p-3">
-          <span className="text-xs text-yellow-400 font-bold uppercase">Check-In Rate</span>
-          <p className="font-arcade text-xl text-yellow-300 mt-1">
+        <div className="krono-card p-4 rounded-2xl border-purple-500/20">
+          <span className="text-[11px] text-purple-400 uppercase font-semibold">Check-In Rate</span>
+          <p className="text-2xl font-bold font-mono text-purple-300 mt-1">
             {stats.total > 0 ? `${Math.round((stats.checkedIn / stats.total) * 100)}%` : '0%'}
           </p>
         </div>
       </div>
 
-      {/* Chamber Inventory Management */}
-      <div className="pixel-box p-5 space-y-4 font-pixel">
-        <div className="flex items-center justify-between pb-2 border-b-2 border-slate-800">
-          <h2 className="text-base font-bold text-white flex items-center gap-2">
-            <Building className="w-5 h-5 text-emerald-400" />
-            CHAMBER INVENTORY ({rooms.length})
-          </h2>
+      {/* Campus Rooms Inventory */}
+      <div className="krono-card p-6 rounded-2xl space-y-4">
+        <div className="flex items-center justify-between pb-2 border-b border-white/10">
+          <div className="flex items-center gap-2">
+            <Building className="w-5 h-5 text-indigo-400" />
+            <h2 className="text-lg font-bold text-white font-heading">
+              Classroom & Laboratory Inventory ({rooms.length})
+            </h2>
+          </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {rooms.map((r) => (
             <div
               key={r._id}
-              className="p-3 bg-slate-950 border-2 border-black flex items-center justify-between shadow-[2px_2px_0px_#000]"
+              className="p-4 rounded-xl bg-slate-900 border border-white/10 flex items-center justify-between"
             >
               <div>
                 <div className="flex items-center gap-2">
-                  <span className="font-arcade text-xs text-white bg-black px-1.5 py-0.5 border border-slate-700">
-                    {r.roomNumber}
-                  </span>
-                  <span className="text-[11px] font-bold text-slate-300">
+                  <span className="font-mono font-bold text-base text-white">{r.roomNumber}</span>
+                  <span className="px-2 py-0.5 text-[10px] uppercase font-semibold rounded bg-white/5 text-slate-400">
                     {r.type?.replace('_', ' ')}
                   </span>
                 </div>
                 <p className="text-xs text-slate-400 mt-0.5">
-                  {r.building} • {r.capacity} Max Party
+                  {r.building} • {r.capacity} seats
                 </p>
+                <div className="flex flex-wrap gap-1 mt-2">
+                  {r.amenities?.slice(0, 2).map((a, i) => (
+                    <span key={i} className="text-[10px] px-1.5 py-0.5 bg-slate-800 rounded text-slate-400">
+                      {a}
+                    </span>
+                  ))}
+                </div>
               </div>
 
               <div className="flex items-center gap-1">
                 <button
                   onClick={() => openEditRoomModal(r)}
-                  className="pixel-btn pixel-btn-dark p-1.5 text-xs"
-                  title="Edit Chamber"
+                  className="p-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors"
+                  title="Edit Room"
                 >
-                  <Edit2 className="w-3.5 h-3.5" />
+                  <Edit2 className="w-4 h-4" />
                 </button>
                 <button
                   onClick={() => handleDeleteRoom(r._id, r.roomNumber)}
-                  className="pixel-btn pixel-btn-rose p-1.5 text-xs"
-                  title="Seal Chamber"
+                  className="p-2 rounded-lg text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 transition-colors"
+                  title="Deactivate Room"
                 >
-                  <Trash2 className="w-3.5 h-3.5" />
+                  <Trash2 className="w-4 h-4" />
                 </button>
               </div>
             </div>
@@ -308,30 +317,32 @@ export const AdminDashboard = () => {
         </div>
       </div>
 
-      {/* All Realm Bookings Registry */}
-      <div className="pixel-box p-5 space-y-4 font-pixel">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 pb-2 border-b-2 border-slate-800">
-          <h2 className="text-base font-bold text-white flex items-center gap-2">
-            <Calendar className="w-5 h-5 text-emerald-400" />
-            ALL REALM BOOKING RECORDS ({filteredBookings.length})
-          </h2>
+      {/* Campus-Wide Bookings Registry */}
+      <div className="krono-card p-6 rounded-2xl space-y-4">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 pb-2 border-b border-white/10">
+          <div className="flex items-center gap-2">
+            <Calendar className="w-5 h-5 text-indigo-400" />
+            <h2 className="text-lg font-bold text-white font-heading">
+              All University Booking Records ({filteredBookings.length})
+            </h2>
+          </div>
 
           <div className="flex items-center gap-2 flex-wrap">
             <div className="relative">
-              <Search className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2" />
+              <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
               <input
                 type="text"
                 value={bookingSearch}
                 onChange={(e) => setBookingSearch(e.target.value)}
-                placeholder="Search user, chamber..."
-                className="bg-slate-950 border-2 border-black pl-8 pr-3 py-1 text-xs text-white placeholder:text-slate-600 focus:outline-none focus:border-emerald-500 shadow-[2px_2px_0px_#000]"
+                placeholder="Search user, room..."
+                className="bg-slate-900 border border-white/10 rounded-xl pl-9 pr-3 py-1.5 text-xs text-white placeholder:text-slate-500 focus:outline-none focus:border-indigo-500"
               />
             </div>
 
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="bg-slate-950 border-2 border-black px-2.5 py-1 text-xs text-white focus:outline-none focus:border-emerald-500 shadow-[2px_2px_0px_#000]"
+              className="bg-slate-900 border border-white/10 rounded-xl px-3 py-1.5 text-xs text-white focus:outline-none focus:border-indigo-500"
             >
               <option value="all">All Statuses</option>
               <option value="confirmed">Confirmed</option>
@@ -343,74 +354,76 @@ export const AdminDashboard = () => {
 
         {/* Bookings Table */}
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs border-collapse font-pixel">
+          <table className="w-full text-left text-xs border-collapse">
             <thead>
-              <tr className="border-b-2 border-slate-800 text-slate-400 uppercase text-[10px] bg-slate-950">
-                <th className="p-2.5">Chamber</th>
-                <th className="p-2.5">Adventurer / Guild</th>
-                <th className="p-2.5">Schedule</th>
-                <th className="p-2.5">Quest Purpose</th>
-                <th className="p-2.5">Status</th>
-                <th className="p-2.5">Check-In</th>
-                <th className="p-2.5 text-right">Spell Override</th>
+              <tr className="border-b border-white/10 text-slate-400 font-semibold uppercase text-[10px] tracking-wider bg-slate-900/40">
+                <th className="p-3">Room</th>
+                <th className="p-3">User & Department</th>
+                <th className="p-3">Schedule Date & Time</th>
+                <th className="p-3">Purpose / Type</th>
+                <th className="p-3">Status</th>
+                <th className="p-3">Check-In</th>
+                <th className="p-3 text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-800/80 text-slate-300">
+            <tbody className="divide-y divide-white/5 text-slate-300">
               {filteredBookings.map((b) => (
-                <tr key={b._id} className="hover:bg-white/[0.02]">
-                  <td className="p-2.5 font-arcade text-xs text-white">
+                <tr key={b._id} className="hover:bg-white/[0.02] transition-colors">
+                  <td className="p-3 font-mono font-bold text-white">
                     {b.room?.roomNumber || '—'}
-                    <span className="block font-pixel text-[10px] text-slate-500">
+                    <span className="block font-sans text-[10px] font-normal text-slate-500">
                       {b.room?.building}
                     </span>
                   </td>
 
-                  <td className="p-2.5">
-                    <span className="font-bold text-white">{b.user?.name}</span>
-                    <span className="block text-[10px] text-slate-400">
+                  <td className="p-3">
+                    <span className="font-semibold text-white">{b.user?.name}</span>
+                    <span className="block text-[10px] text-slate-400 font-mono">
                       {b.user?.idCardNumber} • {b.user?.role}
                     </span>
                   </td>
 
-                  <td className="p-2.5 font-mono text-[11px]">
+                  <td className="p-3 font-mono text-[11px]">
                     {format(new Date(b.startTime), 'dd MMM yyyy')}
                     <span className="block text-slate-400">
                       {format(new Date(b.startTime), 'HH:mm')} – {format(new Date(b.endTime), 'HH:mm')}
                     </span>
                   </td>
 
-                  <td className="p-2.5 max-w-[200px]">
-                    <span className="font-bold text-slate-200 block truncate">{b.purpose}</span>
+                  <td className="p-3 max-w-[200px]">
+                    <span className="font-medium text-slate-200 block truncate">{b.purpose}</span>
                     <span className="text-[10px] text-slate-500 uppercase">{b.bookingType}</span>
                   </td>
 
-                  <td className="p-2.5">
+                  <td className="p-3">
                     <span
-                      className={`px-1.5 py-0.5 text-[10px] uppercase font-bold ${
+                      className={`px-2 py-0.5 rounded text-[10px] font-semibold uppercase ${
                         b.status === 'confirmed'
-                          ? 'bg-emerald-950 text-emerald-300 border border-emerald-800'
+                          ? 'bg-emerald-500/20 text-emerald-300'
                           : b.status === 'cancelled'
-                          ? 'bg-rose-950 text-rose-300 border border-rose-800'
-                          : 'bg-slate-800 text-slate-300'
+                          ? 'bg-rose-500/20 text-rose-300'
+                          : 'bg-slate-700 text-slate-300'
                       }`}
                     >
                       {b.status}
                     </span>
                   </td>
 
-                  <td className="p-2.5">
+                  <td className="p-3">
                     {b.checkedIn ? (
-                      <span className="text-emerald-400 font-bold">✓ Yes</span>
+                      <span className="text-emerald-400 flex items-center gap-1 font-semibold">
+                        <CheckCircle2 className="w-3.5 h-3.5" /> Yes
+                      </span>
                     ) : (
-                      <span className="text-yellow-400">Pending</span>
+                      <span className="text-amber-400 font-semibold">Pending</span>
                     )}
                   </td>
 
-                  <td className="p-2.5 text-right">
+                  <td className="p-3 text-right">
                     {b.status === 'confirmed' && (
                       <button
                         onClick={() => handleAdminCancelBooking(b._id, b.room?.roomNumber)}
-                        className="pixel-btn pixel-btn-rose text-[10px] py-1 px-2"
+                        className="px-2.5 py-1 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/30 rounded-lg text-[10px] font-semibold transition-colors"
                       >
                         Override Cancel
                       </button>
@@ -423,26 +436,26 @@ export const AdminDashboard = () => {
         </div>
       </div>
 
-      {/* Create / Edit Chamber Modal */}
+      {/* Create / Edit Room Modal */}
       {isRoomModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm overflow-y-auto">
-          <div className="pixel-dialog max-w-md w-full p-6 space-y-4">
-            <div className="flex items-center justify-between pb-2 border-b-2 border-slate-800">
-              <h3 className="font-pixel text-base font-bold text-white">
-                {editingRoom ? `EDIT CHAMBER ${editingRoom.roomNumber}` : 'FORGE NEW CHAMBER'}
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md overflow-y-auto">
+          <div className="krono-modal max-w-md w-full rounded-2xl p-6 space-y-4">
+            <div className="flex items-center justify-between border-b border-white/10 pb-3">
+              <h3 className="text-base font-bold text-white font-heading">
+                {editingRoom ? `Edit Room ${editingRoom.roomNumber}` : 'Create Campus Room'}
               </h3>
               <button
                 onClick={() => setIsRoomModalOpen(false)}
-                className="pixel-btn pixel-btn-dark p-1 text-xs"
+                className="p-1 text-slate-400 hover:text-white rounded-lg"
               >
-                <X className="w-4 h-4" />
+                <X className="w-5 h-5" />
               </button>
             </div>
 
-            <form onSubmit={handleRoomSubmit} className="space-y-3 font-pixel text-xs">
+            <form onSubmit={handleRoomSubmit} className="space-y-3 text-xs">
               <div>
-                <label className="block text-slate-300 font-bold uppercase mb-1">
-                  Chamber Number (e.g. T-301)
+                <label className="block text-slate-300 font-semibold uppercase mb-1">
+                  Room Number (e.g. T-301)
                 </label>
                 <input
                   type="text"
@@ -450,13 +463,13 @@ export const AdminDashboard = () => {
                   onChange={(e) =>
                     setRoomFormData({ ...roomFormData, roomNumber: e.target.value })
                   }
-                  className="w-full bg-slate-950 border-2 border-black px-3 py-2 text-white uppercase font-mono shadow-[2px_2px_0px_#000]"
+                  className="w-full bg-slate-900 border border-white/10 rounded-xl px-3 py-2 text-white uppercase font-mono"
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-slate-300 font-bold uppercase mb-1">Dungeon Wing (Building)</label>
+                <label className="block text-slate-300 font-semibold uppercase mb-1">Building</label>
                 <input
                   type="text"
                   value={roomFormData.building}
@@ -464,15 +477,15 @@ export const AdminDashboard = () => {
                     setRoomFormData({ ...roomFormData, building: e.target.value })
                   }
                   placeholder="Tower Building, Learning Centre, Science Centre"
-                  className="w-full bg-slate-950 border-2 border-black px-3 py-2 text-white shadow-[2px_2px_0px_#000]"
+                  className="w-full bg-slate-900 border border-white/10 rounded-xl px-3 py-2 text-white"
                   required
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-slate-300 font-bold uppercase mb-1">
-                    Max Party (Capacity)
+                  <label className="block text-slate-300 font-semibold uppercase mb-1">
+                    Capacity (Seats)
                   </label>
                   <input
                     type="number"
@@ -481,17 +494,17 @@ export const AdminDashboard = () => {
                     onChange={(e) =>
                       setRoomFormData({ ...roomFormData, capacity: Number(e.target.value) })
                     }
-                    className="w-full bg-slate-950 border-2 border-black px-3 py-2 text-white font-mono shadow-[2px_2px_0px_#000]"
+                    className="w-full bg-slate-900 border border-white/10 rounded-xl px-3 py-2 text-white font-mono"
                     required
                   />
                 </div>
 
                 <div>
-                  <label className="block text-slate-300 font-bold uppercase mb-1">Chamber Type</label>
+                  <label className="block text-slate-300 font-semibold uppercase mb-1">Room Type</label>
                   <select
                     value={roomFormData.type}
                     onChange={(e) => setRoomFormData({ ...roomFormData, type: e.target.value })}
-                    className="w-full bg-slate-950 border-2 border-black px-3 py-2 text-white shadow-[2px_2px_0px_#000]"
+                    className="w-full bg-slate-900 border border-white/10 rounded-xl px-3 py-2 text-white"
                   >
                     <option value="computer_lab">Computer Lab</option>
                     <option value="lecture_hall">Lecture Hall</option>
@@ -501,8 +514,8 @@ export const AdminDashboard = () => {
               </div>
 
               <div>
-                <label className="block text-slate-300 font-bold uppercase mb-1">
-                  Chamber Artifacts (Comma separated)
+                <label className="block text-slate-300 font-semibold uppercase mb-1">
+                  Amenities (Comma separated)
                 </label>
                 <textarea
                   rows="2"
@@ -510,25 +523,25 @@ export const AdminDashboard = () => {
                   onChange={(e) =>
                     setRoomFormData({ ...roomFormData, amenities: e.target.value })
                   }
-                  placeholder="Dual 4K Laser Projectors, Surround Audio, LAN"
-                  className="w-full bg-slate-950 border-2 border-black px-3 py-2 text-white shadow-[2px_2px_0px_#000]"
+                  placeholder="Dual 4K Projectors, Surround Audio, Wi-Fi 6"
+                  className="w-full bg-slate-900 border border-white/10 rounded-xl px-3 py-2 text-white"
                 ></textarea>
               </div>
 
-              <div className="pt-3 border-t-2 border-slate-800 flex items-center justify-end gap-2">
+              <div className="pt-3 border-t border-white/10 flex items-center justify-end gap-2">
                 <button
                   type="button"
                   onClick={() => setIsRoomModalOpen(false)}
-                  className="pixel-btn pixel-btn-dark text-xs"
+                  className="krono-btn krono-btn-ghost text-xs"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="pixel-btn pixel-btn-green text-xs"
+                  className="krono-btn krono-btn-primary text-xs"
                 >
-                  {isSubmitting ? 'Forging...' : editingRoom ? 'Save Chamber' : 'Forge Chamber'}
+                  {isSubmitting ? 'Saving...' : editingRoom ? 'Save Changes' : 'Create Room'}
                 </button>
               </div>
             </form>

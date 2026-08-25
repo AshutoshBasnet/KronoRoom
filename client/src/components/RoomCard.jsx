@@ -7,10 +7,7 @@ import {
   BookOpen,
   CalendarPlus,
   Sparkles,
-  Shield,
-  Swords,
-  Hourglass,
-  CheckCircle2
+  UserCheck
 } from 'lucide-react';
 import LiveOccupancyBadge from './LiveOccupancyBadge';
 import TimeElapsedBadge from './TimeElapsedBadge';
@@ -21,53 +18,65 @@ export const RoomCard = ({ roomData, onBookClick }) => {
   const getTypeIcon = (type) => {
     switch (type) {
       case 'computer_lab':
-        return '🖥️ Arcane Lab';
+        return <Monitor className="w-3.5 h-3.5 text-cyan-400" />;
       case 'lecture_hall':
-        return '🏛️ Grand Hall';
+        return <Presentation className="w-3.5 h-3.5 text-purple-400" />;
       default:
-        return '📜 Seminar Sanctum';
+        return <BookOpen className="w-3.5 h-3.5 text-emerald-400" />;
     }
   };
 
-  const getBuildingEmoji = (b) => {
-    if (b.includes('Tower')) return '🏰';
-    if (b.includes('Learning')) return '📚';
-    return '🧪';
+  const formatRoomType = (type) => {
+    switch (type) {
+      case 'computer_lab':
+        return 'Computer Lab';
+      case 'lecture_hall':
+        return 'Lecture Hall';
+      case 'seminar_room':
+        return 'Seminar Room';
+      default:
+        return type;
+    }
   };
 
   return (
-    <div
-      className={`pixel-box-hover p-4 flex flex-col justify-between relative ${
-        isOccupied ? 'border-rose-600/60' : 'border-emerald-600/60'
-      }`}
-    >
-      {/* Top RPG Header banner */}
+    <div className="krono-card-hover rounded-2xl p-5 flex flex-col justify-between relative overflow-hidden group">
+      {/* Top Accent Line */}
+      <div
+        className={`absolute top-0 left-0 right-0 h-1 ${
+          isOccupied
+            ? 'bg-gradient-to-r from-rose-500 to-amber-500'
+            : 'bg-gradient-to-r from-emerald-500 to-teal-400'
+        }`}
+      />
+
       <div>
+        {/* Header Section */}
         <div className="flex items-start justify-between gap-2 mb-3">
           <div>
             <div className="flex items-center gap-2">
-              <span className="font-arcade text-xs font-bold text-white bg-black px-2 py-1 border border-slate-700 shadow-[2px_2px_0px_#000]">
+              <h3 className="text-xl font-bold font-mono text-white tracking-tight group-hover:text-indigo-400 transition-colors">
                 {room.roomNumber}
-              </span>
-              <span className="font-pixel text-xs font-bold text-slate-300">
+              </h3>
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/5 border border-white/10 text-xs font-semibold text-slate-300">
                 {getTypeIcon(room.type)}
+                {formatRoomType(room.type)}
               </span>
             </div>
-            <p className="text-xs font-pixel text-slate-400 mt-1 flex items-center gap-1">
-              <span>{getBuildingEmoji(room.building)}</span>
-              <span>{room.building}</span>
+            <p className="text-xs text-slate-400 flex items-center gap-1 mt-1">
+              <MapPin className="w-3.5 h-3.5 text-indigo-400 shrink-0" />
+              {room.building}
             </p>
           </div>
 
-          {/* Party Capacity Badge */}
-          <div className="bg-black px-2 py-1 border border-slate-700 text-xs font-pixel text-yellow-400 flex items-center gap-1 shadow-[2px_2px_0px_#000]">
-            <Users className="w-3.5 h-3.5" />
-            <span>{room.capacity} Max Party</span>
+          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-slate-900/80 border border-white/10 text-xs font-semibold text-slate-300">
+            <Users className="w-3.5 h-3.5 text-indigo-400" />
+            <span>{room.capacity} seats</span>
           </div>
         </div>
 
         {/* Live Status Badge */}
-        <div className="mb-3">
+        <div className="mb-3.5">
           <LiveOccupancyBadge
             isOccupied={isOccupied}
             currentBooking={currentBooking}
@@ -75,31 +84,34 @@ export const RoomCard = ({ roomData, onBookClick }) => {
           />
         </div>
 
-        {/* Current Raid / Occupant Meta (if occupied) */}
+        {/* Current Occupant Details (if occupied) */}
         {isOccupied && currentBooking && (
-          <div className="mb-3 p-2.5 bg-rose-950/70 border-2 border-black shadow-[2px_2px_0px_#000] text-xs font-pixel space-y-1">
-            <div className="flex items-center justify-between text-rose-200">
-              <span className="font-bold truncate max-w-[180px]">
-                ⚔️ {currentBooking.purpose}
+          <div className="mb-3.5 p-3 rounded-xl bg-rose-500/10 border border-rose-500/20 space-y-1.5 text-xs">
+            <div className="flex items-center justify-between text-slate-200">
+              <span className="font-semibold text-rose-200 truncate max-w-[180px]">
+                {currentBooking.purpose}
               </span>
-              <span className="text-[10px] uppercase bg-black px-1.5 py-0.5 text-rose-400 border border-rose-900">
+              <span className="text-[10px] uppercase font-mono px-1.5 py-0.5 rounded bg-rose-500/20 text-rose-300">
                 {currentBooking.bookingType}
               </span>
             </div>
-            <div className="flex items-center justify-between text-[11px] text-slate-300">
-              <span>Held by: <strong>{currentBooking.user?.name}</strong></span>
-              <TimeElapsedBadge timestamp={currentBooking.createdAt} prefix="Cast" />
+            <div className="flex items-center justify-between text-slate-400 text-[11px]">
+              <span className="flex items-center gap-1">
+                <UserCheck className="w-3 h-3 text-indigo-400" />
+                {currentBooking.user?.name} ({currentBooking.user?.role})
+              </span>
+              <TimeElapsedBadge timestamp={currentBooking.createdAt} prefix="Booked" />
             </div>
           </div>
         )}
 
-        {/* Next Scheduled Raid (if unoccupied) */}
+        {/* Next Upcoming Booking (if free) */}
         {!isOccupied && nextBooking && (
-          <div className="mb-3 p-2 bg-slate-950 border border-slate-800 text-xs font-pixel text-slate-400 flex items-center justify-between">
+          <div className="mb-3.5 p-2.5 rounded-xl bg-slate-900/60 border border-white/5 text-xs text-slate-400 flex items-center justify-between">
             <span className="truncate max-w-[170px]">
-              Next Quest: <strong className="text-slate-200">{nextBooking.purpose}</strong>
+              Next: <strong className="text-slate-200">{nextBooking.purpose}</strong>
             </span>
-            <span className="text-yellow-400 font-mono text-[11px]">
+            <span className="font-mono text-indigo-300">
               {new Date(nextBooking.startTime).toLocaleTimeString([], {
                 hour: '2-digit',
                 minute: '2-digit'
@@ -108,19 +120,19 @@ export const RoomCard = ({ roomData, onBookClick }) => {
           </div>
         )}
 
-        {/* Chamber Artifacts / Amenities */}
-        <div className="flex flex-wrap gap-1 mb-4">
+        {/* Amenities Pills */}
+        <div className="flex flex-wrap gap-1.5 mb-5">
           {room.amenities &&
             room.amenities.slice(0, 3).map((amenity, idx) => (
               <span
                 key={idx}
-                className="text-[10px] font-pixel px-1.5 py-0.5 bg-slate-950 text-slate-300 border border-slate-800"
+                className="px-2 py-0.5 rounded-md bg-slate-900/80 border border-white/5 text-[11px] text-slate-300 font-medium"
               >
-                ✦ {amenity}
+                {amenity}
               </span>
             ))}
           {room.amenities && room.amenities.length > 3 && (
-            <span className="text-[10px] font-pixel px-1.5 py-0.5 bg-slate-950 text-slate-500">
+            <span className="px-1.5 py-0.5 rounded-md bg-slate-900/80 text-[11px] text-slate-500 font-medium">
               +{room.amenities.length - 3} more
             </span>
           )}
@@ -128,15 +140,17 @@ export const RoomCard = ({ roomData, onBookClick }) => {
       </div>
 
       {/* Action Button */}
-      <div className="pt-2 border-t-2 border-slate-800">
+      <div className="pt-3 border-t border-white/10">
         <button
           onClick={() => onBookClick(room)}
-          className={`pixel-btn w-full ${
-            isOccupied ? 'pixel-btn-dark text-slate-300' : 'pixel-btn-green'
+          className={`w-full py-2.5 px-4 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 ${
+            isOccupied
+              ? 'krono-btn-ghost'
+              : 'krono-btn-primary'
           }`}
         >
           <CalendarPlus className="w-4 h-4" />
-          <span>{isOccupied ? 'Reserve Future Slot' : 'Claim Chamber Now'}</span>
+          <span>{isOccupied ? 'Book Future Slot' : 'Book Room Now'}</span>
         </button>
       </div>
     </div>

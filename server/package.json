@@ -1,7 +1,7 @@
 {
-  "name": "smart-classroom-server",
+  "name": "kronoroom-server",
   "version": "1.0.0",
-  "description": "Smart Classroom & Lab Booking System Backend (London Met)",
+  "description": "KronoRoom — Smart Classroom & Lab Booking System Backend (London Met)",
   "main": "server.js",
   "type": "module",
   "scripts": {

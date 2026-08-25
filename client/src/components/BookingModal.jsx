@@ -8,9 +8,7 @@ import {
   AlertTriangle,
   CheckCircle2,
   Sparkles,
-  Swords,
-  Shield,
-  Scroll
+  Info
 } from 'lucide-react';
 import { format, addDays } from 'date-fns';
 import api from '../utils/api';
@@ -62,7 +60,7 @@ export const BookingModal = ({ isOpen, onClose, room, onBookingSuccess }) => {
     setSuccessMsg(null);
 
     if (!purpose.trim()) {
-      setErrorMsg('Please specify the purpose / quest title for this reservation.');
+      setErrorMsg('Please specify the booking purpose.');
       return;
     }
 
@@ -70,7 +68,7 @@ export const BookingModal = ({ isOpen, onClose, room, onBookingSuccess }) => {
     const endDateTime = new Date(`${date}T${endTime}:00`);
 
     if (startDateTime >= endDateTime) {
-      setErrorMsg('End time must be after start time on the same date.');
+      setErrorMsg('End time must be strictly after start time.');
       return;
     }
 
@@ -88,7 +86,7 @@ export const BookingModal = ({ isOpen, onClose, room, onBookingSuccess }) => {
       const { data } = await api.post('/bookings', payload);
 
       if (data.success) {
-        setSuccessMsg('⚔️ Chamber Reserved! Added to your Quest Log.');
+        setSuccessMsg('Room booked successfully!');
         if (onBookingSuccess) {
           onBookingSuccess(data.booking);
         }
@@ -111,56 +109,56 @@ export const BookingModal = ({ isOpen, onClose, room, onBookingSuccess }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm overflow-y-auto">
-      <div className="pixel-dialog max-w-lg w-full p-6 text-slate-100 shadow-2xl relative my-6">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md overflow-y-auto">
+      <div className="krono-modal max-w-lg w-full rounded-2xl p-6 text-slate-100 relative my-6">
         {/* Header */}
-        <div className="flex items-center justify-between pb-3 border-b-2 border-slate-800">
-          <div className="flex items-center gap-2">
-            <span className="font-arcade text-xs bg-emerald-500 text-black px-2 py-1 border border-black shadow-[2px_2px_0px_#000]">
+        <div className="flex items-center justify-between pb-4 border-b border-white/10">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-indigo-600/20 border border-indigo-500/30 flex items-center justify-center text-indigo-400 font-bold font-mono text-sm">
               {room.roomNumber}
-            </span>
+            </div>
             <div>
-              <h3 className="font-pixel text-lg font-bold text-white">
-                CLAIM CHAMBER {room.roomNumber}
+              <h3 className="font-heading text-lg font-bold text-white">
+                Reserve Room {room.roomNumber}
               </h3>
-              <p className="font-pixel text-xs text-slate-400">
-                {room.building} • Max Party: {room.capacity}
+              <p className="text-xs text-slate-400">
+                {room.building} • Capacity: {room.capacity} seats
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="pixel-btn pixel-btn-dark p-1 text-xs"
+            className="p-2 text-slate-400 hover:text-white rounded-lg hover:bg-white/10 transition-colors"
           >
-            <X className="w-4 h-4" />
+            <X className="w-5 h-5" />
           </button>
         </div>
 
-        {/* Hero Policy Hint */}
-        <div className="mt-3 p-2 bg-slate-950 border border-slate-800 text-xs font-pixel text-yellow-300 flex items-center gap-1.5">
-          <Scroll className="w-4 h-4 text-yellow-400 shrink-0" />
+        {/* Role Policy Hint */}
+        <div className="mt-4 p-3 rounded-xl bg-indigo-950/40 border border-indigo-500/20 text-xs text-indigo-300 flex items-center gap-2">
+          <Info className="w-4 h-4 text-indigo-400 shrink-0" />
           <span>
-            {user?.role === 'student' && '🛡️ Student Quest: Max 2h session • Up to 3 days in advance'}
-            {user?.role === 'teacher' && '🔮 Faculty Archmage: Max 6h session • Up to 30 days in advance'}
-            {user?.role === 'admin' && '👑 Dungeon Master: Unrestricted Chamber Allocation'}
+            {user?.role === 'student' && 'Student Policy: Max 2h session • Book up to 3 days in advance'}
+            {user?.role === 'teacher' && 'Faculty Policy: Max 6h session • Book up to 30 days in advance'}
+            {user?.role === 'admin' && 'Administrator: Unrestricted Duration & Booking Window'}
           </span>
         </div>
 
         {/* Form Body */}
-        <form onSubmit={handleSubmit} className="mt-4 space-y-4">
+        <form onSubmit={handleSubmit} className="mt-4 space-y-4 text-xs">
           {/* Alerts */}
           {errorMsg && (
-            <div className="p-3 bg-rose-950 border-2 border-rose-600 text-rose-200 text-xs font-pixel space-y-1">
-              <div className="flex items-center gap-1.5 font-bold text-rose-300">
-                <AlertTriangle className="w-4 h-4" />
-                <span>CHAMBER CONFLICT / ERROR</span>
+            <div className="p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-300 space-y-1">
+              <div className="flex items-center gap-2 font-bold text-rose-200">
+                <AlertTriangle className="w-4 h-4 text-rose-400" />
+                <span>Slot Conflict / Error</span>
               </div>
               <p>{errorMsg}</p>
             </div>
           )}
 
           {successMsg && (
-            <div className="p-3 bg-emerald-950 border-2 border-emerald-500 text-emerald-200 text-xs font-pixel flex items-center gap-2">
+            <div className="p-3.5 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 flex items-center gap-2 font-semibold">
               <CheckCircle2 className="w-4 h-4 text-emerald-400" />
               <span>{successMsg}</span>
             </div>
@@ -168,8 +166,8 @@ export const BookingModal = ({ isOpen, onClose, room, onBookingSuccess }) => {
 
           {/* Date Picker */}
           <div>
-            <label className="block font-pixel text-xs font-bold text-slate-300 uppercase mb-1">
-              📅 Quest Date
+            <label className="block text-slate-300 font-semibold uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
+              <Calendar className="w-3.5 h-3.5 text-indigo-400" /> Date of Reservation
             </label>
             <input
               type="date"
@@ -177,7 +175,7 @@ export const BookingModal = ({ isOpen, onClose, room, onBookingSuccess }) => {
               min={minDateStr}
               max={maxDateStr}
               onChange={(e) => setDate(e.target.value)}
-              className="w-full bg-slate-950 border-2 border-black px-3 py-2 text-sm font-mono text-white focus:outline-none focus:border-emerald-500 shadow-[2px_2px_0px_#000]"
+              className="w-full bg-slate-900 border border-white/10 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-indigo-500 font-mono transition-colors"
               required
             />
           </div>
@@ -185,26 +183,26 @@ export const BookingModal = ({ isOpen, onClose, room, onBookingSuccess }) => {
           {/* Time Picker */}
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block font-pixel text-xs font-bold text-slate-300 uppercase mb-1">
-                ⏰ Start Time
+              <label className="block text-slate-300 font-semibold uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
+                <Clock className="w-3.5 h-3.5 text-indigo-400" /> Start Time
               </label>
               <input
                 type="time"
                 value={startTime}
                 onChange={(e) => setStartTime(e.target.value)}
-                className="w-full bg-slate-950 border-2 border-black px-3 py-2 text-sm font-mono text-white focus:outline-none focus:border-emerald-500 shadow-[2px_2px_0px_#000]"
+                className="w-full bg-slate-900 border border-white/10 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-indigo-500 font-mono transition-colors"
                 required
               />
             </div>
             <div>
-              <label className="block font-pixel text-xs font-bold text-slate-300 uppercase mb-1">
-                ⏰ End Time
+              <label className="block text-slate-300 font-semibold uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
+                <Clock className="w-3.5 h-3.5 text-indigo-400" /> End Time
               </label>
               <input
                 type="time"
                 value={endTime}
                 onChange={(e) => setEndTime(e.target.value)}
-                className="w-full bg-slate-950 border-2 border-black px-3 py-2 text-sm font-mono text-white focus:outline-none focus:border-emerald-500 shadow-[2px_2px_0px_#000]"
+                className="w-full bg-slate-900 border border-white/10 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-indigo-500 font-mono transition-colors"
                 required
               />
             </div>
@@ -212,51 +210,51 @@ export const BookingModal = ({ isOpen, onClose, room, onBookingSuccess }) => {
 
           {/* Booking Type */}
           <div>
-            <label className="block font-pixel text-xs font-bold text-slate-300 uppercase mb-1">
-              📜 Activity Type
+            <label className="block text-slate-300 font-semibold uppercase tracking-wider mb-1.5">
+              Booking Type
             </label>
             <select
               value={bookingType}
               onChange={(e) => setBookingType(e.target.value)}
-              className="w-full bg-slate-950 border-2 border-black px-3 py-2 text-sm font-pixel text-white focus:outline-none focus:border-emerald-500 shadow-[2px_2px_0px_#000]"
+              className="w-full bg-slate-900 border border-white/10 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-indigo-500 transition-colors"
             >
-              <option value="Study Session">Study Session / Group Revision</option>
-              <option value="Ad-hoc Booking">Ad-hoc Project Work</option>
-              <option value="Regular Class">Regular Class / Lab Session</option>
-              {user?.role === 'admin' && <option value="Maintenance">Maintenance Lockdown</option>}
+              <option value="Study Session">Study Session</option>
+              <option value="Ad-hoc Booking">Ad-hoc Booking</option>
+              <option value="Regular Class">Regular Class</option>
+              {user?.role === 'admin' && <option value="Maintenance">Maintenance</option>}
             </select>
           </div>
 
           {/* Purpose */}
           <div>
-            <label className="block font-pixel text-xs font-bold text-slate-300 uppercase mb-1">
-              ⚔️ Quest Purpose / Module Title
+            <label className="block text-slate-300 font-semibold uppercase tracking-wider mb-1.5">
+              Purpose & Module Code
             </label>
             <input
               type="text"
               value={purpose}
               onChange={(e) => setPurpose(e.target.value)}
-              placeholder="e.g. CS6004 Cloud Computing Lab Session"
-              className="w-full bg-slate-950 border-2 border-black px-3 py-2 text-sm font-pixel text-white placeholder:text-slate-600 focus:outline-none focus:border-emerald-500 shadow-[2px_2px_0px_#000]"
+              placeholder="e.g. CS6004 Cloud Systems Workshop"
+              className="w-full bg-slate-900 border border-white/10 rounded-xl px-3.5 py-2.5 text-sm text-white placeholder:text-slate-600 focus:outline-none focus:border-indigo-500 transition-colors"
               required
             />
           </div>
 
           {/* Action Buttons */}
-          <div className="pt-3 border-t-2 border-slate-800 flex items-center justify-end gap-3">
+          <div className="pt-3 border-t border-white/10 flex items-center justify-end gap-3">
             <button
               type="button"
               onClick={onClose}
-              className="pixel-btn pixel-btn-dark text-xs"
+              className="krono-btn krono-btn-ghost text-xs"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={isSubmitting}
-              className="pixel-btn pixel-btn-green text-xs"
+              className="krono-btn krono-btn-primary text-xs"
             >
-              {isSubmitting ? 'Validating Spell...' : '⚔️ Confirm Reservation'}
+              {isSubmitting ? 'Checking Availability...' : 'Confirm Booking'}
             </button>
           </div>
         </form>

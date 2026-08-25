@@ -1,7 +1,7 @@
 {
-  "name": "smart-classroom-booking-system",
+  "name": "kronoroom",
   "version": "1.0.0",
-  "description": "Smart Classroom & Lab Booking System (London Met)",
+  "description": "KronoRoom — Smart Classroom & Lab Booking System (London Met)",
   "scripts": {
     "server": "npm run dev --prefix server",
     "client": "npm run dev --prefix client",

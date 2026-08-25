@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Clock, Hourglass } from 'lucide-react';
+import { Clock } from 'lucide-react';
 import { formatDistanceToNow, isValid } from 'date-fns';
 
 export const TimeElapsedBadge = ({ timestamp, prefix = 'Created', className = '' }) => {
@@ -23,10 +23,10 @@ export const TimeElapsedBadge = ({ timestamp, prefix = 'Created', className = ''
 
   return (
     <span
-      className={`inline-flex items-center gap-1 font-pixel text-xs text-yellow-300 bg-black/60 px-2 py-0.5 border border-slate-700 ${className}`}
+      className={`inline-flex items-center gap-1.5 text-xs text-slate-400 font-medium ${className}`}
       title={new Date(timestamp).toLocaleString()}
     >
-      <Hourglass className="w-3 h-3 text-yellow-400 shrink-0" />
+      <Clock className="w-3.5 h-3.5 text-indigo-400 shrink-0" />
       <span>{elapsedText}</span>
     </span>
   );

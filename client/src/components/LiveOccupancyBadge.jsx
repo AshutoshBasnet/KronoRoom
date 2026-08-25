@@ -1,5 +1,5 @@
 import React from 'react';
-import { ShieldAlert, ShieldCheck, Clock } from 'lucide-react';
+import { format } from 'date-fns';
 
 export const LiveOccupancyBadge = ({ isOccupied, currentBooking, nextBooking }) => {
   if (isOccupied && currentBooking) {
@@ -9,11 +9,12 @@ export const LiveOccupancyBadge = ({ isOccupied, currentBooking, nextBooking }) 
     });
 
     return (
-      <div className="space-y-1">
-        <div className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-rose-950 border-2 border-black shadow-[2px_2px_0px_#f43f5e] text-rose-300 text-xs font-pixel font-bold">
-          <span className="w-2 h-2 bg-rose-500 pixel-blink" />
-          <span>OCCUPIED UNTIL {formattedEndTime}</span>
-        </div>
+      <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-rose-500/15 border border-rose-500/30 text-rose-300 text-xs font-semibold">
+        <span className="relative flex h-2 w-2">
+          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
+          <span className="relative inline-flex rounded-full h-2 w-2 bg-rose-500"></span>
+        </span>
+        <span>Occupied until {formattedEndTime}</span>
       </div>
     );
   }
@@ -25,17 +26,22 @@ export const LiveOccupancyBadge = ({ isOccupied, currentBooking, nextBooking }) 
     });
 
     return (
-      <div className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-emerald-950 border-2 border-black shadow-[2px_2px_0px_#22c55e] text-emerald-300 text-xs font-pixel font-bold">
-        <span className="w-2 h-2 bg-emerald-400 pixel-blink" />
-        <span>AVAILABLE (FREE UNTIL {formattedNextStart})</span>
+      <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-xs font-semibold">
+        <span className="relative flex h-2 w-2">
+          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+          <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+        </span>
+        <span>Available (Free until {formattedNextStart})</span>
       </div>
     );
   }
 
   return (
-    <div className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-emerald-950 border-2 border-black shadow-[2px_2px_0px_#22c55e] text-emerald-300 text-xs font-pixel font-bold">
-      <span className="w-2 h-2 bg-emerald-400" />
-      <span>AVAILABLE NOW</span>
+    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-xs font-semibold">
+      <span className="relative flex h-2 w-2">
+        <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+      </span>
+      <span>Available Now</span>
     </div>
   );
 };

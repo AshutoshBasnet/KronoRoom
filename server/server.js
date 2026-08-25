@@ -51,7 +51,7 @@ app.use(express.urlencoded({ extended: true }));
 app.get('/api/health', (req, res) => {
   res.status(200).json({
     status: 'online',
-    system: 'London Met Smart Classroom & Lab Booking System',
+    system: 'KronoRoom — Smart Classroom & Lab Booking System (London Met)',
     timestamp: new Date().toISOString()
   });
 });
@@ -72,8 +72,8 @@ const PORT = process.env.PORT || 5000;
 
 server.listen(PORT, () => {
   console.log(`====================================================`);
-  console.log(`🚀 Smart Classroom Server running on port ${PORT}`);
+  console.log(`🚀 KronoRoom Server running on port ${PORT}`);
   console.log(`📡 Socket.io live updates server attached`);
-  console.log(`🏛️ London Met Booking System API: http://localhost:${PORT}/api/health`);
+  console.log(`🏛️ KronoRoom API: http://localhost:${PORT}/api/health`);
   console.log(`====================================================`);
 });

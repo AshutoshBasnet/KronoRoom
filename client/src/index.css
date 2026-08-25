@@ -2,196 +2,152 @@
 
 @layer base {
   body {
-    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-    background-color: #0b0f19;
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background-color: #050811;
     color: #f1f5f9;
     background-image: 
-      radial-gradient(circle at 50% 50%, rgba(34, 197, 94, 0.05) 0%, transparent 80%),
-      linear-gradient(rgba(15, 23, 42, 0.94), rgba(11, 15, 25, 0.98)),
-      repeating-linear-gradient(0deg, transparent, transparent 32px, rgba(255, 255, 255, 0.02) 32px, rgba(255, 255, 255, 0.02) 33px),
-      repeating-linear-gradient(90deg, transparent, transparent 32px, rgba(255, 255, 255, 0.02) 32px, rgba(255, 255, 255, 0.02) 33px);
-    background-size: 100% 100%, 100% 100%, 33px 33px, 33px 33px;
+      radial-gradient(circle at 50% 0%, rgba(99, 102, 241, 0.08) 0%, transparent 60%),
+      radial-gradient(circle at 100% 50%, rgba(16, 185, 129, 0.05) 0%, transparent 50%),
+      radial-gradient(circle at 0% 100%, rgba(168, 85, 247, 0.06) 0%, transparent 50%);
+    background-attachment: fixed;
     overflow-x: hidden;
   }
 
-  h1, h2, h3, h4, .font-pixel {
-    font-family: 'Pixelify Sans', cursive, sans-serif;
+  h1, h2, h3, h4, .font-heading {
+    font-family: 'Outfit', sans-serif;
   }
 
-  .font-arcade {
-    font-family: 'Press Start 2P', monospace;
+  .font-brand {
+    font-family: 'Space Grotesk', sans-serif;
   }
 
-  .font-silk {
-    font-family: 'Silkscreen', monospace;
+  code, pre, .font-mono {
+    font-family: 'JetBrains Mono', monospace;
   }
 }
 
-/* Retro RPG Pixel Containers */
-.pixel-box {
-  background: #111827;
-  border: 3px solid #000;
-  box-shadow: 4px 4px 0px 0px #000, inset 0 0 0 1px rgba(255, 255, 255, 0.1);
-  image-rendering: pixelated;
+/* KronoRoom Modern Card System */
+.krono-card {
+  background: rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.5);
 }
 
-.pixel-box-hover {
-  background: #111827;
-  border: 3px solid #000;
-  box-shadow: 4px 4px 0px 0px #000, inset 0 0 0 1px rgba(255, 255, 255, 0.1);
-  transition: transform 0.12s ease, box-shadow 0.12s ease, border-color 0.12s ease;
-  image-rendering: pixelated;
+.krono-card-hover {
+  background: rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.5);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.pixel-box-hover:hover {
-  transform: translate(-2px, -2px);
-  box-shadow: 6px 6px 0px 0px #000, inset 0 0 0 1px rgba(34, 197, 94, 0.4);
+.krono-card-hover:hover {
+  background: rgba(22, 33, 62, 0.85);
+  border-color: rgba(99, 102, 241, 0.4);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px -10px rgba(99, 102, 241, 0.25);
 }
 
-.pixel-box-green {
-  background: #064e3b;
-  border: 3px solid #000;
-  box-shadow: 4px 4px 0px 0px #10b981;
+.krono-modal {
+  background: rgba(11, 17, 32, 0.95);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
 }
 
-.pixel-box-red {
-  background: #4c0519;
-  border: 3px solid #000;
-  box-shadow: 4px 4px 0px 0px #f43f5e;
-}
-
-.pixel-box-blue {
-  background: #172554;
-  border: 3px solid #000;
-  box-shadow: 4px 4px 0px 0px #3b82f6;
-}
-
-.pixel-dialog {
-  background: #0f172a;
-  border: 4px solid #000;
-  box-shadow: 6px 6px 0px 0px #000, inset 0 0 0 2px #475569;
-}
-
-/* Retro RPG Clickable Pixel Buttons */
-.pixel-btn {
+/* Modern Tactile Buttons */
+.krono-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  font-family: 'Pixelify Sans', cursive;
-  font-size: 0.875rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 600;
+  border-radius: 0.75rem;
   padding: 0.5rem 1rem;
-  border: 2px solid #000;
-  box-shadow: 3px 3px 0px 0px #000;
-  transition: transform 0.08s ease, box-shadow 0.08s ease;
-  cursor: pointer;
+  transition: all 0.15s ease;
   user-select: none;
+  cursor: pointer;
 }
 
-.pixel-btn:hover {
-  transform: translate(-1px, -1px);
-  box-shadow: 4px 4px 0px 0px #000;
+.krono-btn:active {
+  transform: scale(0.98);
 }
 
-.pixel-btn:active {
-  transform: translate(2px, 2px);
-  box-shadow: 1px 1px 0px 0px #000;
-}
-
-.pixel-btn-green {
-  background: #22c55e;
-  color: #052e16;
-}
-.pixel-btn-green:hover {
-  background: #4ade80;
-}
-
-.pixel-btn-indigo {
-  background: #6366f1;
+.krono-btn-primary {
+  background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%);
   color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 4px 14px 0 rgba(79, 70, 229, 0.35);
 }
-.pixel-btn-indigo:hover {
-  background: #818cf8;
+.krono-btn-primary:hover {
+  background: linear-gradient(135deg, #4338ca 0%, #4f46e5 100%);
+  box-shadow: 0 6px 20px 0 rgba(79, 70, 229, 0.45);
 }
 
-.pixel-btn-purple {
-  background: #a855f7;
+.krono-btn-success {
+  background: linear-gradient(135deg, #059669 0%, #10b981 100%);
   color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 4px 14px 0 rgba(16, 185, 129, 0.35);
 }
-.pixel-btn-purple:hover {
-  background: #c084fc;
+.krono-btn-success:hover {
+  background: linear-gradient(135deg, #047857 0%, #059669 100%);
+  box-shadow: 0 6px 20px 0 rgba(16, 185, 129, 0.45);
 }
 
-.pixel-btn-rose {
-  background: #f43f5e;
+.krono-btn-purple {
+  background: linear-gradient(135deg, #7e22ce 0%, #9333ea 100%);
   color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 4px 14px 0 rgba(147, 51, 234, 0.35);
 }
-.pixel-btn-rose:hover {
-  background: #fb7185;
-}
-
-.pixel-btn-amber {
-  background: #f59e0b;
-  color: #451a03;
-}
-.pixel-btn-amber:hover {
-  background: #fbbf24;
+.krono-btn-purple:hover {
+  background: linear-gradient(135deg, #6b21a8 0%, #7e22ce 100%);
+  box-shadow: 0 6px 20px 0 rgba(147, 51, 234, 0.45);
 }
 
-.pixel-btn-dark {
-  background: #1e293b;
-  color: #e2e8f0;
+.krono-btn-danger {
+  background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 4px 14px 0 rgba(239, 68, 68, 0.35);
 }
-.pixel-btn-dark:hover {
-  background: #334155;
-}
-
-/* Retro HP/XP Status bar */
-.pixel-bar-bg {
-  background: #000;
-  border: 2px solid #000;
-  height: 12px;
-  overflow: hidden;
+.krono-btn-danger:hover {
+  background: linear-gradient(135deg, #b91c1c 0%, #dc2626 100%);
+  box-shadow: 0 6px 20px 0 rgba(239, 68, 68, 0.45);
 }
 
-.pixel-bar-fill-green {
-  background: linear-gradient(90deg, #15803d, #22c55e);
-  height: 100%;
+.krono-btn-ghost {
+  background: rgba(255, 255, 255, 0.05);
+  color: #cbd5e1;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+.krono-btn-ghost:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.2);
 }
 
-.pixel-bar-fill-red {
-  background: linear-gradient(90deg, #be123c, #f43f5e);
-  height: 100%;
-}
-
-/* Custom 8-bit Scrollbars */
+/* Custom Sleek Scrollbars */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #000;
+  background: #090d16;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #334155;
-  border: 1px solid #000;
+  background: #1e293b;
+  border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #64748b;
-}
-
-/* 8-bit pulsing indicator */
-@keyframes pixel-blink {
-  0%, 49% { opacity: 1; }
-  50%, 100% { opacity: 0; }
-}
-
-.pixel-blink {
-  animation: pixel-blink 1s steps(1) infinite;
+  background: #334155;
 }

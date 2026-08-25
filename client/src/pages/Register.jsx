@@ -9,8 +9,7 @@ import {
   Building2,
   Briefcase,
   AlertCircle,
-  Sparkles,
-  Swords
+  ArrowRight
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
@@ -59,36 +58,41 @@ export const Register = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 flex items-center justify-center p-4 selection:bg-emerald-500 selection:text-black my-6">
-      <div className="pixel-dialog max-w-lg w-full p-6 sm:p-8 space-y-6">
+    <div className="min-h-screen bg-slate-950 flex items-center justify-center p-4 selection:bg-indigo-500 selection:text-white my-8">
+      {/* Background Glow */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none -z-10">
+        <div className="absolute top-1/3 left-1/3 w-96 h-96 bg-indigo-600/10 rounded-full blur-3xl"></div>
+      </div>
+
+      <div className="krono-card max-w-lg w-full p-8 rounded-3xl border border-white/10 shadow-2xl space-y-6">
         {/* Header */}
         <div className="text-center space-y-2">
-          <div className="w-12 h-12 bg-emerald-600 border-2 border-black shadow-[3px_3px_0px_#000] flex items-center justify-center mx-auto text-black">
-            <Swords className="w-7 h-7" />
+          <div className="w-14 h-14 rounded-2xl bg-indigo-500/10 border border-indigo-500/30 flex items-center justify-center mx-auto text-indigo-400">
+            <UserPlus className="w-7 h-7" />
           </div>
-          <h2 className="text-2xl font-pixel font-bold text-white tracking-wide">
-            CHARACTER CREATION
+          <h2 className="text-2xl font-bold text-white font-heading">
+            Create KronoRoom Account
           </h2>
-          <p className="text-xs font-pixel text-slate-400">
-            Register your hero profile for London Met Academic Quest
+          <p className="text-xs text-slate-400">
+            Register your profile for London Met smart room booking
           </p>
         </div>
 
         {/* Error Notification */}
         {error && (
-          <div className="p-3 bg-rose-950 border-2 border-rose-600 text-rose-200 text-xs font-pixel flex items-start gap-2">
+          <div className="p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs flex items-start gap-2.5">
             <AlertCircle className="w-4 h-4 text-rose-400 shrink-0 mt-0.5" />
             <span>{error}</span>
           </div>
         )}
 
-        {/* Character Form */}
-        <form onSubmit={handleSubmit} className="space-y-4">
+        {/* Form */}
+        <form onSubmit={handleSubmit} className="space-y-4 text-xs">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            {/* Hero Name */}
+            {/* Full Name */}
             <div>
-              <label className="block text-xs font-pixel font-bold text-slate-300 uppercase mb-1">
-                🛡️ Character Name
+              <label className="block font-semibold text-slate-300 uppercase tracking-wider mb-1.5 flex items-center gap-1">
+                <User className="w-3.5 h-3.5 text-indigo-400" /> Full Name
               </label>
               <input
                 type="text"
@@ -96,34 +100,34 @@ export const Register = () => {
                 value={formData.name}
                 onChange={handleChange}
                 placeholder="e.g. Alex Henderson"
-                className="w-full bg-slate-950 border-2 border-black px-3 py-2 text-sm font-pixel text-white placeholder:text-slate-600 focus:outline-none focus:border-emerald-500 shadow-[2px_2px_0px_#000]"
+                className="w-full bg-slate-900 border border-white/10 rounded-xl px-3.5 py-2.5 text-sm text-white placeholder:text-slate-600 focus:outline-none focus:border-indigo-500 transition-colors"
                 required
               />
             </div>
 
-            {/* Hero Class */}
+            {/* Role */}
             <div>
-              <label className="block text-xs font-pixel font-bold text-slate-300 uppercase mb-1">
-                ⚔️ Character Class
+              <label className="block font-semibold text-slate-300 uppercase tracking-wider mb-1.5 flex items-center gap-1">
+                <Briefcase className="w-3.5 h-3.5 text-indigo-400" /> Role Type
               </label>
               <select
                 name="role"
                 value={formData.role}
                 onChange={handleChange}
-                className="w-full bg-slate-950 border-2 border-black px-3 py-2 text-sm font-pixel text-white focus:outline-none focus:border-emerald-500 shadow-[2px_2px_0px_#000]"
+                className="w-full bg-slate-900 border border-white/10 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-indigo-500 transition-colors"
               >
                 <option value="student">Student (2h limit / 3-day max)</option>
                 <option value="teacher">Faculty (6h limit / 30-day max)</option>
-                <option value="admin">Dungeon Master (Admin)</option>
+                <option value="admin">Administrator (Estates)</option>
               </select>
             </div>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            {/* University Email */}
+            {/* Email */}
             <div>
-              <label className="block text-xs font-pixel font-bold text-slate-300 uppercase mb-1">
-                📜 University Email
+              <label className="block font-semibold text-slate-300 uppercase tracking-wider mb-1.5 flex items-center gap-1">
+                <Mail className="w-3.5 h-3.5 text-indigo-400" /> University Email
               </label>
               <input
                 type="email"
@@ -131,15 +135,15 @@ export const Register = () => {
                 value={formData.email}
                 onChange={handleChange}
                 placeholder="a.henderson@londonmet.ac.uk"
-                className="w-full bg-slate-950 border-2 border-black px-3 py-2 text-sm font-pixel text-white placeholder:text-slate-600 focus:outline-none focus:border-emerald-500 shadow-[2px_2px_0px_#000]"
+                className="w-full bg-slate-900 border border-white/10 rounded-xl px-3.5 py-2.5 text-sm text-white placeholder:text-slate-600 focus:outline-none focus:border-indigo-500 transition-colors"
                 required
               />
             </div>
 
-            {/* London Met ID */}
+            {/* ID Card */}
             <div>
-              <label className="block text-xs font-pixel font-bold text-slate-300 uppercase mb-1">
-                💳 London Met ID
+              <label className="block font-semibold text-slate-300 uppercase tracking-wider mb-1.5 flex items-center gap-1">
+                <CreditCard className="w-3.5 h-3.5 text-indigo-400" /> London Met ID
               </label>
               <input
                 type="text"
@@ -147,7 +151,7 @@ export const Register = () => {
                 value={formData.idCardNumber}
                 onChange={handleChange}
                 placeholder="LM-2024-998"
-                className="w-full bg-slate-950 border-2 border-black px-3 py-2 text-sm font-mono text-white placeholder:text-slate-600 focus:outline-none focus:border-emerald-500 shadow-[2px_2px_0px_#000]"
+                className="w-full bg-slate-900 border border-white/10 rounded-xl px-3.5 py-2.5 text-sm font-mono text-white placeholder:text-slate-600 focus:outline-none focus:border-indigo-500 transition-colors"
                 required
               />
             </div>
@@ -155,14 +159,14 @@ export const Register = () => {
 
           {/* Department */}
           <div>
-            <label className="block text-xs font-pixel font-bold text-slate-300 uppercase mb-1">
-              🏰 Academic Guild / Department
+            <label className="block font-semibold text-slate-300 uppercase tracking-wider mb-1.5 flex items-center gap-1">
+              <Building2 className="w-3.5 h-3.5 text-indigo-400" /> Department / School
             </label>
             <select
               name="department"
               value={formData.department}
               onChange={handleChange}
-              className="w-full bg-slate-950 border-2 border-black px-3 py-2 text-sm font-pixel text-white focus:outline-none focus:border-emerald-500 shadow-[2px_2px_0px_#000]"
+              className="w-full bg-slate-900 border border-white/10 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-indigo-500 transition-colors"
             >
               {departments.map((dept, i) => (
                 <option key={i} value={dept}>
@@ -172,10 +176,10 @@ export const Register = () => {
             </select>
           </div>
 
-          {/* Passcode */}
+          {/* Password */}
           <div>
-            <label className="block text-xs font-pixel font-bold text-slate-300 uppercase mb-1">
-              🔒 Secret Passcode (Min 6 Chars)
+            <label className="block font-semibold text-slate-300 uppercase tracking-wider mb-1.5 flex items-center gap-1">
+              <Lock className="w-3.5 h-3.5 text-indigo-400" /> Password (Min 6 chars)
             </label>
             <input
               type="password"
@@ -183,7 +187,7 @@ export const Register = () => {
               value={formData.password}
               onChange={handleChange}
               placeholder="••••••••••••"
-              className="w-full bg-slate-950 border-2 border-black px-3 py-2 text-sm font-mono text-white placeholder:text-slate-600 focus:outline-none focus:border-emerald-500 shadow-[2px_2px_0px_#000]"
+              className="w-full bg-slate-900 border border-white/10 rounded-xl px-3.5 py-2.5 text-sm text-white placeholder:text-slate-600 focus:outline-none focus:border-indigo-500 transition-colors font-mono"
               required
               minLength={6}
             />
@@ -192,17 +196,24 @@ export const Register = () => {
           <button
             type="submit"
             disabled={isLoading}
-            className="pixel-btn pixel-btn-green w-full py-3 text-sm shadow-[3px_3px_0px_#000]"
+            className="krono-btn krono-btn-primary w-full py-3 text-xs font-bold"
           >
-            {isLoading ? 'Forging Character...' : '⚔️ Spawn Character'}
+            {isLoading ? (
+              <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
+            ) : (
+              <>
+                <span>Complete Registration</span>
+                <ArrowRight className="w-4 h-4" />
+              </>
+            )}
           </button>
         </form>
 
         {/* Footer Navigation */}
-        <div className="pt-3 border-t-2 border-slate-800 text-center text-xs font-pixel text-slate-400">
-          Already spawned?{' '}
-          <Link to="/login/student" className="text-emerald-400 font-bold hover:underline">
-            Enter Dungeon Here
+        <div className="pt-4 border-t border-white/10 text-center text-xs text-slate-400">
+          Already have an account?{' '}
+          <Link to="/login/student" className="text-indigo-400 hover:text-indigo-300 font-semibold">
+            Log in here
           </Link>
         </div>
       </div>
