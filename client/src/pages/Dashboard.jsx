@@ -159,7 +159,7 @@ export const Dashboard = () => {
             </span>
           </div>
           <p className="text-xs text-slate-400">
-            Real-time classroom & laboratory occupancy across London Met campus with interactive cinema-style seat maps.
+            Real-time classroom & laboratory occupancy across London Met campus with interactive cinema-style seat details.
           </p>
         </div>
 

@@ -33,7 +33,7 @@ export const SeatLayoutModal = ({
             <div>
               <div className="flex items-center gap-2">
                 <h3 className="font-heading text-lg font-bold text-white">
-                  {room.roomNumber} — Seat & Workstation Map
+                  {room.roomNumber} — Seat Details & Layout
                 </h3>
                 <span className="px-2 py-0.5 rounded-full text-[10px] uppercase font-semibold bg-white/5 border border-white/10 text-slate-300">
                   {room.type?.replace('_', ' ')}
@@ -106,7 +106,7 @@ export const SeatLayoutModal = ({
               <span>
                 {selectedSeats.length > 0
                   ? `Book ${selectedSeats.length} ${selectedSeats.length === 1 ? 'Seat' : 'Seats'} (#${selectedSeats.join(', #')})`
-                  : 'Reserve Entire Slot'}
+                  : 'Book Full Room'}
               </span>
             </button>
           </div>

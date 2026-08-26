@@ -41,6 +41,9 @@ export const BookingModal = ({
   const [bookingType, setBookingType] = useState(
     user?.role === 'student' ? 'Study Session' : 'Regular Class'
   );
+  const [bookingScope, setBookingScope] = useState(() =>
+    Array.isArray(initialSeat) && initialSeat.length > 0 ? 'seats' : initialSeat ? 'seats' : 'seats'
+  );
   const [selectedSeats, setSelectedSeats] = useState(() =>
     Array.isArray(initialSeat) ? initialSeat : initialSeat ? [initialSeat] : []
   );
@@ -63,6 +66,11 @@ export const BookingModal = ({
         : [];
       setSelectedSeats(normalizedSeats);
       if (normalizedSeats.length > 0) {
+        setBookingScope('seats');
+        setShowSeatMap(true);
+      } else {
+        // If opened without preselected seats, default to 'seats' with map open so students can pick
+        setBookingScope('seats');
         setShowSeatMap(true);
       }
 
@@ -102,26 +110,33 @@ export const BookingModal = ({
       return;
     }
 
+    if (bookingScope === 'seats' && selectedSeats.length === 0) {
+      setErrorMsg('Please click the seat map below to pick at least 1 seat, or select "Full Room Session".');
+      setShowSeatMap(true);
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
+      const isFullRoom = bookingScope === 'full_room';
       const payload = {
         roomId: room._id,
         startTime: startDateTime.toISOString(),
         endTime: endDateTime.toISOString(),
         purpose: purpose.trim(),
         bookingType,
-        seatNumber: selectedSeats.length > 0 ? selectedSeats.join(', ') : null,
-        selectedSeats: selectedSeats
+        seatNumber: !isFullRoom && selectedSeats.length > 0 ? selectedSeats.join(', ') : null,
+        selectedSeats: !isFullRoom ? selectedSeats : []
       };
 
       const { data } = await api.post('/bookings', payload);
 
       if (data.success) {
         setSuccessMsg(
-          selectedSeats.length > 0
+          !isFullRoom && selectedSeats.length > 0
             ? `Room ${room.roomNumber} (${selectedSeats.length === 1 ? 'Seat' : 'Seats'}: #${selectedSeats.join(', #')}) booked successfully!`
-            : `Room ${room.roomNumber} booked successfully!`
+            : `Full Room ${room.roomNumber} (${room.capacity} seats) reserved successfully!`
         );
         if (onBookingSuccess) {
           onBookingSuccess(data.booking);
@@ -261,55 +276,139 @@ export const BookingModal = ({
             </select>
           </div>
 
-          {/* Interactive Multi-Seat Selector Collapsible */}
-          <div className="p-3.5 rounded-xl bg-slate-900 border border-white/10 space-y-3">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2 flex-wrap">
-                <Armchair className="w-4 h-4 text-emerald-400" />
-                <span className="font-semibold text-slate-200">
-                  Interactive Cinema-Style Seat Selector
-                </span>
-                {selectedSeats.length > 0 && (
-                  <span className="px-2 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 font-mono font-bold text-[11px] border border-indigo-500/30">
-                    {selectedSeats.length === 1
-                      ? `Seat #${selectedSeats[0]}`
-                      : `${selectedSeats.length} Seats: #${selectedSeats.join(', #')}`}
-                  </span>
-                )}
-              </div>
+          {/* Reservation Scope Selector: Specific Seats vs Full Room */}
+          <div className="space-y-2">
+            <label className="block text-slate-300 font-semibold uppercase tracking-wider text-[11px] flex items-center justify-between">
+              <span>Reservation Scope</span>
+              <span className="text-[10px] text-slate-400 font-normal">Choose individual seats or entire room</span>
+            </label>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              {/* Option 1: Pick Specific Seats */}
               <button
                 type="button"
-                onClick={() => setShowSeatMap(!showSeatMap)}
-                className="text-xs text-indigo-400 hover:text-indigo-300 font-semibold flex items-center gap-1 cursor-pointer"
+                onClick={() => {
+                  setBookingScope('seats');
+                  setShowSeatMap(true);
+                }}
+                className={`p-3 rounded-xl border flex flex-col items-start gap-1 transition-all text-left cursor-pointer ${
+                  bookingScope === 'seats'
+                    ? 'bg-indigo-600/15 border-indigo-500 text-white shadow-sm shadow-indigo-500/20 ring-1 ring-indigo-500'
+                    : 'bg-slate-900/80 border-white/10 text-slate-400 hover:text-slate-200 hover:border-white/20'
+                }`}
               >
-                <span>
-                  {showSeatMap
-                    ? 'Hide Layout'
-                    : selectedSeats.length > 0
-                    ? `Modify (${selectedSeats.length} Seats)`
-                    : 'Pick Seats'}
-                </span>
-                {showSeatMap ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                <div className="flex items-center justify-between w-full">
+                  <div className="flex items-center gap-1.5 font-bold text-xs">
+                    <Armchair className={`w-4 h-4 ${bookingScope === 'seats' ? 'text-emerald-400' : 'text-slate-400'}`} />
+                    <span className={bookingScope === 'seats' ? 'text-white' : 'text-slate-300'}>Select Specific Seats</span>
+                  </div>
+                  {bookingScope === 'seats' && (
+                    <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
+                  )}
+                </div>
+                <p className="text-[10px] text-slate-400 leading-tight mt-0.5">
+                  Book 1 or multiple green seats. Other seats stay open for concurrent student bookings.
+                </p>
+              </button>
+
+              {/* Option 2: Full Room Session */}
+              <button
+                type="button"
+                onClick={() => {
+                  setBookingScope('full_room');
+                  setSelectedSeats([]);
+                  setShowSeatMap(false);
+                }}
+                className={`p-3 rounded-xl border flex flex-col items-start gap-1 transition-all text-left cursor-pointer ${
+                  bookingScope === 'full_room'
+                    ? 'bg-purple-600/20 border-purple-500 text-white shadow-sm shadow-purple-500/20 ring-1 ring-purple-500'
+                    : 'bg-slate-900/80 border-white/10 text-slate-400 hover:text-slate-200 hover:border-white/20'
+                }`}
+              >
+                <div className="flex items-center justify-between w-full">
+                  <div className="flex items-center gap-1.5 font-bold text-xs">
+                    <Users className={`w-4 h-4 ${bookingScope === 'full_room' ? 'text-purple-400' : 'text-slate-400'}`} />
+                    <span className={bookingScope === 'full_room' ? 'text-white' : 'text-slate-300'}>Full Room Session</span>
+                  </div>
+                  {bookingScope === 'full_room' && (
+                    <span className="w-2 h-2 rounded-full bg-purple-400"></span>
+                  )}
+                </div>
+                <p className="text-[10px] text-slate-400 leading-tight mt-0.5">
+                  Reserve the whole {room.capacity}-seat room for an entire class lecture, seminar, or event.
+                </p>
               </button>
             </div>
-
-            {showSeatMap && (
-              <div className="pt-2 border-t border-white/5">
-                <SeatMap
-                  room={room}
-                  isOccupied={isOccupied}
-                  isFullRoomOccupied={isFullRoomOccupied}
-                  occupiedSeats={occupiedSeats}
-                  reservedSeats={reservedSeats}
-                  currentBooking={currentBooking}
-                  selectedSeats={selectedSeats}
-                  onSelectSeat={(seats) => setSelectedSeats(Array.isArray(seats) ? seats : seats ? [seats] : [])}
-                  interactive={true}
-                  allowMultiple={true}
-                />
-              </div>
-            )}
           </div>
+
+          {/* Full Room Notice Banner */}
+          {bookingScope === 'full_room' && (
+            <div className="p-3.5 rounded-xl bg-purple-500/10 border border-purple-500/30 text-xs space-y-1">
+              <div className="flex items-center gap-2 font-bold text-purple-300">
+                <Users className="w-4 h-4 text-purple-400 shrink-0" />
+                <span>Full Room Reservation ({room.capacity} Seats)</span>
+              </div>
+              <p className="text-[11px] text-slate-300">
+                All {room.capacity} seats in <strong>{room.roomNumber} ({room.building})</strong> will be reserved exclusively for this session. Outside walk-ins will be blocked during this time.
+              </p>
+            </div>
+          )}
+
+          {/* Interactive Multi-Seat Selector Section (Shown when in 'seats' mode) */}
+          {bookingScope === 'seats' && (
+            <div className="p-3.5 rounded-xl bg-slate-900 border border-white/10 space-y-3">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <Armchair className="w-4 h-4 text-emerald-400" />
+                  <span className="font-semibold text-slate-200">
+                    Interactive Seat Selector
+                  </span>
+                  {selectedSeats.length > 0 ? (
+                    <span className="px-2 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 font-mono font-bold text-[11px] border border-indigo-500/30">
+                      {selectedSeats.length === 1
+                        ? `Seat #${selectedSeats[0]}`
+                        : `${selectedSeats.length} Seats: #${selectedSeats.join(', #')}`}
+                    </span>
+                  ) : (
+                    <span className="px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-300 text-[10px] font-medium border border-amber-500/20">
+                      No seats selected yet
+                    </span>
+                  )}
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setShowSeatMap(!showSeatMap)}
+                  className="text-xs text-indigo-400 hover:text-indigo-300 font-semibold flex items-center gap-1 cursor-pointer"
+                >
+                  <span>
+                    {showSeatMap
+                      ? 'Collapse Detail'
+                      : selectedSeats.length > 0
+                      ? `Edit (${selectedSeats.length} Seats)`
+                      : 'Open Seat Detail'}
+                  </span>
+                  {showSeatMap ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                </button>
+              </div>
+
+              {showSeatMap && (
+                <div className="pt-2 border-t border-white/5">
+                  <SeatMap
+                    room={room}
+                    isOccupied={isOccupied}
+                    isFullRoomOccupied={isFullRoomOccupied}
+                    occupiedSeats={occupiedSeats}
+                    reservedSeats={reservedSeats}
+                    currentBooking={currentBooking}
+                    selectedSeats={selectedSeats}
+                    onSelectSeat={(seats) => setSelectedSeats(Array.isArray(seats) ? seats : seats ? [seats] : [])}
+                    interactive={true}
+                    allowMultiple={true}
+                  />
+                </div>
+              )}
+            </div>
+          )}
 
           {/* Purpose & Module Code */}
           <div className="space-y-2">

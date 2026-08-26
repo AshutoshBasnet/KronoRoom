@@ -86,13 +86,13 @@ npm run dev
 
 ## 🏢 Facility & Room Roster
 
-| Facility | Room Number | Location | Capacity | Type |
-|---|---|---|---|---|
-| **Computer Lab 1** | `Lab-01` | Skill Block | 50 Workstations | Computer Lab |
-| **Computer Lab 2** | `Lab-02` | Skill Block | 50 Workstations | Computer Lab |
-| **Seminar Room 1** | `LT-01` | London Block | 80 Seats | Seminar Room |
-| **Seminar Room 2** | `LT-02` | London Block | 80 Seats | Seminar Room |
-| **Lecture Hall 1** | `Hall-01` | Kumari Block | 100 Seats | Lecture Hall |
+| Facility | Room Number | Location | Capacity | Type | Amenities |
+|---|---|---|---|---|---|
+| **Computer Lab 1** | `Lab-01` | Skill Block | 50 Workstations | Computer Lab | High Power Workstations, AC, Smart Board |
+| **Computer Lab 2** | `Lab-02` | Skill Block | 50 Workstations | Computer Lab | High Power Workstations, AC, Smart Board |
+| **Seminar Room 1** | `LT-01` | London Block | 80 Seats | Seminar Room | Small Projector, AC |
+| **Seminar Room 2** | `LT-02` | London Block | 80 Seats | Seminar Room | Small Projector, AC |
+| **Lecture Hall 1** | `Hall-01` | Kumari Block | 100 Seats | Lecture Hall | 100-seat Auditorium, Surround Sound Audio Speakers, Big Projector Display Wall, Big Projector |
 
 ---
 

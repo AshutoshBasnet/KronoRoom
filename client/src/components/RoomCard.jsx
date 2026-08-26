@@ -124,7 +124,7 @@ export const RoomCard = ({ roomData, onBookClick, onViewSeatsClick }) => {
         {/* Amenities Pills */}
         <div className="flex flex-wrap gap-1.5 mb-5">
           {room.amenities &&
-            room.amenities.slice(0, 3).map((amenity, idx) => (
+            room.amenities.map((amenity, idx) => (
               <span
                 key={idx}
                 className="px-2 py-0.5 rounded-md bg-slate-900/80 border border-white/5 text-[11px] text-slate-300 font-medium"
@@ -132,11 +132,6 @@ export const RoomCard = ({ roomData, onBookClick, onViewSeatsClick }) => {
                 {amenity}
               </span>
             ))}
-          {room.amenities && room.amenities.length > 3 && (
-            <span className="px-1.5 py-0.5 rounded-md bg-slate-900/80 text-[11px] text-slate-500 font-medium">
-              +{room.amenities.length - 3} more
-            </span>
-          )}
         </div>
       </div>
 
@@ -145,10 +140,10 @@ export const RoomCard = ({ roomData, onBookClick, onViewSeatsClick }) => {
         <button
           onClick={() => onViewSeatsClick(roomData)}
           className="krono-btn krono-btn-ghost text-xs flex items-center justify-center gap-1.5 py-2.5"
-          title="Inspect cinema seat layout and availability"
+          title="Inspect cinema seat details and availability"
         >
           <Armchair className="w-3.5 h-3.5 text-emerald-400" />
-          <span>Seat Map</span>
+          <span>Seat Detail</span>
         </button>
 
         <button

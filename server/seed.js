@@ -90,11 +90,9 @@ const seedData = async () => {
         capacity: 50,
         type: 'computer_lab',
         amenities: [
-          '50x High-Performance Workstations',
-          'Dual Color-Calibrated Displays',
-          'Gigabit Ethernet & Fiber Uplink',
-          'Interactive Smartboard',
-          'High-Speed Wi-Fi 6'
+          'High Power Workstations',
+          'AC',
+          'Smart Board'
         ],
         isActive: true
       },
@@ -104,11 +102,9 @@ const seedData = async () => {
         capacity: 50,
         type: 'computer_lab',
         amenities: [
-          '50x Developer Linux / GPU Workstations',
-          'Docker & Cloud Computing Sandboxes',
-          'Dual 27-inch 144Hz Displays',
-          'Interactive Whiteboard Wall',
-          'High-Speed Wi-Fi 6'
+          'High Power Workstations',
+          'AC',
+          'Smart Board'
         ],
         isActive: true
       },
@@ -118,11 +114,8 @@ const seedData = async () => {
         capacity: 80,
         type: 'seminar_room',
         amenities: [
-          'Tiered Ergonomic Seminar Seating (80 Seats)',
-          'Dual 4K Laser Projection System',
-          'Beamforming Mic Array & Audio Podiums',
-          'Hybrid Video Conferencing Rig',
-          'High-Speed Wi-Fi 6'
+          'Small Projector',
+          'AC'
         ],
         isActive: true
       },
@@ -132,11 +125,8 @@ const seedData = async () => {
         capacity: 80,
         type: 'seminar_room',
         amenities: [
-          '80-Seat Seminar & Collaborative Studio',
-          'Ultra-HD Interactive Touch Wall',
-          'Automated Lecture Capture & AI Tracking',
-          'Assisted Listening Loop',
-          'High-Speed Wi-Fi 6'
+          'Small Projector',
+          'AC'
         ],
         isActive: true
       },
@@ -146,12 +136,10 @@ const seedData = async () => {
         capacity: 100,
         type: 'lecture_hall',
         amenities: [
-          '100-Seat Tiered Auditorium',
-          'Dual 4K Ultrawide Laser Display Walls',
-          'Dolby Atmos Surround Audio',
-          'Automated HD Lecture Capture',
-          'Wheelchair Accessible Podiums',
-          'High-Speed Wi-Fi 6'
+          '100-seat Auditorium',
+          'Surround Sound Audio Speakers',
+          'Big Projector Display Wall',
+          'Big Projector'
         ],
         isActive: true
       }
