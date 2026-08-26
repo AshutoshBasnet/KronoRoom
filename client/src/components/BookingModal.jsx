@@ -54,6 +54,9 @@ export const BookingModal = ({
   const [conflictData, setConflictData] = useState(null);
   const [successMsg, setSuccessMsg] = useState(null);
 
+  const totalOccupiedSeatsCount = (occupiedSeats?.length || 0) + (reservedSeats?.length || 0);
+  const isRoomPartiallyOrFullyOccupied = isOccupied || isFullRoomOccupied || totalOccupiedSeatsCount > 0;
+
   useEffect(() => {
     if (isOpen) {
       setErrorMsg(null);
@@ -65,11 +68,10 @@ export const BookingModal = ({
         ? [initialSeat]
         : [];
       setSelectedSeats(normalizedSeats);
-      if (normalizedSeats.length > 0) {
+      if (normalizedSeats.length > 0 || isRoomPartiallyOrFullyOccupied) {
         setBookingScope('seats');
         setShowSeatMap(true);
       } else {
-        // If opened without preselected seats, default to 'seats' with map open so students can pick
         setBookingScope('seats');
         setShowSeatMap(true);
       }
@@ -83,7 +85,7 @@ export const BookingModal = ({
       setEndTime(formatH(endHour === 0 ? 23 : endHour));
       setDate(format(now, 'yyyy-MM-dd'));
     }
-  }, [isOpen, initialSeat, user]);
+  }, [isOpen, initialSeat, user, isRoomPartiallyOrFullyOccupied]);
 
   if (!isOpen || !room) return null;
 
@@ -110,8 +112,15 @@ export const BookingModal = ({
       return;
     }
 
+    if (bookingScope === 'full_room' && isRoomPartiallyOrFullyOccupied) {
+      setErrorMsg('Full Room Session is only available when all seats in the room are 100% free/green.');
+      setBookingScope('seats');
+      setShowSeatMap(true);
+      return;
+    }
+
     if (bookingScope === 'seats' && selectedSeats.length === 0) {
-      setErrorMsg('Please click the seat map below to pick at least 1 seat, or select "Full Room Session".');
+      setErrorMsg('Please click the seat selector below to pick at least 1 seat, or select "Full Room Session".');
       setShowSeatMap(true);
       return;
     }
@@ -311,31 +320,48 @@ export const BookingModal = ({
                 </p>
               </button>
 
-              {/* Option 2: Full Room Session */}
+              {/* Option 2: Full Room Session (Only available if all seats are green) */}
               <button
                 type="button"
+                disabled={isRoomPartiallyOrFullyOccupied}
                 onClick={() => {
+                  if (isRoomPartiallyOrFullyOccupied) return;
                   setBookingScope('full_room');
                   setSelectedSeats([]);
                   setShowSeatMap(false);
                 }}
-                className={`p-3 rounded-xl border flex flex-col items-start gap-1 transition-all text-left cursor-pointer ${
-                  bookingScope === 'full_room'
-                    ? 'bg-purple-600/20 border-purple-500 text-white shadow-sm shadow-purple-500/20 ring-1 ring-purple-500'
-                    : 'bg-slate-900/80 border-white/10 text-slate-400 hover:text-slate-200 hover:border-white/20'
+                className={`p-3 rounded-xl border flex flex-col items-start gap-1 transition-all text-left ${
+                  isRoomPartiallyOrFullyOccupied
+                    ? 'opacity-50 cursor-not-allowed bg-slate-900/40 border-white/5 text-slate-500'
+                    : bookingScope === 'full_room'
+                    ? 'bg-purple-600/20 border-purple-500 text-white shadow-sm shadow-purple-500/20 ring-1 ring-purple-500 cursor-pointer'
+                    : 'bg-slate-900/80 border-white/10 text-slate-400 hover:text-slate-200 hover:border-white/20 cursor-pointer'
                 }`}
+                title={
+                  isRoomPartiallyOrFullyOccupied
+                    ? 'Full Room Session is unavailable because some seats are already occupied. You can only book available green seats.'
+                    : `Reserve all ${room.capacity} seats for this room`
+                }
               >
                 <div className="flex items-center justify-between w-full">
                   <div className="flex items-center gap-1.5 font-bold text-xs">
-                    <Users className={`w-4 h-4 ${bookingScope === 'full_room' ? 'text-purple-400' : 'text-slate-400'}`} />
-                    <span className={bookingScope === 'full_room' ? 'text-white' : 'text-slate-300'}>Full Room Session</span>
+                    <Users className={`w-4 h-4 ${isRoomPartiallyOrFullyOccupied ? 'text-slate-500' : bookingScope === 'full_room' ? 'text-purple-400' : 'text-slate-400'}`} />
+                    <span className={isRoomPartiallyOrFullyOccupied ? 'text-slate-500 line-through' : bookingScope === 'full_room' ? 'text-white' : 'text-slate-300'}>
+                      Full Room Session
+                    </span>
                   </div>
-                  {bookingScope === 'full_room' && (
+                  {isRoomPartiallyOrFullyOccupied ? (
+                    <span className="px-1.5 py-0.5 rounded text-[9px] font-bold uppercase bg-rose-500/15 text-rose-300 border border-rose-500/20">
+                      Unavailable
+                    </span>
+                  ) : bookingScope === 'full_room' ? (
                     <span className="w-2 h-2 rounded-full bg-purple-400"></span>
-                  )}
+                  ) : null}
                 </div>
-                <p className="text-[10px] text-slate-400 leading-tight mt-0.5">
-                  Reserve the whole {room.capacity}-seat room for an entire class lecture, seminar, or event.
+                <p className="text-[10px] text-slate-500 leading-tight mt-0.5">
+                  {isRoomPartiallyOrFullyOccupied
+                    ? 'Disabled: Only available when ALL seats are 100% free/green.'
+                    : `Reserve all ${room.capacity} seats for an entire class lecture or seminar.`}
                 </p>
               </button>
             </div>

@@ -13,6 +13,8 @@ export const SeatLayoutModal = ({
   if (!isOpen || !roomData) return null;
 
   const { room, isOccupied, currentBooking } = roomData;
+  const totalOccupiedCount = (roomData?.occupiedSeats?.length || 0) + (roomData?.reservedSeats?.length || 0);
+  const hasOccupiedSeats = isOccupied || roomData?.isFullRoomOccupied || totalOccupiedCount > 0;
 
   const handleBook = () => {
     onClose();
@@ -77,7 +79,7 @@ export const SeatLayoutModal = ({
         {/* Footer Actions */}
         <div className="pt-4 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-3">
           <div className="text-xs text-slate-400 text-center sm:text-left">
-            {selectedSeats.length > 0 ? (
+            {selectedSeats.length > 0 && (
               <span>
                 Selected{' '}
                 <strong className="text-white font-bold">{selectedSeats.length}</strong>{' '}
@@ -86,8 +88,6 @@ export const SeatLayoutModal = ({
                   #{selectedSeats.join(', #')}
                 </strong>
               </span>
-            ) : (
-              <span>Click on any green chair to pick one or multiple seats for your booking.</span>
             )}
           </div>
 
@@ -100,12 +100,19 @@ export const SeatLayoutModal = ({
             </button>
             <button
               onClick={handleBook}
-              className="krono-btn krono-btn-primary text-xs flex items-center gap-1.5 font-bold"
+              disabled={hasOccupiedSeats && selectedSeats.length === 0}
+              className={`text-xs flex items-center gap-1.5 font-bold transition-all ${
+                hasOccupiedSeats && selectedSeats.length === 0
+                  ? 'krono-btn krono-btn-ghost opacity-40 cursor-not-allowed'
+                  : 'krono-btn krono-btn-primary'
+              }`}
             >
               <CalendarPlus className="w-4 h-4" />
               <span>
                 {selectedSeats.length > 0
                   ? `Book ${selectedSeats.length} ${selectedSeats.length === 1 ? 'Seat' : 'Seats'} (#${selectedSeats.join(', #')})`
+                  : hasOccupiedSeats
+                  ? 'Pick Green Seats to Book'
                   : 'Book Full Room'}
               </span>
             </button>

@@ -269,7 +269,7 @@ export const SeatMap = ({
                   ]
                 </>
               ) : (
-                'Click any green chair to select your seat. (Red & Yellow seats cannot be booked)'
+                'Click green seats to select • Red & Yellow are unavailable'
               )}
             </span>
           </div>

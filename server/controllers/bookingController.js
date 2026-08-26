@@ -122,7 +122,7 @@ export const createBooking = async (req, res, next) => {
 
         return res.status(409).json({
           success: false,
-          message: `Conflict detected: Room ${room.roomNumber} already has an active booking from ${conflictStart} to ${conflictEnd} for '${firstConflict.purpose}'`,
+          message: `Full Room Session cannot be booked: Room ${room.roomNumber} already has ${overlappingBookings.length > 1 ? `${overlappingBookings.length} active bookings` : 'an active booking'} from ${conflictStart} to ${conflictEnd} ('${firstConflict.purpose}'). Please select specific green seats instead.`,
           conflict: {
             bookingId: firstConflict._id,
             startTime: firstConflict.startTime,
