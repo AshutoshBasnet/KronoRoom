@@ -11,17 +11,24 @@ import {
   Info,
   Armchair,
   ChevronDown,
-  ChevronUp
+  ChevronUp,
+  BookOpen
 } from 'lucide-react';
 import { format, addDays } from 'date-fns';
 import api from '../utils/api';
 import { useAuth } from '../context/AuthContext';
 import SeatMap from './SeatMap';
+import { SUBJECTS } from '../utils/subjects';
 
 export const BookingModal = ({
   isOpen,
   onClose,
   room,
+  isOccupied = false,
+  isFullRoomOccupied = false,
+  occupiedSeats = [],
+  reservedSeats = [],
+  currentBooking = null,
   initialSeat = null,
   onBookingSuccess
 }) => {
@@ -34,7 +41,9 @@ export const BookingModal = ({
   const [bookingType, setBookingType] = useState(
     user?.role === 'student' ? 'Study Session' : 'Regular Class'
   );
-  const [selectedSeat, setSelectedSeat] = useState(initialSeat);
+  const [selectedSeats, setSelectedSeats] = useState(() =>
+    Array.isArray(initialSeat) ? initialSeat : initialSeat ? [initialSeat] : []
+  );
   const [showSeatMap, setShowSeatMap] = useState(false);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -47,7 +56,15 @@ export const BookingModal = ({
       setErrorMsg(null);
       setConflictData(null);
       setSuccessMsg(null);
-      setSelectedSeat(initialSeat || null);
+      const normalizedSeats = Array.isArray(initialSeat)
+        ? initialSeat
+        : initialSeat
+        ? [initialSeat]
+        : [];
+      setSelectedSeats(normalizedSeats);
+      if (normalizedSeats.length > 0) {
+        setShowSeatMap(true);
+      }
 
       const now = new Date();
       const nextHour = (now.getHours() + 1) % 24;
@@ -94,16 +111,16 @@ export const BookingModal = ({
         endTime: endDateTime.toISOString(),
         purpose: purpose.trim(),
         bookingType,
-        seatNumber: selectedSeat || null,
-        selectedSeats: selectedSeat ? [selectedSeat] : []
+        seatNumber: selectedSeats.length > 0 ? selectedSeats.join(', ') : null,
+        selectedSeats: selectedSeats
       };
 
       const { data } = await api.post('/bookings', payload);
 
       if (data.success) {
         setSuccessMsg(
-          selectedSeat
-            ? `Room ${room.roomNumber} (Seat #${selectedSeat}) booked successfully!`
+          selectedSeats.length > 0
+            ? `Room ${room.roomNumber} (${selectedSeats.length === 1 ? 'Seat' : 'Seats'}: #${selectedSeats.join(', #')}) booked successfully!`
             : `Room ${room.roomNumber} booked successfully!`
         );
         if (onBookingSuccess) {
@@ -147,7 +164,7 @@ export const BookingModal = ({
           </div>
           <button
             onClick={onClose}
-            className="p-2 text-slate-400 hover:text-white rounded-lg hover:bg-white/10 transition-colors"
+            className="p-2 text-slate-400 hover:text-white rounded-lg hover:bg-white/10 transition-colors cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
@@ -244,26 +261,34 @@ export const BookingModal = ({
             </select>
           </div>
 
-          {/* Interactive Seat Selector Collapsible */}
+          {/* Interactive Multi-Seat Selector Collapsible */}
           <div className="p-3.5 rounded-xl bg-slate-900 border border-white/10 space-y-3">
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 flex-wrap">
                 <Armchair className="w-4 h-4 text-emerald-400" />
                 <span className="font-semibold text-slate-200">
                   Interactive Cinema-Style Seat Selector
                 </span>
-                {selectedSeat && (
+                {selectedSeats.length > 0 && (
                   <span className="px-2 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 font-mono font-bold text-[11px] border border-indigo-500/30">
-                    Seat #{selectedSeat}
+                    {selectedSeats.length === 1
+                      ? `Seat #${selectedSeats[0]}`
+                      : `${selectedSeats.length} Seats: #${selectedSeats.join(', #')}`}
                   </span>
                 )}
               </div>
               <button
                 type="button"
                 onClick={() => setShowSeatMap(!showSeatMap)}
-                className="text-xs text-indigo-400 hover:text-indigo-300 font-semibold flex items-center gap-1"
+                className="text-xs text-indigo-400 hover:text-indigo-300 font-semibold flex items-center gap-1 cursor-pointer"
               >
-                <span>{showSeatMap ? 'Hide Layout' : selectedSeat ? 'Change Seat' : 'Pick Seat Map'}</span>
+                <span>
+                  {showSeatMap
+                    ? 'Hide Layout'
+                    : selectedSeats.length > 0
+                    ? `Modify (${selectedSeats.length} Seats)`
+                    : 'Pick Seats'}
+                </span>
                 {showSeatMap ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
               </button>
             </div>
@@ -272,25 +297,54 @@ export const BookingModal = ({
               <div className="pt-2 border-t border-white/5">
                 <SeatMap
                   room={room}
-                  selectedSeat={selectedSeat}
-                  onSelectSeat={(seat) => setSelectedSeat(seat)}
+                  isOccupied={isOccupied}
+                  isFullRoomOccupied={isFullRoomOccupied}
+                  occupiedSeats={occupiedSeats}
+                  reservedSeats={reservedSeats}
+                  currentBooking={currentBooking}
+                  selectedSeats={selectedSeats}
+                  onSelectSeat={(seats) => setSelectedSeats(Array.isArray(seats) ? seats : seats ? [seats] : [])}
                   interactive={true}
+                  allowMultiple={true}
                 />
               </div>
             )}
           </div>
 
-          {/* Purpose */}
-          <div>
-            <label className="block text-slate-300 font-semibold uppercase tracking-wider mb-1.5">
-              Purpose & Module Code
-            </label>
+          {/* Purpose & Module Code */}
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <label className="block text-slate-300 font-semibold uppercase tracking-wider flex items-center gap-1.5">
+                <BookOpen className="w-3.5 h-3.5 text-indigo-400" /> Module / Subject & Purpose
+              </label>
+              <span className="text-[10px] text-slate-400 font-normal">Select or type custom</span>
+            </div>
+
+            {/* Quick Subject Select Dropdown */}
+            <select
+              value={SUBJECTS.some((s) => s.label === purpose) ? purpose : (purpose ? 'custom' : '')}
+              onChange={(e) => {
+                if (e.target.value !== 'custom' && e.target.value !== '') {
+                  setPurpose(e.target.value);
+                }
+              }}
+              className="w-full bg-slate-900 border border-white/10 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-500"
+            >
+              <option value="">-- Quick Select London Met Subject Module --</option>
+              {SUBJECTS.map((sub) => (
+                <option key={sub.code} value={`${sub.code}: ${sub.name}`}>
+                  {sub.code} — {sub.name}
+                </option>
+              ))}
+              <option value="custom">✍️ Custom Purpose / Enter manually below</option>
+            </select>
+
             <input
               type="text"
               value={purpose}
               onChange={(e) => setPurpose(e.target.value)}
-              placeholder="e.g. CS6004 Cloud Systems Workshop"
-              className="w-full bg-slate-900 border border-white/10 rounded-xl px-3.5 py-2.5 text-sm text-white placeholder:text-slate-600 focus:outline-none focus:border-indigo-500 transition-colors"
+              placeholder="e.g. CS5053NI: Cloud Computing and IoT Lab"
+              className="w-full bg-slate-900 border border-white/10 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder:text-slate-600 focus:outline-none focus:border-indigo-500 transition-colors"
               required
             />
           </div>
@@ -307,7 +361,7 @@ export const BookingModal = ({
             <button
               type="submit"
               disabled={isSubmitting}
-              className="krono-btn krono-btn-primary text-xs flex items-center gap-2"
+              className="krono-btn krono-btn-primary text-xs flex items-center gap-2 font-bold"
             >
               {isSubmitting ? (
                 <>
@@ -315,7 +369,11 @@ export const BookingModal = ({
                   <span>Checking Availability...</span>
                 </>
               ) : (
-                <span>{selectedSeat ? `Confirm (Seat #${selectedSeat})` : 'Confirm Booking'}</span>
+                <span>
+                  {selectedSeats.length > 0
+                    ? `Confirm (${selectedSeats.length} ${selectedSeats.length === 1 ? 'Seat' : 'Seats'}: #${selectedSeats.join(', #')})`
+                    : 'Confirm Booking'}
+                </span>
               )}
             </button>
           </div>

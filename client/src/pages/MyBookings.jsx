@@ -227,9 +227,11 @@ export const MyBookings = () => {
                       {booking.bookingType}
                     </span>
 
-                    {booking.seatNumber && (
+                    {(booking.selectedSeats?.length > 0 || booking.seatNumber) && (
                       <span className="px-2 py-0.5 text-[10px] font-bold uppercase rounded-md bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 font-mono">
-                        Seat #{booking.seatNumber}
+                        {booking.selectedSeats?.length > 1
+                          ? `Seats: ${booking.selectedSeats.join(', ')}`
+                          : `Seat #${booking.seatNumber || booking.selectedSeats?.[0]}`}
                       </span>
                     )}
 

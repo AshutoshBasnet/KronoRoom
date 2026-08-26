@@ -1,25 +1,90 @@
-import React, { useMemo } from 'react';
-import { Monitor, Users, Armchair, Sparkles, Check, Info } from 'lucide-react';
+import React, { useMemo, useState, useEffect } from 'react';
+import { Monitor, Armchair, Sparkles, Check, X, Users, AlertCircle, Clock, Hourglass } from 'lucide-react';
 
 export const SeatMap = ({
   room,
   isOccupied = false,
+  isFullRoomOccupied = false,
+  occupiedSeats = [],
+  reservedSeats = [],
   currentBooking = null,
   selectedSeat = null,
+  selectedSeats = [],
   onSelectSeat = () => {},
-  interactive = true
+  interactive = true,
+  allowMultiple = true
 }) => {
-  const capacity = room?.capacity || 40;
-  const roomType = room?.type || 'lecture_hall';
+  const capacity = room?.capacity || 50;
+  const roomType = room?.type || 'computer_lab';
 
-  // Generate deterministic seat grid according to capacity
+  // Live real-time ticker for dynamic countdown calculation
+  const [currentTime, setCurrentTime] = useState(() => Date.now());
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentTime(Date.now());
+    }, 1000); // Ticks every second
+    return () => clearInterval(timer);
+  }, []);
+
+  // Format exact time remaining until room/seats become free
+  const timeRemainingInfo = useMemo(() => {
+    if (!isOccupied || !currentBooking?.endTime) return null;
+    const endMs = new Date(currentBooking.endTime).getTime();
+    const diffMs = endMs - currentTime;
+
+    if (diffMs <= 0) {
+      return {
+        formatted: 'Ending Now',
+        short: 'Ending Now',
+        isEnded: true
+      };
+    }
+
+    const totalSeconds = Math.floor(diffMs / 1000);
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
+
+    let formatted = '';
+    if (hours > 0) {
+      formatted = `${hours}h ${minutes}m ${seconds}s`;
+    } else if (minutes > 0) {
+      formatted = `${minutes}m ${seconds < 10 ? '0' : ''}${seconds}s`;
+    } else {
+      formatted = `${seconds}s`;
+    }
+
+    return {
+      formatted,
+      short: `${minutes > 0 ? `${minutes}m ` : ''}${seconds}s`,
+      isEnded: false,
+      endTimeFormatted: new Date(currentBooking.endTime).toLocaleTimeString([], {
+        hour: '2-digit',
+        minute: '2-digit'
+      })
+    };
+  }, [isOccupied, currentBooking?.endTime, currentTime]);
+
+  // Normalize selected seats into an array
+  const rawSelectedSeats = useMemo(() => {
+    if (Array.isArray(selectedSeats) && selectedSeats.length > 0) {
+      return selectedSeats;
+    }
+    if (selectedSeat) {
+      return [selectedSeat];
+    }
+    return [];
+  }, [selectedSeats, selectedSeat]);
+
+  // Generate deterministic seat grid matching room capacity
   const seatGrid = useMemo(() => {
-    const seatsPerRow = roomType === 'lecture_hall' ? (capacity > 60 ? 12 : 8) : 8;
+    // 10 seats per row (5 left aisle, 5 right aisle) for clean symmetry
+    const seatsPerRow = capacity <= 40 ? 8 : 10;
     const totalRows = Math.ceil(capacity / seatsPerRow);
     const rows = [];
     const rowLetters = 'ABCDEFGHJKLMNPQRSTUVWXYZ';
 
-    // Simulate realistic occupied seats if the room is partially/fully in session
     let seatCounter = 1;
     for (let r = 0; r < totalRows; r++) {
       const rowLetter = rowLetters[r] || `R${r + 1}`;
@@ -29,19 +94,36 @@ export const SeatMap = ({
         if (seatCounter > capacity) break;
         const seatId = `${rowLetter}${s}`;
 
-        // Deterministic status simulation:
-        // If room is occupied by a current ongoing booking, most seats are occupied
-        let status = 'available';
-        if (isOccupied) {
-          // In full session, 85% occupied
-          status = (s + r) % 6 === 0 ? 'available' : 'occupied';
-        } else {
-          // Few random reserved for faculty / accessibility
-          if (r === 0 && (s === 1 || s === seatsPerRow)) {
-            status = 'reserved'; // Front row reserved for accessibility/staff
-          } else if ((r * 3 + s) % 11 === 0) {
-            status = 'reserved';
+        // Accurate Granular Status determination:
+        // 1. If full-room class lecture (no seat picking): all seats in session (Red)
+        // 2. If seat-level booking: ONLY the exact booked seats are Red
+        let isThisSeatOccupied = false;
+        if (isFullRoomOccupied) {
+          isThisSeatOccupied = true;
+        } else if (Array.isArray(occupiedSeats) && occupiedSeats.includes(seatId)) {
+          isThisSeatOccupied = true;
+        } else if (
+          isOccupied &&
+          (currentBooking?.seatNumber === seatId ||
+            (Array.isArray(currentBooking?.selectedSeats) &&
+              currentBooking.selectedSeats.includes(seatId)))
+        ) {
+          isThisSeatOccupied = true;
+        }
+
+        // 3. Reserved check for upcoming sessions
+        let isThisSeatReserved = false;
+        if (!isThisSeatOccupied) {
+          if (Array.isArray(reservedSeats) && reservedSeats.includes(seatId)) {
+            isThisSeatReserved = true;
           }
+        }
+
+        let status = 'available';
+        if (isThisSeatOccupied) {
+          status = 'occupied';
+        } else if (isThisSeatReserved) {
+          status = 'reserved';
         }
 
         seatsInThisRow.push({
@@ -49,7 +131,12 @@ export const SeatMap = ({
           number: s,
           row: rowLetter,
           status,
-          occupant: isOccupied && status === 'occupied' ? currentBooking?.user?.name || 'Occupied' : null
+          occupant:
+            isThisSeatOccupied
+              ? `${currentBooking?.user?.name || 'In session'}${
+                  currentBooking?.purpose ? ` — ${currentBooking.purpose}` : ''
+                }`
+              : null
         });
 
         seatCounter++;
@@ -58,7 +145,20 @@ export const SeatMap = ({
     }
 
     return rows;
-  }, [capacity, roomType, isOccupied, currentBooking]);
+  }, [capacity, roomType, isOccupied, isFullRoomOccupied, occupiedSeats, reservedSeats, currentBooking]);
+
+  // Strictly filter selected seats so ONLY available (green) seats can ever be selected
+  const activeSelectedSeats = useMemo(() => {
+    const availableSet = new Set();
+    seatGrid.forEach((r) => {
+      r.seats.forEach((s) => {
+        if (s.status === 'available') {
+          availableSet.add(s.id);
+        }
+      });
+    });
+    return rawSelectedSeats.filter((id) => availableSet.has(id));
+  }, [seatGrid, rawSelectedSeats]);
 
   const stats = useMemo(() => {
     let availableCount = 0;
@@ -67,29 +167,128 @@ export const SeatMap = ({
 
     seatGrid.forEach((r) => {
       r.seats.forEach((s) => {
-        if (s.id === selectedSeat) availableCount++;
-        else if (s.status === 'available') availableCount++;
-        else if (s.status === 'occupied') occupiedCount++;
+        if (s.status === 'occupied') occupiedCount++;
         else if (s.status === 'reserved') reservedCount++;
+        else availableCount++;
       });
     });
 
     return { availableCount, occupiedCount, reservedCount };
-  }, [seatGrid, selectedSeat]);
+  }, [seatGrid]);
+
+  const handleSeatClick = (seat) => {
+    if (!interactive) return;
+
+    // STRICT CHECK: Red (occupied) and Yellow (reserved) seats CANNOT be selected!
+    if (seat.status === 'occupied' || seat.status === 'reserved') {
+      return;
+    }
+
+    if (allowMultiple) {
+      const isAlreadySelected = activeSelectedSeats.includes(seat.id);
+      const updated = isAlreadySelected
+        ? activeSelectedSeats.filter((s) => s !== seat.id)
+        : [...activeSelectedSeats, seat.id];
+      onSelectSeat(updated);
+    } else {
+      const isAlreadySelected = activeSelectedSeats.includes(seat.id);
+      onSelectSeat(isAlreadySelected ? null : seat.id);
+    }
+  };
+
+  const handleClearAll = () => {
+    if (allowMultiple) {
+      onSelectSeat([]);
+    } else {
+      onSelectSeat(null);
+    }
+  };
 
   return (
-    <div className="space-y-5 select-none">
+    <div className="space-y-4 select-none">
       {/* Front Screen / Stage / Podium */}
-      <div className="w-full text-center space-y-2">
+      <div className="w-full text-center space-y-1.5">
         <div className="w-4/5 mx-auto h-2 bg-gradient-to-r from-transparent via-indigo-500 to-transparent rounded-full shadow-[0_0_15px_rgba(99,102,241,0.8)]" />
-        <div className="inline-flex items-center gap-2 px-4 py-1 rounded-full bg-slate-900 border border-white/10 text-[11px] font-mono text-slate-400">
+        <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-slate-900 border border-white/10 text-[11px] font-mono text-slate-400">
           <Monitor className="w-3.5 h-3.5 text-indigo-400" />
-          <span>FRONT STAGE • 4K PRESENTATION PODIUM & SMARTBOARD</span>
+          <span>FRONT STAGE • PRESENTATION SCREEN & INSTRUCTOR PODIUM</span>
         </div>
       </div>
 
+      {/* Dynamic Live Occupancy Notice with Real-Time Countdown */}
+      {isOccupied && stats.occupiedCount > 0 && timeRemainingInfo ? (
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 px-4 py-3 rounded-2xl bg-gradient-to-r from-rose-950/70 via-slate-900 to-rose-950/70 border border-rose-500/40 text-rose-200 text-xs shadow-lg shadow-rose-950/40">
+          <div className="flex items-center gap-2.5">
+            <div className="relative flex items-center justify-center">
+              <span className="w-3 h-3 rounded-full bg-rose-500 animate-ping absolute" />
+              <span className="w-2.5 h-2.5 rounded-full bg-rose-500 relative" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="font-bold text-white text-xs uppercase tracking-wide">
+                  {isFullRoomOccupied ? 'Full Room Class Session' : `${stats.occupiedCount} Seats in Session`}
+                </span>
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-rose-500/20 text-rose-300 border border-rose-500/30">
+                  {stats.availableCount > 0 ? `${stats.availableCount} Seats Free Now` : 'All Seats in Use'}
+                </span>
+              </div>
+              <p className="text-[11px] text-slate-300 mt-0.5">
+                {currentBooking?.purpose && <strong className="text-white">{currentBooking.purpose}</strong>}
+                {currentBooking?.user?.name && ` • Host: ${currentBooking.user.name}`}
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-rose-900/60 border border-rose-500/50 text-right self-end sm:self-auto shrink-0 shadow-inner">
+            <Hourglass className="w-4 h-4 text-rose-300 animate-pulse shrink-0" />
+            <div>
+              <span className="block text-[9px] uppercase font-bold text-rose-300 tracking-wider">
+                Occupied Seats Free In
+              </span>
+              <span className="font-mono font-extrabold text-sm text-white tracking-widest">
+                {timeRemainingInfo.formatted}
+              </span>
+            </div>
+          </div>
+        </div>
+      ) : null}
+
+      {/* Multi-Select Bar for Free/Interactive booking */}
+      {interactive && allowMultiple && (
+        <div className="flex items-center justify-between px-3.5 py-2 rounded-xl bg-indigo-950/40 border border-indigo-500/20 text-xs">
+          <div className="flex items-center gap-2 text-indigo-300">
+            <Sparkles className="w-3.5 h-3.5 text-indigo-400" />
+            <span>
+              {activeSelectedSeats.length > 0 ? (
+                <>
+                  <strong className="text-white font-bold">{activeSelectedSeats.length}</strong>{' '}
+                  {activeSelectedSeats.length === 1 ? 'seat' : 'seats'} selected: [
+                  <span className="text-indigo-200 font-mono font-bold">
+                    {activeSelectedSeats.join(', ')}
+                  </span>
+                  ]
+                </>
+              ) : (
+                'Click any green chair to select your seat. (Red & Yellow seats cannot be booked)'
+              )}
+            </span>
+          </div>
+
+          {activeSelectedSeats.length > 0 && (
+            <button
+              type="button"
+              onClick={handleClearAll}
+              className="text-[11px] font-semibold text-rose-400 hover:text-rose-300 flex items-center gap-1 hover:underline cursor-pointer"
+            >
+              <X className="w-3 h-3" />
+              <span>Clear All</span>
+            </button>
+          )}
+        </div>
+      )}
+
       {/* Seat Grid Layout */}
-      <div className="p-4 sm:p-6 rounded-2xl bg-slate-950/80 border border-white/10 overflow-x-auto">
+      <div className="p-4 sm:p-6 rounded-2xl bg-slate-950/80 border border-white/10 overflow-x-auto max-h-[400px] overflow-y-auto">
         <div className="min-w-[480px] space-y-3 mx-auto flex flex-col items-center">
           {seatGrid.map(({ rowLetter, seats }) => {
             const midPoint = Math.ceil(seats.length / 2);
@@ -106,44 +305,57 @@ export const SeatMap = ({
                 {/* Left Wing Seats */}
                 <div className="flex items-center gap-1.5">
                   {leftSeats.map((seat) => {
-                    const isSelected = selectedSeat === seat.id;
                     const isSeatOccupied = seat.status === 'occupied';
                     const isSeatReserved = seat.status === 'reserved';
+                    const isSelected = !isSeatOccupied && !isSeatReserved && activeSelectedSeats.includes(seat.id);
 
                     return (
                       <button
                         key={seat.id}
                         type="button"
                         disabled={!interactive || isSeatOccupied || isSeatReserved}
-                        onClick={() => onSelectSeat(isSelected ? null : seat.id)}
+                        onClick={() => handleSeatClick(seat)}
                         className={`w-7 h-7 sm:w-8 sm:h-8 rounded-lg flex flex-col items-center justify-center text-[10px] font-mono font-bold transition-all relative group ${
-                          isSelected
-                            ? 'bg-indigo-600 text-white border border-indigo-400 shadow-lg shadow-indigo-500/50 scale-110 ring-2 ring-indigo-400 z-10'
-                            : isSeatOccupied
-                            ? 'bg-rose-500/20 text-rose-400 border border-rose-500/40 cursor-not-allowed opacity-80'
+                          isSeatOccupied
+                            ? 'bg-rose-500/25 text-rose-300 border border-rose-500/50 cursor-not-allowed opacity-90 shadow-none'
                             : isSeatReserved
-                            ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40 cursor-not-allowed opacity-75'
-                            : 'bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 hover:bg-emerald-500/30 hover:border-emerald-400 hover:scale-105'
+                            ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40 cursor-not-allowed opacity-85 shadow-none'
+                            : isSelected
+                            ? 'bg-indigo-600 text-white border-2 border-indigo-300 shadow-lg shadow-indigo-500/50 scale-110 ring-2 ring-indigo-400 z-10'
+                            : 'bg-emerald-500/15 text-emerald-300 border border-emerald-500/35 hover:bg-emerald-500/30 hover:border-emerald-400 hover:scale-105 cursor-pointer'
                         }`}
                         title={`${seat.id} - ${
-                          isSelected
-                            ? 'Selected by you'
-                            : isSeatOccupied
-                            ? `Occupied${seat.occupant ? ` by ${seat.occupant}` : ''}`
+                          isSeatOccupied
+                            ? `Occupied • Students Studying${
+                                timeRemainingInfo ? ` (Free in ${timeRemainingInfo.formatted})` : ''
+                              }${seat.occupant ? ` • ${seat.occupant}` : ''}`
                             : isSeatReserved
-                            ? 'Reserved for Faculty/Accessibility'
-                            : 'Available (Click to Select)'
+                            ? 'Reserved (Upcoming session)'
+                            : isSelected
+                            ? 'Selected (Click to unselect)'
+                            : 'Free to Book (Click to select)'
                         }`}
                       >
                         {isSelected ? (
-                          <Check className="w-3.5 h-3.5" />
+                          <Check className="w-3.5 h-3.5 stroke-[3]" />
                         ) : (
                           <span>{seat.number}</span>
                         )}
 
-                        {/* Hover Tooltip */}
-                        <span className="absolute -top-7 hidden group-hover:block bg-slate-900 text-white text-[9px] px-2 py-0.5 rounded border border-white/20 whitespace-nowrap z-20 shadow-xl pointer-events-none">
-                          Seat {seat.id} • {isSelected ? 'Selected' : seat.status}
+                        {/* Dynamic Hover Tooltip with Countdown */}
+                        <span className="absolute -top-8 hidden group-hover:block bg-slate-900 text-white text-[9px] px-2.5 py-1 rounded-lg border border-white/20 whitespace-nowrap z-20 shadow-xl pointer-events-none text-center">
+                          <span className="font-bold">Seat {seat.id}</span> •{' '}
+                          {isSeatOccupied ? (
+                            <span className="text-rose-300 font-semibold">
+                              Studying ({timeRemainingInfo ? `Free in ${timeRemainingInfo.short}` : 'In Session'})
+                            </span>
+                          ) : isSeatReserved ? (
+                            <span className="text-amber-300 font-semibold">Reserved</span>
+                          ) : isSelected ? (
+                            <span className="text-indigo-300 font-semibold">Selected</span>
+                          ) : (
+                            <span className="text-emerald-300 font-semibold">Free to Book</span>
+                          )}
                         </span>
                       </button>
                     );
@@ -158,44 +370,57 @@ export const SeatMap = ({
                 {/* Right Wing Seats */}
                 <div className="flex items-center gap-1.5">
                   {rightSeats.map((seat) => {
-                    const isSelected = selectedSeat === seat.id;
                     const isSeatOccupied = seat.status === 'occupied';
                     const isSeatReserved = seat.status === 'reserved';
+                    const isSelected = !isSeatOccupied && !isSeatReserved && activeSelectedSeats.includes(seat.id);
 
                     return (
                       <button
                         key={seat.id}
                         type="button"
                         disabled={!interactive || isSeatOccupied || isSeatReserved}
-                        onClick={() => onSelectSeat(isSelected ? null : seat.id)}
+                        onClick={() => handleSeatClick(seat)}
                         className={`w-7 h-7 sm:w-8 sm:h-8 rounded-lg flex flex-col items-center justify-center text-[10px] font-mono font-bold transition-all relative group ${
-                          isSelected
-                            ? 'bg-indigo-600 text-white border border-indigo-400 shadow-lg shadow-indigo-500/50 scale-110 ring-2 ring-indigo-400 z-10'
-                            : isSeatOccupied
-                            ? 'bg-rose-500/20 text-rose-400 border border-rose-500/40 cursor-not-allowed opacity-80'
+                          isSeatOccupied
+                            ? 'bg-rose-500/25 text-rose-300 border border-rose-500/50 cursor-not-allowed opacity-90 shadow-none'
                             : isSeatReserved
-                            ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40 cursor-not-allowed opacity-75'
-                            : 'bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 hover:bg-emerald-500/30 hover:border-emerald-400 hover:scale-105'
+                            ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40 cursor-not-allowed opacity-85 shadow-none'
+                            : isSelected
+                            ? 'bg-indigo-600 text-white border-2 border-indigo-300 shadow-lg shadow-indigo-500/50 scale-110 ring-2 ring-indigo-400 z-10'
+                            : 'bg-emerald-500/15 text-emerald-300 border border-emerald-500/35 hover:bg-emerald-500/30 hover:border-emerald-400 hover:scale-105 cursor-pointer'
                         }`}
                         title={`${seat.id} - ${
-                          isSelected
-                            ? 'Selected by you'
-                            : isSeatOccupied
-                            ? `Occupied${seat.occupant ? ` by ${seat.occupant}` : ''}`
+                          isSeatOccupied
+                            ? `Occupied • Students Studying${
+                                timeRemainingInfo ? ` (Free in ${timeRemainingInfo.formatted})` : ''
+                              }${seat.occupant ? ` • ${seat.occupant}` : ''}`
                             : isSeatReserved
-                            ? 'Reserved for Faculty/Accessibility'
-                            : 'Available (Click to Select)'
+                            ? 'Reserved (Upcoming session)'
+                            : isSelected
+                            ? 'Selected (Click to unselect)'
+                            : 'Free to Book (Click to select)'
                         }`}
                       >
                         {isSelected ? (
-                          <Check className="w-3.5 h-3.5" />
+                          <Check className="w-3.5 h-3.5 stroke-[3]" />
                         ) : (
                           <span>{seat.number}</span>
                         )}
 
-                        {/* Hover Tooltip */}
-                        <span className="absolute -top-7 hidden group-hover:block bg-slate-900 text-white text-[9px] px-2 py-0.5 rounded border border-white/20 whitespace-nowrap z-20 shadow-xl pointer-events-none">
-                          Seat {seat.id} • {isSelected ? 'Selected' : seat.status}
+                        {/* Dynamic Hover Tooltip with Countdown */}
+                        <span className="absolute -top-8 hidden group-hover:block bg-slate-900 text-white text-[9px] px-2.5 py-1 rounded-lg border border-white/20 whitespace-nowrap z-20 shadow-xl pointer-events-none text-center">
+                          <span className="font-bold">Seat {seat.id}</span> •{' '}
+                          {isSeatOccupied ? (
+                            <span className="text-rose-300 font-semibold">
+                              Studying ({timeRemainingInfo ? `Free in ${timeRemainingInfo.short}` : 'In Session'})
+                            </span>
+                          ) : isSeatReserved ? (
+                            <span className="text-amber-300 font-semibold">Reserved</span>
+                          ) : isSelected ? (
+                            <span className="text-indigo-300 font-semibold">Selected</span>
+                          ) : (
+                            <span className="text-emerald-300 font-semibold">Free to Book</span>
+                          )}
                         </span>
                       </button>
                     );
@@ -212,36 +437,47 @@ export const SeatMap = ({
         </div>
       </div>
 
-      {/* Legend & Selected Seat Indicator */}
+      {/* Legend & Selected Seats Indicator */}
       <div className="flex flex-wrap items-center justify-between gap-3 text-xs pt-1">
         {/* Color Legend */}
         <div className="flex items-center gap-3 flex-wrap">
-          <div className="flex items-center gap-1.5">
-            <span className="w-3.5 h-3.5 rounded bg-emerald-500/20 border border-emerald-500/40" />
-            <span className="text-slate-300">Available ({stats.availableCount})</span>
+          <div className="flex items-center gap-1.5" title="Free to book right now">
+            <span className="w-3.5 h-3.5 rounded bg-emerald-500/20 border border-emerald-500/50 inline-block" />
+            <span className="text-slate-300">Free to Book ({stats.availableCount})</span>
           </div>
 
-          <div className="flex items-center gap-1.5">
-            <span className="w-3.5 h-3.5 rounded bg-indigo-600 border border-indigo-400 shadow-sm" />
-            <span className="text-slate-300">Selected</span>
-          </div>
-
-          <div className="flex items-center gap-1.5">
-            <span className="w-3.5 h-3.5 rounded bg-rose-500/20 border border-rose-500/40" />
-            <span className="text-slate-300">Occupied ({stats.occupiedCount})</span>
-          </div>
-
-          <div className="flex items-center gap-1.5">
-            <span className="w-3.5 h-3.5 rounded bg-amber-500/20 border border-amber-500/40" />
+          <div className="flex items-center gap-1.5" title="Reserved for upcoming slot / faculty">
+            <span className="w-3.5 h-3.5 rounded bg-amber-500/25 border border-amber-500/50 inline-block" />
             <span className="text-slate-300">Reserved ({stats.reservedCount})</span>
+          </div>
+
+          <div className="flex items-center gap-1.5" title="Students currently studying / session in progress">
+            <span className="w-3.5 h-3.5 rounded bg-rose-500/25 border border-rose-500/50 inline-block" />
+            <span className="text-slate-300">
+              Students Studying ({stats.occupiedCount})
+              {stats.occupiedCount > 0 && timeRemainingInfo && (
+                <span className="text-rose-400 font-mono font-semibold ml-1">
+                  • ⏳ Free in {timeRemainingInfo.short}
+                </span>
+              )}
+            </span>
+          </div>
+
+          <div className="flex items-center gap-1.5" title="Your selected seat(s)">
+            <span className="w-3.5 h-3.5 rounded bg-indigo-600 border border-indigo-400 shadow-sm inline-block" />
+            <span className="text-slate-300">Selected ({activeSelectedSeats.length})</span>
           </div>
         </div>
 
         {/* Selected Seat Feedback */}
-        {selectedSeat && (
+        {activeSelectedSeats.length > 0 && (
           <div className="px-3 py-1 rounded-xl bg-indigo-500/20 border border-indigo-500/40 text-indigo-300 font-mono font-bold flex items-center gap-1.5">
             <Sparkles className="w-3.5 h-3.5 text-indigo-400" />
-            <span>Assigned: Seat {selectedSeat}</span>
+            <span>
+              {activeSelectedSeats.length === 1
+                ? `Seat #${activeSelectedSeats[0]}`
+                : `${activeSelectedSeats.length} Seats: #${activeSelectedSeats.join(', #')}`}
+            </span>
           </div>
         )}
       </div>

@@ -77,28 +77,20 @@ export const FacultyLogin = () => {
             </span>
             <span className="text-[11px]">Password: Password123</span>
           </div>
-          <div className="grid grid-cols-3 gap-2 text-xs">
+          <div className="grid grid-cols-2 gap-2 text-xs">
             <button
               type="button"
-              onClick={() => handleDemoFill('a.pendelton@londonmet.ac.uk')}
+              onClick={() => handleDemoFill('s.adhikari@londonmet.ac.uk')}
               className="px-2.5 py-1.5 rounded-lg bg-purple-500/10 hover:bg-purple-500/20 text-purple-300 border border-purple-500/20 truncate transition-colors text-center font-medium"
-              title="Prof. Arthur Pendelton (Faculty)"
+              title="Subigyan Adhikari (Computing & Engineering)"
             >
-              Prof. Arthur
-            </button>
-            <button
-              type="button"
-              onClick={() => handleDemoFill('f.gallagher@londonmet.ac.uk')}
-              className="px-2.5 py-1.5 rounded-lg bg-purple-500/10 hover:bg-purple-500/20 text-purple-300 border border-purple-500/20 truncate transition-colors text-center font-medium"
-              title="Dr. Fiona Gallagher (Faculty)"
-            >
-              Dr. Fiona
+              Subigyan Adhikari
             </button>
             <button
               type="button"
               onClick={() => handleDemoFill('admin@londonmet.ac.uk')}
               className="px-2.5 py-1.5 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-300 border border-rose-500/20 truncate transition-colors text-center font-bold"
-              title="Dr. Eleanor Vance (Admin)"
+              title="System Admin (Estates & IT)"
             >
               Admin
             </button>
@@ -115,7 +107,7 @@ export const FacultyLogin = () => {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="e.g. a.pendelton@londonmet.ac.uk"
+              placeholder="e.g. s.adhikari@londonmet.ac.uk"
               className="w-full bg-slate-900 border border-white/10 rounded-xl px-3.5 py-2.5 text-sm text-white placeholder:text-slate-600 focus:outline-none focus:border-purple-500 transition-colors"
               required
             />

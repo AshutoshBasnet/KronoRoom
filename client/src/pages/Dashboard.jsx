@@ -266,12 +266,12 @@ export const Dashboard = () => {
               key={roomData.room?._id || Math.random()}
               roomData={roomData}
               onViewSeatsClick={(data) => setSelectedRoomForSeatMap(data)}
-              onBookClick={(room) => {
+              onBookClick={(data) => {
                 if (!user) {
                   window.location.href = '/login/student';
                 } else {
                   setInitialSeatForBooking(null);
-                  setSelectedRoomForBooking(room);
+                  setSelectedRoomForBooking(data);
                 }
               }}
             />
@@ -284,12 +284,12 @@ export const Dashboard = () => {
         isOpen={!!selectedRoomForSeatMap}
         onClose={() => setSelectedRoomForSeatMap(null)}
         roomData={selectedRoomForSeatMap}
-        onBookRoom={(room, selectedSeat) => {
+        onBookRoom={(data, selectedSeats) => {
           if (!user) {
             window.location.href = '/login/student';
           } else {
-            setInitialSeatForBooking(selectedSeat);
-            setSelectedRoomForBooking(room);
+            setInitialSeatForBooking(selectedSeats);
+            setSelectedRoomForBooking(data);
           }
         }}
       />
@@ -301,7 +301,12 @@ export const Dashboard = () => {
           setSelectedRoomForBooking(null);
           setInitialSeatForBooking(null);
         }}
-        room={selectedRoomForBooking}
+        room={selectedRoomForBooking?.room || selectedRoomForBooking}
+        isOccupied={selectedRoomForBooking?.isOccupied || false}
+        isFullRoomOccupied={selectedRoomForBooking?.isFullRoomOccupied || false}
+        occupiedSeats={selectedRoomForBooking?.occupiedSeats || []}
+        reservedSeats={selectedRoomForBooking?.reservedSeats || []}
+        currentBooking={selectedRoomForBooking?.currentBooking || null}
         initialSeat={initialSeatForBooking}
         onBookingSuccess={() => {
           fetchLiveStatus('Booking submitted and confirmed!');

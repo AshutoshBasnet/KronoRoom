@@ -91,36 +91,108 @@ export const createBooking = async (req, res, next) => {
       }
     }
 
-    // 4. Strict Overlap / Concurrency Conflict Check
-    // Overlap condition: existing.startTime < requested.endTime AND existing.endTime > requested.startTime
-    const conflictingBooking = await Booking.findOne({
+    // 4. Overlap / Concurrency Conflict Check (Granular to Seat Level)
+    const requestedSeats = Array.isArray(selectedSeats)
+      ? selectedSeats
+      : selectedSeats
+      ? [selectedSeats]
+      : seatNumber
+      ? seatNumber.split(',').map((s) => s.trim()).filter(Boolean)
+      : [];
+
+    const overlappingBookings = await Booking.find({
       room: roomId,
       status: 'confirmed',
       startTime: { $lt: end },
       endTime: { $gt: start }
     }).populate('user', 'name role department');
 
-    if (conflictingBooking) {
-      const conflictStart = new Date(conflictingBooking.startTime).toLocaleTimeString([], {
-        hour: '2-digit',
-        minute: '2-digit'
-      });
-      const conflictEnd = new Date(conflictingBooking.endTime).toLocaleTimeString([], {
-        hour: '2-digit',
-        minute: '2-digit'
-      });
+    if (overlappingBookings.length > 0) {
+      // If requesting entire room (no specific seats specified)
+      if (requestedSeats.length === 0) {
+        const firstConflict = overlappingBookings[0];
+        const conflictStart = new Date(firstConflict.startTime).toLocaleTimeString([], {
+          hour: '2-digit',
+          minute: '2-digit'
+        });
+        const conflictEnd = new Date(firstConflict.endTime).toLocaleTimeString([], {
+          hour: '2-digit',
+          minute: '2-digit'
+        });
 
-      return res.status(409).json({
-        success: false,
-        message: `Conflict detected: Room ${room.roomNumber} is already booked from ${conflictStart} to ${conflictEnd} for '${conflictingBooking.purpose}'`,
-        conflict: {
-          bookingId: conflictingBooking._id,
-          startTime: conflictingBooking.startTime,
-          endTime: conflictingBooking.endTime,
-          purpose: conflictingBooking.purpose,
-          bookedBy: conflictingBooking.user?.name || 'Another user'
+        return res.status(409).json({
+          success: false,
+          message: `Conflict detected: Room ${room.roomNumber} already has an active booking from ${conflictStart} to ${conflictEnd} for '${firstConflict.purpose}'`,
+          conflict: {
+            bookingId: firstConflict._id,
+            startTime: firstConflict.startTime,
+            endTime: firstConflict.endTime,
+            purpose: firstConflict.purpose,
+            bookedBy: firstConflict.user?.name || 'Another user'
+          }
+        });
+      }
+
+      // If requesting specific seats, check if any of those exact seats are taken
+      for (const existing of overlappingBookings) {
+        const existingSeats = Array.isArray(existing.selectedSeats) && existing.selectedSeats.length > 0
+          ? existing.selectedSeats
+          : existing.seatNumber
+          ? existing.seatNumber.split(',').map((s) => s.trim()).filter(Boolean)
+          : [];
+
+        // If existing booking was a whole-room booking with no seat numbers
+        if (existingSeats.length === 0) {
+          const conflictStart = new Date(existing.startTime).toLocaleTimeString([], {
+            hour: '2-digit',
+            minute: '2-digit'
+          });
+          const conflictEnd = new Date(existing.endTime).toLocaleTimeString([], {
+            hour: '2-digit',
+            minute: '2-digit'
+          });
+
+          return res.status(409).json({
+            success: false,
+            message: `Conflict detected: Room ${room.roomNumber} is booked for full class session from ${conflictStart} to ${conflictEnd} ('${existing.purpose}')`,
+            conflict: {
+              bookingId: existing._id,
+              startTime: existing.startTime,
+              endTime: existing.endTime,
+              purpose: existing.purpose,
+              bookedBy: existing.user?.name || 'Another user'
+            }
+          });
         }
-      });
+
+        // Check if any requested seat overlaps with existing seats
+        const conflictedSeats = requestedSeats.filter((s) => existingSeats.includes(s));
+        if (conflictedSeats.length > 0) {
+          const conflictStart = new Date(existing.startTime).toLocaleTimeString([], {
+            hour: '2-digit',
+            minute: '2-digit'
+          });
+          const conflictEnd = new Date(existing.endTime).toLocaleTimeString([], {
+            hour: '2-digit',
+            minute: '2-digit'
+          });
+
+          return res.status(409).json({
+            success: false,
+            message: `Seat conflict: ${
+              conflictedSeats.length === 1 ? `Seat #${conflictedSeats[0]}` : `Seats #${conflictedSeats.join(', #')}`
+            } in ${room.roomNumber} is already booked from ${conflictStart} to ${conflictEnd} for '${existing.purpose}'`,
+            conflict: {
+              bookingId: existing._id,
+              conflictedSeats,
+              startTime: existing.startTime,
+              endTime: existing.endTime,
+              purpose: existing.purpose,
+              bookedBy: existing.user?.name || 'Another user'
+            }
+          });
+        }
+      }
     }
 
     // 5. Create Booking
@@ -130,9 +202,18 @@ export const createBooking = async (req, res, next) => {
       startTime: start,
       endTime: end,
       purpose: purpose.trim(),
-      bookingType: bookingType || (userRole === 'student' ? 'Study Session' : 'Regular Class'),
-      seatNumber: seatNumber || null,
-      selectedSeats: Array.isArray(selectedSeats) ? selectedSeats : selectedSeats ? [selectedSeats] : [],
+      seatNumber:
+        seatNumber ||
+        (Array.isArray(selectedSeats) && selectedSeats.length > 0
+          ? selectedSeats.join(', ')
+          : null),
+      selectedSeats: Array.isArray(selectedSeats)
+        ? selectedSeats
+        : selectedSeats
+        ? [selectedSeats]
+        : seatNumber
+        ? seatNumber.split(',').map((s) => s.trim()).filter(Boolean)
+        : [],
       status: 'confirmed',
       checkedIn: false
     });

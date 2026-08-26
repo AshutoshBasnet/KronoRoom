@@ -1,11 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import {
-  Clock,
   Sparkles,
   ArrowRight,
-  ShieldCheck,
-  Zap,
   GraduationCap,
   Users,
   CheckCircle2,
@@ -60,13 +57,13 @@ export const Landing = () => {
         <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight text-white font-heading leading-tight max-w-4xl mx-auto">
           Intelligent Classroom & Lab <br />
           <span className="bg-gradient-to-r from-indigo-400 via-purple-300 to-emerald-400 bg-clip-text text-transparent">
-            Booking & Occupancy Matrix
+            Booking & Occupancy System
           </span>
         </h1>
 
         {/* Subtitle */}
         <p className="text-base sm:text-lg text-slate-400 max-w-2xl mx-auto leading-relaxed">
-          Real-time room availability across Tower Building, Learning Centre, and Science Centre.
+          Real-time room availability across Skill Block, London Block, and Kumari Block.
           Eliminate booking conflicts with automated 15-minute auto-release protection.
         </p>
 
@@ -207,47 +204,6 @@ export const Landing = () => {
                 <ChevronRight className="w-4 h-4" />
               </Link>
             </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Feature Highlights Grid */}
-      <section className="py-12 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto w-full">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="krono-card p-6 rounded-2xl border border-white/10 space-y-2">
-            <div className="w-10 h-10 rounded-xl bg-indigo-500/20 text-indigo-400 flex items-center justify-center mb-3">
-              <Zap className="w-5 h-5" />
-            </div>
-            <h4 className="font-heading font-bold text-base text-white">
-              Conflict-Free Concurrency
-            </h4>
-            <p className="text-xs text-slate-400 leading-relaxed">
-              Mathematical overlap checking prevents double bookings simultaneously across all campus users.
-            </p>
-          </div>
-
-          <div className="krono-card p-6 rounded-2xl border border-white/10 space-y-2">
-            <div className="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center mb-3">
-              <Clock className="w-5 h-5" />
-            </div>
-            <h4 className="font-heading font-bold text-base text-white">
-              15m Auto-Release Protection
-            </h4>
-            <p className="text-xs text-slate-400 leading-relaxed">
-              Automated background jobs reclaim unattended rooms after 15 minutes to maximize campus space utilization.
-            </p>
-          </div>
-
-          <div className="krono-card p-6 rounded-2xl border border-white/10 space-y-2">
-            <div className="w-10 h-10 rounded-xl bg-purple-500/20 text-purple-400 flex items-center justify-center mb-3">
-              <ShieldCheck className="w-5 h-5" />
-            </div>
-            <h4 className="font-heading font-bold text-base text-white">
-              Role-Based Access (RBAC)
-            </h4>
-            <p className="text-xs text-slate-400 leading-relaxed">
-              Strict policies protecting faculty lecture allocations, student study rights, and estates management.
-            </p>
           </div>
         </div>
       </section>

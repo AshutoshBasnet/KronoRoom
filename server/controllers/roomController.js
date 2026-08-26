@@ -54,26 +54,70 @@ export const getLiveStatus = async (req, res, next) => {
     // Fetch all active confirmed bookings for today/near future
     const liveStatusList = await Promise.all(
       rooms.map(async (room) => {
-        // Find current ongoing booking
-        const currentBooking = await Booking.findOne({
+        // Find all ongoing active bookings in session right now
+        const activeBookings = await Booking.find({
           room: room._id,
           status: 'confirmed',
           startTime: { $lte: now },
           endTime: { $gt: now }
         }).populate('user', 'name role department email idCardNumber');
 
-        // Find next upcoming booking
-        const nextBooking = await Booking.findOne({
+        // Find upcoming confirmed bookings
+        const upcomingBookings = await Booking.find({
           room: room._id,
           status: 'confirmed',
           startTime: { $gt: now }
         })
           .sort({ startTime: 1 })
-          .populate('user', 'name role department');
+          .populate('user', 'name role department email idCardNumber');
+
+        const currentBooking = activeBookings[0] || null;
+        const nextBooking = upcomingBookings[0] || null;
+
+        // Collect all occupied seats from active bookings
+        const occupiedSeatsSet = new Set();
+        let isFullRoomOccupied = false;
+
+        activeBookings.forEach((b) => {
+          if (Array.isArray(b.selectedSeats) && b.selectedSeats.length > 0) {
+            b.selectedSeats.forEach((s) => occupiedSeatsSet.add(s));
+          } else if (b.seatNumber) {
+            b.seatNumber.split(',').forEach((s) => {
+              const trimmed = s.trim();
+              if (trimmed) occupiedSeatsSet.add(trimmed);
+            });
+          } else {
+            // Whole room booking (e.g., class lecture or maintenance)
+            isFullRoomOccupied = true;
+          }
+        });
+
+        // Collect all reserved seats from upcoming bookings
+        const reservedSeatsSet = new Set();
+        upcomingBookings.forEach((b) => {
+          if (Array.isArray(b.selectedSeats) && b.selectedSeats.length > 0) {
+            b.selectedSeats.forEach((s) => reservedSeatsSet.add(s));
+          } else if (b.seatNumber) {
+            b.seatNumber.split(',').forEach((s) => {
+              const trimmed = s.trim();
+              if (trimmed) reservedSeatsSet.add(trimmed);
+            });
+          }
+        });
+
+        const occupiedSeats = Array.from(occupiedSeatsSet);
+        const reservedSeats = Array.from(reservedSeatsSet);
 
         let occupancyData = {
           room,
-          isOccupied: false,
+          isOccupied: activeBookings.length > 0,
+          isFullRoomOccupied,
+          occupiedSeats,
+          reservedSeats,
+          occupiedCount: isFullRoomOccupied ? room.capacity : occupiedSeats.length,
+          availableSeatsCount: isFullRoomOccupied
+            ? 0
+            : Math.max(0, room.capacity - occupiedSeats.length),
           currentBooking: null,
           nextBooking: null
         };
@@ -85,7 +129,6 @@ export const getLiveStatus = async (req, res, next) => {
           const elapsedCreatedMs = now.getTime() - new Date(currentBooking.createdAt).getTime();
           const elapsedCreatedMinutes = Math.max(0, Math.floor(elapsedCreatedMs / (1000 * 60)));
 
-          occupancyData.isOccupied = true;
           occupancyData.currentBooking = {
             _id: currentBooking._id,
             startTime: currentBooking.startTime,
@@ -93,6 +136,8 @@ export const getLiveStatus = async (req, res, next) => {
             purpose: currentBooking.purpose,
             bookingType: currentBooking.bookingType,
             checkedIn: currentBooking.checkedIn,
+            seatNumber: currentBooking.seatNumber || null,
+            selectedSeats: currentBooking.selectedSeats || [],
             createdAt: currentBooking.createdAt,
             timeRemainingMinutes,
             elapsedCreatedMinutes,
@@ -113,6 +158,8 @@ export const getLiveStatus = async (req, res, next) => {
             endTime: nextBooking.endTime,
             purpose: nextBooking.purpose,
             bookingType: nextBooking.bookingType,
+            seatNumber: nextBooking.seatNumber || null,
+            selectedSeats: nextBooking.selectedSeats || [],
             user: {
               name: nextBooking.user?.name || 'Unknown',
               role: nextBooking.user?.role || 'user'

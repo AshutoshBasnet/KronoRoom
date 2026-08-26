@@ -76,27 +76,27 @@ export const StudentLogin = () => {
           <div className="grid grid-cols-3 gap-2 text-xs">
             <button
               type="button"
-              onClick={() => handleDemoFill('m.sterling@londonmet.ac.uk')}
+              onClick={() => handleDemoFill('a.basnet@londonmet.ac.uk')}
               className="px-2.5 py-1.5 rounded-lg bg-blue-500/10 hover:bg-blue-500/20 text-blue-300 border border-blue-500/20 truncate transition-colors text-center font-medium"
-              title="Marcus Sterling (Computing)"
+              title="Ashutosh Basnet (Computing & Digital Media)"
             >
-              Marcus S.
+              Ashutosh B.
             </button>
             <button
               type="button"
-              onClick={() => handleDemoFill('z.chen@londonmet.ac.uk')}
+              onClick={() => handleDemoFill('a.poudel@londonmet.ac.uk')}
               className="px-2.5 py-1.5 rounded-lg bg-blue-500/10 hover:bg-blue-500/20 text-blue-300 border border-blue-500/20 truncate transition-colors text-center font-medium"
-              title="Zara Chen (Architecture)"
+              title="Anmol Poudel (Architecture & Engineering)"
             >
-              Zara C.
+              Anmol P.
             </button>
             <button
               type="button"
-              onClick={() => handleDemoFill('l.oconnor@londonmet.ac.uk')}
+              onClick={() => handleDemoFill('p.rai@londonmet.ac.uk')}
               className="px-2.5 py-1.5 rounded-lg bg-blue-500/10 hover:bg-blue-500/20 text-blue-300 border border-blue-500/20 truncate transition-colors text-center font-medium"
-              title="Liam O'Connor (Human Sciences)"
+              title="Parjun Rai (Business & Human Sciences)"
             >
-              Liam O.
+              Parjun R.
             </button>
           </div>
         </div>
@@ -111,7 +111,7 @@ export const StudentLogin = () => {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="e.g. m.sterling@londonmet.ac.uk"
+              placeholder="e.g. a.basnet@londonmet.ac.uk"
               className="w-full bg-slate-900 border border-white/10 rounded-xl px-3.5 py-2.5 text-sm text-white placeholder:text-slate-600 focus:outline-none focus:border-blue-500 transition-colors"
               required
             />

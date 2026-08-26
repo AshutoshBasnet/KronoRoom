@@ -37,7 +37,7 @@ const seedData = async () => {
     console.log('[Seed Script]: Creating Users...');
     const users = await User.insertMany([
       {
-        name: 'Dr. Eleanor Vance',
+        name: 'Admin',
         email: 'admin@londonmet.ac.uk',
         passwordHash,
         idCardNumber: 'LM-ADM-001',
@@ -45,190 +45,172 @@ const seedData = async () => {
         department: 'Campus Estates & IT Services'
       },
       {
-        name: 'Prof. Arthur Pendelton',
-        email: 'a.pendelton@londonmet.ac.uk',
+        name: 'Subigyan Adhikari',
+        email: 's.adhikari@londonmet.ac.uk',
         passwordHash,
         idCardNumber: 'LM-FAC-101',
         role: 'teacher',
-        department: 'Computing & Digital Media'
+        department: 'Computing & Engineering'
       },
       {
-        name: 'Dr. Fiona Gallagher',
-        email: 'f.gallagher@londonmet.ac.uk',
-        passwordHash,
-        idCardNumber: 'LM-FAC-102',
-        role: 'teacher',
-        department: 'Business & Financial Management'
-      },
-      {
-        name: 'Marcus Sterling',
-        email: 'm.sterling@londonmet.ac.uk',
+        name: 'Ashutosh Basnet',
+        email: 'a.basnet@londonmet.ac.uk',
         passwordHash,
         idCardNumber: 'LM-STU-202401',
         role: 'student',
         department: 'Computing & Digital Media'
       },
       {
-        name: 'Zara Chen',
-        email: 'z.chen@londonmet.ac.uk',
+        name: 'Anmol Poudel',
+        email: 'a.poudel@londonmet.ac.uk',
         passwordHash,
         idCardNumber: 'LM-STU-202402',
         role: 'student',
-        department: 'Architecture & Design'
+        department: 'Architecture & Engineering'
       },
       {
-        name: 'Liam O\'Connor',
-        email: 'l.oconnor@londonmet.ac.uk',
+        name: 'Parjun Rai',
+        email: 'p.rai@londonmet.ac.uk',
         passwordHash,
         idCardNumber: 'LM-STU-202403',
         role: 'student',
-        department: 'Human Sciences'
+        department: 'Business & Human Sciences'
       }
     ]);
 
-    const [admin, teacher1, teacher2, student1, student2, student3] = users;
+    const [adminUser, facultySubigyan, studentAshutosh, studentAnmol, studentParjun] = users;
     console.log(`[Seed Script]: Created ${users.length} users.`);
 
     // 2. Create Rooms
     console.log('[Seed Script]: Creating Rooms...');
     const rooms = await Room.insertMany([
       {
-        roomNumber: 'T-301',
-        building: 'Tower Building',
-        capacity: 85,
-        type: 'lecture_hall',
+        roomNumber: 'Lab-01',
+        building: 'Skill Block',
+        capacity: 50,
+        type: 'computer_lab',
         amenities: [
-          'Dual 4K Laser Projectors',
-          'Surround Audio System',
-          'Automated Lecture Capture',
-          'Tiered Ergonomic Seating',
-          'Wireless Microphones',
+          '50x High-Performance Workstations',
+          'Dual Color-Calibrated Displays',
+          'Gigabit Ethernet & Fiber Uplink',
+          'Interactive Smartboard',
           'High-Speed Wi-Fi 6'
         ],
         isActive: true
       },
       {
-        roomNumber: 'T-405',
-        building: 'Tower Building',
-        capacity: 35,
+        roomNumber: 'Lab-02',
+        building: 'Skill Block',
+        capacity: 50,
         type: 'computer_lab',
         amenities: [
-          'Apple Mac Studio M2 Workstations',
-          'Adobe Creative Cloud Suite',
-          'Dual Color-Calibrated Displays',
-          'Gigabit Ethernet & Fiber Uplink',
-          'Interactive Smartboard'
+          '50x Developer Linux / GPU Workstations',
+          'Docker & Cloud Computing Sandboxes',
+          'Dual 27-inch 144Hz Displays',
+          'Interactive Whiteboard Wall',
+          'High-Speed Wi-Fi 6'
         ],
         isActive: true
       },
       {
-        roomNumber: 'LC-102',
-        building: 'Learning Centre',
-        capacity: 25,
+        roomNumber: 'LT-01',
+        building: 'London Block',
+        capacity: 80,
         type: 'seminar_room',
         amenities: [
-          'Interactive 85" Smartboard',
-          '4K Video Conference Rig',
-          'Modular Reconfigurable Tables',
-          'Full-Height Whiteboard Walls',
-          'Acoustic Ceiling Panels'
+          'Tiered Ergonomic Seminar Seating (80 Seats)',
+          'Dual 4K Laser Projection System',
+          'Beamforming Mic Array & Audio Podiums',
+          'Hybrid Video Conferencing Rig',
+          'High-Speed Wi-Fi 6'
         ],
         isActive: true
       },
       {
-        roomNumber: 'LC-201',
-        building: 'Learning Centre',
-        capacity: 45,
-        type: 'computer_lab',
+        roomNumber: 'LT-02',
+        building: 'London Block',
+        capacity: 80,
+        type: 'seminar_room',
         amenities: [
-          'Dell Precision Linux Workstations',
-          'NVIDIA RTX 4080 GPUs',
-          'Dual 27-inch 144Hz Displays',
-          'Meta Quest Pro VR Development Kits',
-          'Docker & Kubernetes Sandboxes'
+          '80-Seat Seminar & Collaborative Studio',
+          'Ultra-HD Interactive Touch Wall',
+          'Automated Lecture Capture & AI Tracking',
+          'Assisted Listening Loop',
+          'High-Speed Wi-Fi 6'
         ],
         isActive: true
       },
       {
-        roomNumber: 'SC-101',
-        building: 'Science Centre',
-        capacity: 120,
+        roomNumber: 'Hall-01',
+        building: 'Kumari Block',
+        capacity: 100,
         type: 'lecture_hall',
         amenities: [
-          'Dual Ultrawide Display Walls',
-          'Acoustic Waveguide Sound',
-          'Document Inspection Cameras',
+          '100-Seat Tiered Auditorium',
+          'Dual 4K Ultrawide Laser Display Walls',
+          'Dolby Atmos Surround Audio',
+          'Automated HD Lecture Capture',
           'Wheelchair Accessible Podiums',
-          'Assisted Listening Loop'
-        ],
-        isActive: true
-      },
-      {
-        roomNumber: 'SC-303',
-        building: 'Science Centre',
-        capacity: 30,
-        type: 'seminar_room',
-        amenities: [
-          '4K Touchscreen Display',
-          'AI-Tracking Hybrid Cameras',
-          'Ceiling Beamforming Mic Array',
-          'Herman Miller Ergonomic Chairs'
+          'High-Speed Wi-Fi 6'
         ],
         isActive: true
       }
     ]);
 
-    const [roomT301, roomT405, roomLC102, roomLC201, roomSC101, roomSC303] = rooms;
+    const [roomLab01, roomLab02, roomLT01, roomLT02, roomHall01] = rooms;
     console.log(`[Seed Script]: Created ${rooms.length} rooms.`);
 
     // 3. Create Sample Bookings (including 1 ongoing live booking right now!)
     console.log('[Seed Script]: Creating Sample Bookings...');
     const now = new Date();
 
-    // Ongoing booking in T-301: Started 30 mins ago, finishes in 45 mins
+    // Ongoing live booking in Lab-01: Started 30 mins ago, finishes in 45 mins (Students studying right now!)
     const ongoingStart = new Date(now.getTime() - 30 * 60 * 1000);
     const ongoingEnd = new Date(now.getTime() + 45 * 60 * 1000);
 
-    // Upcoming booking in LC-102: Starts in 1.5 hours, finishes in 3.5 hours
+    // Upcoming booking in LT-01: Starts in 1.5 hours, finishes in 3.5 hours
     const upcomingStart = new Date(now.getTime() + 90 * 60 * 1000);
     const upcomingEnd = new Date(now.getTime() + 210 * 60 * 1000);
 
-    // Another upcoming in T-405 tomorrow
+    // Another upcoming in Hall-01 tomorrow
     const tomorrowStart = new Date(now.getTime() + 24 * 60 * 60 * 1000);
     const tomorrowEnd = new Date(now.getTime() + 26 * 60 * 60 * 1000);
 
     const bookings = await Booking.insertMany([
       {
-        room: roomT301._id,
-        user: teacher1._id,
+        room: roomLab01._id,
+        user: facultySubigyan._id,
         startTime: ongoingStart,
         endTime: ongoingEnd,
-        purpose: 'CS6004: Advanced Distributed Cloud Systems Lecture',
+        purpose: 'CS5053NI: Cloud Computing and the Internet of Things Lab',
         bookingType: 'Regular Class',
         status: 'confirmed',
         checkedIn: true,
+        seatNumber: 'A1',
         createdAt: new Date(now.getTime() - 45 * 60 * 1000)
       },
       {
-        room: roomLC102._id,
-        user: student1._id,
+        room: roomLT01._id,
+        user: studentAshutosh._id,
         startTime: upcomingStart,
         endTime: upcomingEnd,
-        purpose: 'Final Year Capstone Project Collaborative Sprint',
+        purpose: 'CC5051NI: Databases — Collaborative Study Sprint',
         bookingType: 'Study Session',
         status: 'confirmed',
         checkedIn: false,
+        seatNumber: 'B4',
         createdAt: new Date(now.getTime() - 120 * 60 * 1000)
       },
       {
-        room: roomT405._id,
-        user: teacher2._id,
+        room: roomHall01._id,
+        user: facultySubigyan._id,
         startTime: tomorrowStart,
         endTime: tomorrowEnd,
-        purpose: 'FIN302: Fintech Financial Modelling Lab',
+        purpose: 'CS5002NI: Software Engineering Keynote Lecture',
         bookingType: 'Regular Class',
         status: 'confirmed',
         checkedIn: false,
+        seatNumber: 'A5',
         createdAt: new Date(now.getTime() - 10 * 60 * 1000)
       }
     ]);
@@ -240,11 +222,10 @@ const seedData = async () => {
     console.log('======================================================');
     console.log('Sample Credentials (All passwords: "Password123"):');
     console.log(' - Admin:   admin@londonmet.ac.uk       (LM-ADM-001) [Campus Estates & IT]');
-    console.log(' - Teacher: a.pendelton@londonmet.ac.uk (LM-FAC-101) [Computing & Digital Media]');
-    console.log(' - Teacher: f.gallagher@londonmet.ac.uk (LM-FAC-102) [Business & Finance]');
-    console.log(' - Student: m.sterling@londonmet.ac.uk  (LM-STU-202401) [Computing & Digital Media]');
-    console.log(' - Student: z.chen@londonmet.ac.uk      (LM-STU-202402) [Architecture]');
-    console.log(' - Student: l.oconnor@londonmet.ac.uk   (LM-STU-202403) [Human Sciences]');
+    console.log(' - Teacher: s.adhikari@londonmet.ac.uk  (LM-FAC-101) [Subigyan Adhikari]');
+    console.log(' - Student: a.basnet@londonmet.ac.uk    (LM-STU-202401) [Ashutosh Basnet]');
+    console.log(' - Student: a.poudel@londonmet.ac.uk    (LM-STU-202402) [Anmol Poudel]');
+    console.log(' - Student: p.rai@londonmet.ac.uk       (LM-STU-202403) [Parjun Rai]');
     console.log('======================================================\n');
 
     process.exit(0);

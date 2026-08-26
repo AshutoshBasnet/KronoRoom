@@ -99,7 +99,7 @@ export const FilterBar = ({
             onChange={(e) => setSelectedBuilding(e.target.value)}
             className="w-full bg-slate-900 border border-white/10 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-500"
           >
-            <option value="all">All Buildings (Tower, LC, Science)</option>
+            <option value="all">All Blocks (Skill, London, Kumari)</option>
             {buildings.map((b, i) => (
               <option key={i} value={b}>
                 {b}
@@ -119,9 +119,9 @@ export const FilterBar = ({
             className="w-full bg-slate-900 border border-white/10 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-500"
           >
             <option value="all">All Types (Labs, Lecture Halls, Seminars)</option>
-            <option value="computer_lab">Computer Labs (Mac / Linux GPU)</option>
-            <option value="lecture_hall">Lecture Halls (Tiered / 4K)</option>
-            <option value="seminar_room">Seminar Rooms (Smartboard)</option>
+            <option value="computer_lab">Computer Labs (Lab-01, Lab-02)</option>
+            <option value="seminar_room">Seminar Rooms (LT-01, LT-02)</option>
+            <option value="lecture_hall">Lecture Halls (Hall-01)</option>
           </select>
         </div>
 
@@ -135,7 +135,7 @@ export const FilterBar = ({
           <input
             type="range"
             min="0"
-            max="120"
+            max="100"
             step="10"
             value={minCapacity}
             onChange={(e) => setMinCapacity(Number(e.target.value))}

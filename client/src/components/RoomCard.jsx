@@ -152,7 +152,7 @@ export const RoomCard = ({ roomData, onBookClick, onViewSeatsClick }) => {
         </button>
 
         <button
-          onClick={() => onBookClick(room)}
+          onClick={() => onBookClick(roomData)}
           className={`py-2.5 px-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 ${
             isOccupied
               ? 'krono-btn-ghost'

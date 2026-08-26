@@ -37,7 +37,7 @@ export const AdminDashboard = () => {
   const [editingRoom, setEditingRoom] = useState(null);
   const [roomFormData, setRoomFormData] = useState({
     roomNumber: '',
-    building: 'Tower Building',
+    building: 'Skill Block',
     capacity: 40,
     type: 'computer_lab',
     amenities: ''
@@ -374,6 +374,13 @@ export const AdminDashboard = () => {
                     <span className="block font-sans text-[10px] font-normal text-slate-500">
                       {b.room?.building}
                     </span>
+                    {(b.selectedSeats?.length > 0 || b.seatNumber) && (
+                      <span className="inline-block mt-0.5 px-1.5 py-0.5 rounded bg-indigo-500/20 text-indigo-300 font-mono text-[9px] border border-indigo-500/30">
+                        {b.selectedSeats?.length > 1
+                          ? `Seats: ${b.selectedSeats.join(', ')}`
+                          : `Seat #${b.seatNumber || b.selectedSeats?.[0]}`}
+                      </span>
+                    )}
                   </td>
 
                   <td className="p-3">
@@ -476,7 +483,7 @@ export const AdminDashboard = () => {
                   onChange={(e) =>
                     setRoomFormData({ ...roomFormData, building: e.target.value })
                   }
-                  placeholder="Tower Building, Learning Centre, Science Centre"
+                  placeholder="Skill Block, London Block, Kumari Block"
                   className="w-full bg-slate-900 border border-white/10 rounded-xl px-3 py-2 text-white"
                   required
                 />

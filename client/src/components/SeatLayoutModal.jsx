@@ -8,11 +8,18 @@ export const SeatLayoutModal = ({
   roomData,
   onBookRoom
 }) => {
-  const [selectedSeat, setSelectedSeat] = useState(null);
+  const [selectedSeats, setSelectedSeats] = useState([]);
 
   if (!isOpen || !roomData) return null;
 
   const { room, isOccupied, currentBooking } = roomData;
+
+  const handleBook = () => {
+    onClose();
+    if (onBookRoom) {
+      onBookRoom(roomData, selectedSeats);
+    }
+  };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/85 backdrop-blur-md overflow-y-auto">
@@ -31,6 +38,12 @@ export const SeatLayoutModal = ({
                 <span className="px-2 py-0.5 rounded-full text-[10px] uppercase font-semibold bg-white/5 border border-white/10 text-slate-300">
                   {room.type?.replace('_', ' ')}
                 </span>
+                {isOccupied && (
+                  <span className="px-2 py-0.5 rounded-full text-[10px] uppercase font-bold bg-rose-500/20 text-rose-300 border border-rose-500/30 flex items-center gap-1">
+                    <span className="w-1.5 h-1.5 rounded-full bg-rose-400 animate-pulse" />
+                    In Session
+                  </span>
+                )}
               </div>
               <p className="text-xs text-slate-400 flex items-center gap-1 mt-0.5">
                 <MapPin className="w-3.5 h-3.5 text-indigo-400" />
@@ -41,35 +54,44 @@ export const SeatLayoutModal = ({
 
           <button
             onClick={onClose}
-            className="p-2 text-slate-400 hover:text-white rounded-lg hover:bg-white/10 transition-colors"
+            className="p-2 text-slate-400 hover:text-white rounded-lg hover:bg-white/10 transition-colors cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
-        {/* Seat Map View */}
+        {/* Seat Map View with Multi-Selection */}
         <SeatMap
           room={room}
           isOccupied={isOccupied}
+          isFullRoomOccupied={roomData?.isFullRoomOccupied || false}
+          occupiedSeats={roomData?.occupiedSeats || []}
+          reservedSeats={roomData?.reservedSeats || []}
           currentBooking={currentBooking}
-          selectedSeat={selectedSeat}
-          onSelectSeat={setSelectedSeat}
+          selectedSeats={selectedSeats}
+          onSelectSeat={setSelectedSeats}
           interactive={true}
+          allowMultiple={true}
         />
 
         {/* Footer Actions */}
-        <div className="pt-4 border-t border-white/10 flex items-center justify-between gap-3">
-          <div className="text-xs text-slate-400">
-            {selectedSeat ? (
+        <div className="pt-4 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-3">
+          <div className="text-xs text-slate-400 text-center sm:text-left">
+            {selectedSeats.length > 0 ? (
               <span>
-                Selected Seat: <strong className="text-indigo-400 font-mono font-bold text-sm">#{selectedSeat}</strong>
+                Selected{' '}
+                <strong className="text-white font-bold">{selectedSeats.length}</strong>{' '}
+                {selectedSeats.length === 1 ? 'Seat' : 'Seats'}:{' '}
+                <strong className="text-indigo-400 font-mono font-bold text-sm">
+                  #{selectedSeats.join(', #')}
+                </strong>
               </span>
             ) : (
-              <span>Click on any green chair to pick your preferred seat.</span>
+              <span>Click on any green chair to pick one or multiple seats for your booking.</span>
             )}
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
             <button
               onClick={onClose}
               className="krono-btn krono-btn-ghost text-xs"
@@ -77,14 +99,15 @@ export const SeatLayoutModal = ({
               Close
             </button>
             <button
-              onClick={() => {
-                onClose();
-                if (onBookRoom) onBookRoom(room, selectedSeat);
-              }}
-              className="krono-btn krono-btn-primary text-xs flex items-center gap-1.5"
+              onClick={handleBook}
+              className="krono-btn krono-btn-primary text-xs flex items-center gap-1.5 font-bold"
             >
               <CalendarPlus className="w-4 h-4" />
-              <span>{selectedSeat ? `Book with Seat #${selectedSeat}` : 'Reserve Slot'}</span>
+              <span>
+                {selectedSeats.length > 0
+                  ? `Book ${selectedSeats.length} ${selectedSeats.length === 1 ? 'Seat' : 'Seats'} (#${selectedSeats.join(', #')})`
+                  : 'Reserve Entire Slot'}
+              </span>
             </button>
           </div>
         </div>
