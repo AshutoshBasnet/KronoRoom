@@ -193,11 +193,11 @@ export const AdminDashboard = () => {
   });
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 px-4 sm:px-6 lg:px-8 py-8 max-w-7xl mx-auto space-y-8">
+    <div className="min-h-screen bg-transparent text-slate-100 px-4 sm:px-6 lg:px-8 pt-24 sm:pt-28 pb-12 max-w-7xl mx-auto space-y-8">
       {/* Toast Alert */}
       {toastMessage && (
-        <div className="fixed bottom-6 right-6 z-50 p-4 rounded-2xl bg-rose-900/95 backdrop-blur-xl border border-rose-400/40 text-white shadow-2xl flex items-center gap-3 animate-bounce">
-          <Shield className="w-5 h-5 text-rose-400 shrink-0" />
+        <div className="fixed bottom-6 right-6 z-50 p-4 rounded-2xl bg-[#001d3d]/95 backdrop-blur-xl border border-cyan-500/40 text-cyan-100 shadow-[0_0_30px_rgba(0,245,255,0.25)] flex items-center gap-3 animate-bounce">
+          <Shield className="w-5 h-5 text-cyan-400 shrink-0" />
           <span className="text-xs font-semibold">{toastMessage}</span>
         </div>
       )}
@@ -213,7 +213,7 @@ export const AdminDashboard = () => {
               Admin Access
             </span>
           </div>
-          <p className="text-xs text-slate-400 mt-1">
+          <p className="text-xs text-slate-300 mt-1">
             Manage classrooms & labs, monitor campus-wide booking utilization, and oversee schedule overrides.
           </p>
         </div>
@@ -221,13 +221,13 @@ export const AdminDashboard = () => {
         <div className="flex items-center gap-3">
           <button
             onClick={fetchData}
-            className="krono-btn krono-btn-ghost text-xs"
+            className="krono-btn krono-btn-ghost text-xs border border-cyan-500/20 hover:border-cyan-400/40"
           >
             <RefreshCw className="w-3.5 h-3.5" /> Refresh Data
           </button>
           <button
             onClick={openCreateRoomModal}
-            className="krono-btn krono-btn-primary text-xs"
+            className="krono-btn krono-btn-cyan text-xs shadow-[0_0_15px_rgba(0,180,216,0.3)]"
           >
             <Plus className="w-4 h-4" /> Add New Room
           </button>
@@ -236,35 +236,35 @@ export const AdminDashboard = () => {
 
       {/* Statistics Cards */}
       <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
-        <div className="krono-card p-4 rounded-2xl">
+        <div className="krono-card p-4 rounded-2xl border border-cyan-500/20 bg-[#001d3d]/45 backdrop-blur-md shadow-sm">
           <span className="text-[11px] text-slate-400 uppercase font-semibold">Total Bookings</span>
           <p className="text-2xl font-bold font-mono text-white mt-1">{stats.total || 0}</p>
         </div>
-        <div className="krono-card p-4 rounded-2xl border-emerald-500/20">
+        <div className="krono-card p-4 rounded-2xl border border-emerald-500/30 bg-[#001d3d]/45 backdrop-blur-md shadow-sm">
           <span className="text-[11px] text-emerald-400 uppercase font-semibold">Confirmed</span>
           <p className="text-2xl font-bold font-mono text-emerald-400 mt-1">{stats.confirmed || 0}</p>
         </div>
-        <div className="krono-card p-4 rounded-2xl border-blue-500/20">
-          <span className="text-[11px] text-blue-400 uppercase font-semibold">Checked-In</span>
-          <p className="text-2xl font-bold font-mono text-blue-400 mt-1">{stats.checkedIn || 0}</p>
+        <div className="krono-card p-4 rounded-2xl border border-cyan-500/30 bg-[#001d3d]/45 backdrop-blur-md shadow-sm">
+          <span className="text-[11px] text-cyan-400 uppercase font-semibold">Checked-In</span>
+          <p className="text-2xl font-bold font-mono text-cyan-300 mt-1">{stats.checkedIn || 0}</p>
         </div>
-        <div className="krono-card p-4 rounded-2xl border-rose-500/20">
+        <div className="krono-card p-4 rounded-2xl border border-rose-500/30 bg-[#001d3d]/45 backdrop-blur-md shadow-sm">
           <span className="text-[11px] text-rose-400 uppercase font-semibold">Cancelled</span>
           <p className="text-2xl font-bold font-mono text-rose-400 mt-1">{stats.cancelled || 0}</p>
         </div>
-        <div className="krono-card p-4 rounded-2xl border-purple-500/20">
-          <span className="text-[11px] text-purple-400 uppercase font-semibold">Check-In Rate</span>
-          <p className="text-2xl font-bold font-mono text-purple-300 mt-1">
+        <div className="krono-card p-4 rounded-2xl border border-sky-500/30 bg-[#001d3d]/45 backdrop-blur-md shadow-sm">
+          <span className="text-[11px] text-sky-400 uppercase font-semibold">Check-In Rate</span>
+          <p className="text-2xl font-bold font-mono text-sky-300 mt-1">
             {stats.total > 0 ? `${Math.round((stats.checkedIn / stats.total) * 100)}%` : '0%'}
           </p>
         </div>
       </div>
 
       {/* Campus Rooms Inventory */}
-      <div className="krono-card p-6 rounded-2xl space-y-4">
-        <div className="flex items-center justify-between pb-2 border-b border-white/10">
+      <div className="krono-card p-6 rounded-2xl space-y-4 border border-cyan-500/20 bg-[#001d3d]/50 backdrop-blur-xl shadow-[0_4px_25px_rgba(0,8,20,0.5)]">
+        <div className="flex items-center justify-between pb-2 border-b border-cyan-500/15">
           <div className="flex items-center gap-2">
-            <Building className="w-5 h-5 text-indigo-400" />
+            <Building className="w-5 h-5 text-cyan-400" />
             <h2 className="text-lg font-bold text-white font-heading">
               Classroom & Laboratory Inventory ({rooms.length})
             </h2>
@@ -275,21 +275,21 @@ export const AdminDashboard = () => {
           {rooms.map((r) => (
             <div
               key={r._id}
-              className="p-4 rounded-xl bg-slate-900 border border-white/10 flex items-center justify-between"
+              className="p-4 rounded-xl bg-[#001833]/80 border border-cyan-500/20 flex items-center justify-between shadow-sm hover:border-cyan-400/40 transition-colors"
             >
               <div>
                 <div className="flex items-center gap-2">
                   <span className="font-mono font-bold text-base text-white">{r.roomNumber}</span>
-                  <span className="px-2 py-0.5 text-[10px] uppercase font-semibold rounded bg-white/5 text-slate-400">
+                  <span className="px-2 py-0.5 text-[10px] uppercase font-semibold rounded bg-[#002447] text-cyan-300 border border-cyan-500/20">
                     {r.type?.replace('_', ' ')}
                   </span>
                 </div>
-                <p className="text-xs text-slate-400 mt-0.5">
+                <p className="text-xs text-slate-300 mt-0.5">
                   {r.building} • {r.capacity} seats
                 </p>
                 <div className="flex flex-wrap gap-1 mt-2">
                   {r.amenities?.slice(0, 2).map((a, i) => (
-                    <span key={i} className="text-[10px] px-1.5 py-0.5 bg-slate-800 rounded text-slate-400">
+                    <span key={i} className="text-[10px] px-1.5 py-0.5 bg-[#002447] rounded text-slate-300 border border-cyan-500/15">
                       {a}
                     </span>
                   ))}
@@ -299,14 +299,14 @@ export const AdminDashboard = () => {
               <div className="flex items-center gap-1">
                 <button
                   onClick={() => openEditRoomModal(r)}
-                  className="p-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors"
+                  className="p-2 rounded-lg text-slate-300 hover:text-cyan-300 hover:bg-[#002b5c]/60 transition-colors"
                   title="Edit Room"
                 >
                   <Edit2 className="w-4 h-4" />
                 </button>
                 <button
                   onClick={() => handleDeleteRoom(r._id, r.roomNumber)}
-                  className="p-2 rounded-lg text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 transition-colors"
+                  className="p-2 rounded-lg text-slate-300 hover:text-rose-400 hover:bg-rose-500/10 transition-colors"
                   title="Deactivate Room"
                 >
                   <Trash2 className="w-4 h-4" />
@@ -318,10 +318,10 @@ export const AdminDashboard = () => {
       </div>
 
       {/* Campus-Wide Bookings Registry */}
-      <div className="krono-card p-6 rounded-2xl space-y-4">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 pb-2 border-b border-white/10">
+      <div className="krono-card p-6 rounded-2xl space-y-4 border border-cyan-500/20 bg-[#001d3d]/50 backdrop-blur-xl shadow-[0_4px_25px_rgba(0,8,20,0.5)]">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 pb-2 border-b border-cyan-500/15">
           <div className="flex items-center gap-2">
-            <Calendar className="w-5 h-5 text-indigo-400" />
+            <Calendar className="w-5 h-5 text-cyan-400" />
             <h2 className="text-lg font-bold text-white font-heading">
               All University Booking Records ({filteredBookings.length})
             </h2>
@@ -329,20 +329,20 @@ export const AdminDashboard = () => {
 
           <div className="flex items-center gap-2 flex-wrap">
             <div className="relative">
-              <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+              <Search className="w-3.5 h-3.5 text-cyan-400/70 absolute left-3 top-1/2 -translate-y-1/2" />
               <input
                 type="text"
                 value={bookingSearch}
                 onChange={(e) => setBookingSearch(e.target.value)}
                 placeholder="Search user, room..."
-                className="bg-slate-900 border border-white/10 rounded-xl pl-9 pr-3 py-1.5 text-xs text-white placeholder:text-slate-500 focus:outline-none focus:border-indigo-500"
+                className="bg-[#001833] border border-cyan-500/20 rounded-xl pl-9 pr-3 py-1.5 text-xs text-white placeholder:text-slate-400 focus:outline-none focus:border-cyan-400 shadow-inner"
               />
             </div>
 
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="bg-slate-900 border border-white/10 rounded-xl px-3 py-1.5 text-xs text-white focus:outline-none focus:border-indigo-500"
+              className="bg-[#001833] border border-cyan-500/20 rounded-xl px-3 py-1.5 text-xs text-white focus:outline-none focus:border-cyan-400"
             >
               <option value="all">All Statuses</option>
               <option value="confirmed">Confirmed</option>
@@ -356,7 +356,7 @@ export const AdminDashboard = () => {
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs border-collapse">
             <thead>
-              <tr className="border-b border-white/10 text-slate-400 font-semibold uppercase text-[10px] tracking-wider bg-slate-900/40">
+              <tr className="border-b border-cyan-500/20 text-cyan-300 font-semibold uppercase text-[10px] tracking-wider bg-[#001833]/70">
                 <th className="p-3">Room</th>
                 <th className="p-3">User & Department</th>
                 <th className="p-3">Schedule Date & Time</th>
@@ -366,16 +366,16 @@ export const AdminDashboard = () => {
                 <th className="p-3 text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-white/5 text-slate-300">
+            <tbody className="divide-y divide-cyan-500/10 text-slate-300">
               {filteredBookings.map((b) => (
-                <tr key={b._id} className="hover:bg-white/[0.02] transition-colors">
+                <tr key={b._id} className="hover:bg-[#002b5c]/30 transition-colors">
                   <td className="p-3 font-mono font-bold text-white">
                     {b.room?.roomNumber || '—'}
-                    <span className="block font-sans text-[10px] font-normal text-slate-500">
+                    <span className="block font-sans text-[10px] font-normal text-slate-400">
                       {b.room?.building}
                     </span>
                     {(b.selectedSeats?.length > 0 || b.seatNumber) && (
-                      <span className="inline-block mt-0.5 px-1.5 py-0.5 rounded bg-indigo-500/20 text-indigo-300 font-mono text-[9px] border border-indigo-500/30">
+                      <span className="inline-block mt-0.5 px-1.5 py-0.5 rounded bg-cyan-500/20 text-cyan-300 font-mono text-[9px] border border-cyan-500/30">
                         {b.selectedSeats?.length > 1
                           ? `Seats: ${b.selectedSeats.join(', ')}`
                           : `Seat #${b.seatNumber || b.selectedSeats?.[0]}`}
@@ -385,7 +385,7 @@ export const AdminDashboard = () => {
 
                   <td className="p-3">
                     <span className="font-semibold text-white">{b.user?.name}</span>
-                    <span className="block text-[10px] text-slate-400 font-mono">
+                    <span className="block text-[10px] text-slate-300 font-mono">
                       {b.user?.idCardNumber} • {b.user?.role}
                     </span>
                   </td>
@@ -399,17 +399,17 @@ export const AdminDashboard = () => {
 
                   <td className="p-3 max-w-[200px]">
                     <span className="font-medium text-slate-200 block truncate">{b.purpose}</span>
-                    <span className="text-[10px] text-slate-500 uppercase">{b.bookingType}</span>
+                    <span className="text-[10px] text-slate-400 uppercase">{b.bookingType}</span>
                   </td>
 
                   <td className="p-3">
                     <span
                       className={`px-2 py-0.5 rounded text-[10px] font-semibold uppercase ${
                         b.status === 'confirmed'
-                          ? 'bg-emerald-500/20 text-emerald-300'
+                          ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
                           : b.status === 'cancelled'
-                          ? 'bg-rose-500/20 text-rose-300'
-                          : 'bg-slate-700 text-slate-300'
+                          ? 'bg-rose-500/20 text-rose-300 border border-rose-500/30'
+                          : 'bg-slate-800 text-slate-300 border border-white/5'
                       }`}
                     >
                       {b.status}
@@ -445,9 +445,9 @@ export const AdminDashboard = () => {
 
       {/* Create / Edit Room Modal */}
       {isRoomModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md overflow-y-auto">
-          <div className="krono-modal max-w-md w-full rounded-2xl p-6 space-y-4">
-            <div className="flex items-center justify-between border-b border-white/10 pb-3">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/85 backdrop-blur-md overflow-y-auto">
+          <div className="krono-modal max-w-md w-full rounded-2xl p-6 space-y-4 border border-cyan-500/30 bg-[#001428]/95 shadow-[0_25px_50px_-12px_rgba(0,8,20,0.9)]">
+            <div className="flex items-center justify-between border-b border-cyan-500/15 pb-3">
               <h3 className="text-base font-bold text-white font-heading">
                 {editingRoom ? `Edit Room ${editingRoom.roomNumber}` : 'Create Campus Room'}
               </h3>
@@ -470,7 +470,7 @@ export const AdminDashboard = () => {
                   onChange={(e) =>
                     setRoomFormData({ ...roomFormData, roomNumber: e.target.value })
                   }
-                  className="w-full bg-slate-900 border border-white/10 rounded-xl px-3 py-2 text-white uppercase font-mono"
+                  className="w-full bg-[#001833] border border-cyan-500/20 rounded-xl px-3 py-2 text-white uppercase font-mono focus:border-cyan-400 focus:outline-none"
                   required
                 />
               </div>
@@ -484,7 +484,7 @@ export const AdminDashboard = () => {
                     setRoomFormData({ ...roomFormData, building: e.target.value })
                   }
                   placeholder="Skill Block, London Block, Kumari Block"
-                  className="w-full bg-slate-900 border border-white/10 rounded-xl px-3 py-2 text-white"
+                  className="w-full bg-[#001833] border border-cyan-500/20 rounded-xl px-3 py-2 text-white focus:border-cyan-400 focus:outline-none"
                   required
                 />
               </div>
@@ -501,7 +501,7 @@ export const AdminDashboard = () => {
                     onChange={(e) =>
                       setRoomFormData({ ...roomFormData, capacity: Number(e.target.value) })
                     }
-                    className="w-full bg-slate-900 border border-white/10 rounded-xl px-3 py-2 text-white font-mono"
+                    className="w-full bg-[#001833] border border-cyan-500/20 rounded-xl px-3 py-2 text-white font-mono focus:border-cyan-400 focus:outline-none"
                     required
                   />
                 </div>
@@ -511,7 +511,7 @@ export const AdminDashboard = () => {
                   <select
                     value={roomFormData.type}
                     onChange={(e) => setRoomFormData({ ...roomFormData, type: e.target.value })}
-                    className="w-full bg-slate-900 border border-white/10 rounded-xl px-3 py-2 text-white"
+                    className="w-full bg-[#001833] border border-cyan-500/20 rounded-xl px-3 py-2 text-white focus:border-cyan-400 focus:outline-none"
                   >
                     <option value="computer_lab">Computer Lab</option>
                     <option value="lecture_hall">Lecture Hall</option>
@@ -531,11 +531,11 @@ export const AdminDashboard = () => {
                     setRoomFormData({ ...roomFormData, amenities: e.target.value })
                   }
                   placeholder="Dual 4K Projectors, Surround Audio, Wi-Fi 6"
-                  className="w-full bg-slate-900 border border-white/10 rounded-xl px-3 py-2 text-white"
+                  className="w-full bg-[#001833] border border-cyan-500/20 rounded-xl px-3 py-2 text-white focus:border-cyan-400 focus:outline-none"
                 ></textarea>
               </div>
 
-              <div className="pt-3 border-t border-white/10 flex items-center justify-end gap-2">
+              <div className="pt-3 border-t border-cyan-500/15 flex items-center justify-end gap-2">
                 <button
                   type="button"
                   onClick={() => setIsRoomModalOpen(false)}
@@ -546,7 +546,7 @@ export const AdminDashboard = () => {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="krono-btn krono-btn-primary text-xs"
+                  className="krono-btn krono-btn-cyan text-xs shadow-[0_0_15px_rgba(0,180,216,0.3)]"
                 >
                   {isSubmitting ? 'Saving...' : editingRoom ? 'Save Changes' : 'Create Room'}
                 </button>

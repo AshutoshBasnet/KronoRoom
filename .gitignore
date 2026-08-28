@@ -1,21 +1,27 @@
 # Environment variables & secrets
 .env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
-server/.env
-client/.env
+.env.*
+!.env.example
+*.env
+server/.env*
+client/.env*
+*.pem
+*.key
 
 # Dependencies
 node_modules/
 client/node_modules/
 server/node_modules/
+.pnp
+.pnp.js
 
-# Production build outputs
+# Production build outputs & caches
 dist/
 client/dist/
 build/
+.cache/
+.vite/
+coverage/
 
 # Logs & debuggers
 npm-debug.log*
@@ -35,3 +41,4 @@ Thumbs.db
 *.njsproj
 *.sln
 *.sw?
+

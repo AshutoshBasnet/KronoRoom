@@ -1,3 +1,4 @@
+import mongoose from 'mongoose';
 import Booking from '../models/Booking.js';
 import Room from '../models/Room.js';
 import { emitEvent } from '../socket.js';
@@ -15,6 +16,13 @@ export const createBooking = async (req, res, next) => {
       return res.status(400).json({
         success: false,
         message: 'Please provide roomId, startTime, endTime, and purpose'
+      });
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(roomId)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid room ID format'
       });
     }
 
@@ -341,6 +349,13 @@ export const getAllBookings = async (req, res, next) => {
 // @access  Private
 export const cancelBooking = async (req, res, next) => {
   try {
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid booking ID format'
+      });
+    }
+
     const booking = await Booking.findById(req.params.id).populate('room');
 
     if (!booking) {
@@ -392,6 +407,13 @@ export const cancelBooking = async (req, res, next) => {
 // @access  Private
 export const checkInBooking = async (req, res, next) => {
   try {
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid booking ID format'
+      });
+    }
+
     const booking = await Booking.findById(req.params.id).populate('room');
 
     if (!booking) {

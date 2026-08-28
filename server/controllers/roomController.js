@@ -1,3 +1,4 @@
+import mongoose from 'mongoose';
 import Room from '../models/Room.js';
 import Booking from '../models/Booking.js';
 import { emitEvent } from '../socket.js';
@@ -186,6 +187,13 @@ export const getLiveStatus = async (req, res, next) => {
 // @access  Public
 export const getRoomById = async (req, res, next) => {
   try {
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid room ID format'
+      });
+    }
+
     const room = await Room.findById(req.params.id);
     if (!room || !room.isActive) {
       return res.status(404).json({
@@ -257,6 +265,13 @@ export const createRoom = async (req, res, next) => {
 // @access  Private (Admin)
 export const updateRoom = async (req, res, next) => {
   try {
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid room ID format'
+      });
+    }
+
     const { roomNumber, building, capacity, type, amenities, isActive } = req.body;
 
     let room = await Room.findById(req.params.id);
@@ -312,6 +327,13 @@ export const updateRoom = async (req, res, next) => {
 // @access  Private (Admin)
 export const deleteRoom = async (req, res, next) => {
   try {
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid room ID format'
+      });
+    }
+
     const room = await Room.findById(req.params.id);
     if (!room) {
       return res.status(404).json({

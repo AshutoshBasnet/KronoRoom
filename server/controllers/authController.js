@@ -11,17 +11,46 @@ const generateToken = (id) => {
   );
 };
 
-// @desc    Register a new user
+// Email format regex validation
+const EMAIL_REGEX = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
+
+// @desc    Register a new user (Student or Faculty only)
 // @route   POST /api/auth/register
 // @access  Public
 export const register = async (req, res, next) => {
   try {
     const { name, email, password, idCardNumber, role, department } = req.body;
 
-    if (!name || !email || !password || !idCardNumber || !department) {
+    // 1. Strict Type & Presence Validation (Prevents NoSQL Injection)
+    if (
+      typeof name !== 'string' ||
+      typeof email !== 'string' ||
+      typeof password !== 'string' ||
+      typeof idCardNumber !== 'string' ||
+      typeof department !== 'string'
+    ) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid payload: All fields must be valid strings'
+      });
+    }
+
+    const cleanName = name.trim();
+    const cleanEmail = email.toLowerCase().trim();
+    const cleanIdCard = idCardNumber.trim();
+    const cleanDept = department.trim();
+
+    if (!cleanName || !cleanEmail || !password || !cleanIdCard || !cleanDept) {
       return res.status(400).json({
         success: false,
         message: 'Please provide all required fields: name, email, password, idCardNumber, department'
+      });
+    }
+
+    if (!EMAIL_REGEX.test(cleanEmail)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Please provide a valid university email address'
       });
     }
 
@@ -32,8 +61,20 @@ export const register = async (req, res, next) => {
       });
     }
 
-    // Check existing email
-    const existingEmail = await User.findOne({ email: email.toLowerCase().trim() });
+    // 2. Security Policy: Prohibit Self-Appointment of Administrator Role
+    // There is only ONE designated master administrator account in the system.
+    if (role === 'admin' || (typeof role === 'string' && role.toLowerCase().includes('admin'))) {
+      return res.status(403).json({
+        success: false,
+        message: 'Security Violation: Administrator accounts cannot be created via public registration. There is only one designated master administrator.'
+      });
+    }
+
+    // Strictly whitelist allowed registration roles (Only 'student' or 'teacher')
+    const assignedRole = role === 'teacher' ? 'teacher' : 'student';
+
+    // 3. Check existing email
+    const existingEmail = await User.findOne({ email: cleanEmail });
     if (existingEmail) {
       return res.status(400).json({
         success: false,
@@ -41,8 +82,8 @@ export const register = async (req, res, next) => {
       });
     }
 
-    // Check existing ID card number
-    const existingIdCard = await User.findOne({ idCardNumber: idCardNumber.trim() });
+    // 4. Check existing ID card number
+    const existingIdCard = await User.findOne({ idCardNumber: cleanIdCard });
     if (existingIdCard) {
       return res.status(400).json({
         success: false,
@@ -50,18 +91,18 @@ export const register = async (req, res, next) => {
       });
     }
 
-    // Hash password
+    // 5. Hash password with bcrypt salt
     const salt = await bcrypt.genSalt(10);
     const passwordHash = await bcrypt.hash(password, salt);
 
-    // Create user
+    // 6. Create user with sanitized role
     const user = await User.create({
-      name: name.trim(),
-      email: email.toLowerCase().trim(),
+      name: cleanName,
+      email: cleanEmail,
       passwordHash,
-      idCardNumber: idCardNumber.trim(),
-      role: role && ['student', 'teacher', 'admin'].includes(role) ? role : 'student',
-      department: department.trim()
+      idCardNumber: cleanIdCard,
+      role: assignedRole,
+      department: cleanDept
     });
 
     const token = generateToken(user._id);
@@ -92,14 +133,24 @@ export const login = async (req, res, next) => {
   try {
     const { email, password, portal } = req.body;
 
-    if (!email || !password) {
+    // Strict Type Checking (Prevents NoSQL Object Injection)
+    if (typeof email !== 'string' || typeof password !== 'string') {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid credentials format'
+      });
+    }
+
+    const cleanEmail = email.toLowerCase().trim();
+
+    if (!cleanEmail || !password) {
       return res.status(400).json({
         success: false,
         message: 'Please provide both email and password'
       });
     }
 
-    const user = await User.findOne({ email: email.toLowerCase().trim() });
+    const user = await User.findOne({ email: cleanEmail });
     if (!user) {
       return res.status(401).json({
         success: false,

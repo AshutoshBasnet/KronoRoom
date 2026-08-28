@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { AuthProvider } from './context/AuthContext';
 import Navbar from './components/Navbar';
 import ProtectedRoute from './components/ProtectedRoute';
+import ParticlesComponent from './components/ui/particles-bg';
 
 import Landing from './pages/Landing';
 import StudentLogin from './pages/StudentLogin';
@@ -16,9 +17,19 @@ export function App() {
   return (
     <AuthProvider>
       <Router>
-        <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans selection:bg-indigo-500 selection:text-white">
+        <div className="relative min-h-screen text-slate-100 flex flex-col font-sans selection:bg-cyan-500 selection:text-white overflow-x-hidden">
+          {/* Universal Theme Particles Background */}
+          <ParticlesComponent />
+
+          {/* Universal Ambient Oceanic Glows */}
+          <div className="fixed inset-0 overflow-hidden pointer-events-none -z-10">
+            <div className="absolute -top-40 -left-40 w-96 h-96 bg-cyan-500/15 rounded-full blur-3xl"></div>
+            <div className="absolute top-1/3 -right-40 w-96 h-96 bg-sky-600/10 rounded-full blur-3xl"></div>
+            <div className="absolute -bottom-40 left-1/3 w-96 h-96 bg-[#0077b6]/20 rounded-full blur-3xl"></div>
+          </div>
+
           <Navbar />
-          <main className="flex-1">
+          <main className="flex-1 relative z-10">
             <Routes>
               {/* Public Routes */}
               <Route path="/" element={<Landing />} />

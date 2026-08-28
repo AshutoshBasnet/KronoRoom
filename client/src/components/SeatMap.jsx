@@ -208,16 +208,16 @@ export const SeatMap = ({
     <div className="space-y-4 select-none">
       {/* Front Screen / Stage / Podium */}
       <div className="w-full text-center space-y-1.5">
-        <div className="w-4/5 mx-auto h-2 bg-gradient-to-r from-transparent via-indigo-500 to-transparent rounded-full shadow-[0_0_15px_rgba(99,102,241,0.8)]" />
-        <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-slate-900 border border-white/10 text-[11px] font-mono text-slate-400">
-          <Monitor className="w-3.5 h-3.5 text-indigo-400" />
+        <div className="w-4/5 mx-auto h-2 bg-gradient-to-r from-transparent via-cyan-400 to-transparent rounded-full shadow-[0_0_20px_rgba(0,245,255,0.8)]" />
+        <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-[#001833] border border-cyan-500/30 text-[11px] font-mono text-cyan-300 shadow-sm">
+          <Monitor className="w-3.5 h-3.5 text-cyan-400" />
           <span>FRONT STAGE • PRESENTATION SCREEN & INSTRUCTOR PODIUM</span>
         </div>
       </div>
 
       {/* Dynamic Live Occupancy Notice with Real-Time Countdown */}
       {isOccupied && stats.occupiedCount > 0 && timeRemainingInfo ? (
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 px-4 py-3 rounded-2xl bg-gradient-to-r from-rose-950/70 via-slate-900 to-rose-950/70 border border-rose-500/40 text-rose-200 text-xs shadow-lg shadow-rose-950/40">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 px-4 py-3 rounded-2xl bg-gradient-to-r from-rose-950/70 via-[#001833] to-rose-950/70 border border-rose-500/40 text-rose-200 text-xs shadow-lg shadow-rose-950/40">
           <div className="flex items-center gap-2.5">
             <div className="relative flex items-center justify-center">
               <span className="w-3 h-3 rounded-full bg-rose-500 animate-ping absolute" />
@@ -255,15 +255,15 @@ export const SeatMap = ({
 
       {/* Multi-Select Bar for Free/Interactive booking */}
       {interactive && allowMultiple && (
-        <div className="flex items-center justify-between px-3.5 py-2 rounded-xl bg-indigo-950/40 border border-indigo-500/20 text-xs">
-          <div className="flex items-center gap-2 text-indigo-300">
-            <Sparkles className="w-3.5 h-3.5 text-indigo-400" />
+        <div className="flex items-center justify-between px-3.5 py-2 rounded-xl bg-[#001d3d]/70 border border-cyan-500/30 text-xs">
+          <div className="flex items-center gap-2 text-cyan-200">
+            <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
             <span>
               {activeSelectedSeats.length > 0 ? (
                 <>
                   <strong className="text-white font-bold">{activeSelectedSeats.length}</strong>{' '}
                   {activeSelectedSeats.length === 1 ? 'seat' : 'seats'} selected: [
-                  <span className="text-indigo-200 font-mono font-bold">
+                  <span className="text-cyan-300 font-mono font-bold">
                     {activeSelectedSeats.join(', ')}
                   </span>
                   ]
@@ -288,7 +288,7 @@ export const SeatMap = ({
       )}
 
       {/* Seat Grid Layout */}
-      <div className="p-4 sm:p-6 rounded-2xl bg-slate-950/80 border border-white/10 overflow-x-auto max-h-[400px] overflow-y-auto">
+      <div className="p-4 sm:p-6 rounded-2xl bg-[#001428]/80 border border-cyan-500/20 overflow-x-auto max-h-[400px] overflow-y-auto">
         <div className="min-w-[480px] space-y-3 mx-auto flex flex-col items-center">
           {seatGrid.map(({ rowLetter, seats }) => {
             const midPoint = Math.ceil(seats.length / 2);
@@ -298,7 +298,7 @@ export const SeatMap = ({
             return (
               <div key={rowLetter} className="flex items-center gap-3">
                 {/* Left Row Indicator */}
-                <span className="w-5 text-center font-mono font-bold text-xs text-slate-500">
+                <span className="w-5 text-center font-mono font-bold text-xs text-cyan-500/60">
                   {rowLetter}
                 </span>
 
@@ -321,7 +321,7 @@ export const SeatMap = ({
                             : isSeatReserved
                             ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40 cursor-not-allowed opacity-85 shadow-none'
                             : isSelected
-                            ? 'bg-indigo-600 text-white border-2 border-indigo-300 shadow-lg shadow-indigo-500/50 scale-110 ring-2 ring-indigo-400 z-10'
+                            ? 'bg-gradient-to-r from-cyan-400 to-[#00b4d8] text-[#000814] border-2 border-white shadow-[0_0_15px_rgba(0,245,255,0.6)] scale-110 ring-2 ring-cyan-300 z-10'
                             : 'bg-emerald-500/15 text-emerald-300 border border-emerald-500/35 hover:bg-emerald-500/30 hover:border-emerald-400 hover:scale-105 cursor-pointer'
                         }`}
                         title={`${seat.id} - ${
@@ -343,7 +343,7 @@ export const SeatMap = ({
                         )}
 
                         {/* Dynamic Hover Tooltip with Countdown */}
-                        <span className="absolute -top-8 hidden group-hover:block bg-slate-900 text-white text-[9px] px-2.5 py-1 rounded-lg border border-white/20 whitespace-nowrap z-20 shadow-xl pointer-events-none text-center">
+                        <span className="absolute -top-8 hidden group-hover:block bg-[#001833] text-white text-[9px] px-2.5 py-1 rounded-lg border border-cyan-500/30 whitespace-nowrap z-20 shadow-xl pointer-events-none text-center">
                           <span className="font-bold">Seat {seat.id}</span> •{' '}
                           {isSeatOccupied ? (
                             <span className="text-rose-300 font-semibold">
@@ -352,7 +352,7 @@ export const SeatMap = ({
                           ) : isSeatReserved ? (
                             <span className="text-amber-300 font-semibold">Reserved</span>
                           ) : isSelected ? (
-                            <span className="text-indigo-300 font-semibold">Selected</span>
+                            <span className="text-cyan-300 font-semibold">Selected</span>
                           ) : (
                             <span className="text-emerald-300 font-semibold">Free to Book</span>
                           )}
@@ -363,7 +363,7 @@ export const SeatMap = ({
                 </div>
 
                 {/* Middle Aisle Gap */}
-                <div className="w-4 sm:w-6 text-center text-[10px] text-slate-700 font-mono">
+                <div className="w-4 sm:w-6 text-center text-[10px] text-cyan-500/40 font-mono">
                   •
                 </div>
 
@@ -386,7 +386,7 @@ export const SeatMap = ({
                             : isSeatReserved
                             ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40 cursor-not-allowed opacity-85 shadow-none'
                             : isSelected
-                            ? 'bg-indigo-600 text-white border-2 border-indigo-300 shadow-lg shadow-indigo-500/50 scale-110 ring-2 ring-indigo-400 z-10'
+                            ? 'bg-gradient-to-r from-cyan-400 to-[#00b4d8] text-[#000814] border-2 border-white shadow-[0_0_15px_rgba(0,245,255,0.6)] scale-110 ring-2 ring-cyan-300 z-10'
                             : 'bg-emerald-500/15 text-emerald-300 border border-emerald-500/35 hover:bg-emerald-500/30 hover:border-emerald-400 hover:scale-105 cursor-pointer'
                         }`}
                         title={`${seat.id} - ${
@@ -408,7 +408,7 @@ export const SeatMap = ({
                         )}
 
                         {/* Dynamic Hover Tooltip with Countdown */}
-                        <span className="absolute -top-8 hidden group-hover:block bg-slate-900 text-white text-[9px] px-2.5 py-1 rounded-lg border border-white/20 whitespace-nowrap z-20 shadow-xl pointer-events-none text-center">
+                        <span className="absolute -top-8 hidden group-hover:block bg-[#001833] text-white text-[9px] px-2.5 py-1 rounded-lg border border-cyan-500/30 whitespace-nowrap z-20 shadow-xl pointer-events-none text-center">
                           <span className="font-bold">Seat {seat.id}</span> •{' '}
                           {isSeatOccupied ? (
                             <span className="text-rose-300 font-semibold">
@@ -417,7 +417,7 @@ export const SeatMap = ({
                           ) : isSeatReserved ? (
                             <span className="text-amber-300 font-semibold">Reserved</span>
                           ) : isSelected ? (
-                            <span className="text-indigo-300 font-semibold">Selected</span>
+                            <span className="text-cyan-300 font-semibold">Selected</span>
                           ) : (
                             <span className="text-emerald-300 font-semibold">Free to Book</span>
                           )}
@@ -428,7 +428,7 @@ export const SeatMap = ({
                 </div>
 
                 {/* Right Row Indicator */}
-                <span className="w-5 text-center font-mono font-bold text-xs text-slate-500">
+                <span className="w-5 text-center font-mono font-bold text-xs text-cyan-500/60">
                   {rowLetter}
                 </span>
               </div>
@@ -464,15 +464,15 @@ export const SeatMap = ({
           </div>
 
           <div className="flex items-center gap-1.5" title="Your selected seat(s)">
-            <span className="w-3.5 h-3.5 rounded bg-indigo-600 border border-indigo-400 shadow-sm inline-block" />
-            <span className="text-slate-300">Selected ({activeSelectedSeats.length})</span>
+            <span className="w-3.5 h-3.5 rounded bg-gradient-to-r from-cyan-400 to-[#00b4d8] border border-white inline-block" />
+            <span className="text-cyan-300 font-semibold">Selected ({activeSelectedSeats.length})</span>
           </div>
         </div>
 
         {/* Selected Seat Feedback */}
         {activeSelectedSeats.length > 0 && (
-          <div className="px-3 py-1 rounded-xl bg-indigo-500/20 border border-indigo-500/40 text-indigo-300 font-mono font-bold flex items-center gap-1.5">
-            <Sparkles className="w-3.5 h-3.5 text-indigo-400" />
+          <div className="px-3 py-1 rounded-xl bg-cyan-500/20 border border-cyan-500/40 text-cyan-300 font-mono font-bold flex items-center gap-1.5 shadow-sm">
+            <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
             <span>
               {activeSelectedSeats.length === 1
                 ? `Seat #${activeSelectedSeats[0]}`
