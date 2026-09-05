@@ -19,19 +19,25 @@ export const SeatLayoutModal = ({
         new CustomEvent('krono:modal-state', { detail: { isOpen: true, type: 'seat-details' } })
       );
     } else {
-      document.body.classList.remove('seat-modal-open', 'modal-open');
-      document.body.removeAttribute('data-modal-open');
-      window.dispatchEvent(
-        new CustomEvent('krono:modal-state', { detail: { isOpen: false, type: 'seat-details' } })
-      );
+      document.body.classList.remove('seat-modal-open');
+      if (!document.body.classList.contains('booking-modal-open')) {
+        document.body.classList.remove('modal-open');
+        document.body.removeAttribute('data-modal-open');
+        window.dispatchEvent(
+          new CustomEvent('krono:modal-state', { detail: { isOpen: false, type: 'seat-details' } })
+        );
+      }
     }
 
     return () => {
-      document.body.classList.remove('seat-modal-open', 'modal-open');
-      document.body.removeAttribute('data-modal-open');
-      window.dispatchEvent(
-        new CustomEvent('krono:modal-state', { detail: { isOpen: false, type: 'seat-details' } })
-      );
+      document.body.classList.remove('seat-modal-open');
+      if (!document.body.classList.contains('booking-modal-open')) {
+        document.body.classList.remove('modal-open');
+        document.body.removeAttribute('data-modal-open');
+        window.dispatchEvent(
+          new CustomEvent('krono:modal-state', { detail: { isOpen: false, type: 'seat-details' } })
+        );
+      }
     };
   }, [isOpen]);
 

@@ -75,11 +75,11 @@ export const createBooking = async (req, res, next) => {
           message: 'Students can book up to a maximum of 2 hours per session'
         });
       }
-      // Max 3 days in advance
-      if (advanceDays > 3) {
+      // Max 1 day in advance
+      if (advanceDays > 1) {
         return res.status(400).json({
           success: false,
-          message: 'Students can only book up to 3 days in advance'
+          message: 'Students can only book up to 1 days in advance'
         });
       }
     } else if (userRole === 'teacher') {
@@ -204,12 +204,21 @@ export const createBooking = async (req, res, next) => {
     }
 
     // 5. Create Booking
+    const resolvedBookingType =
+      bookingType ||
+      (userRole === 'student'
+        ? 'Study Session'
+        : userRole === 'teacher'
+        ? 'Regular Class'
+        : 'Study Session');
+
     const booking = await Booking.create({
       room: roomId,
       user: userId,
       startTime: start,
       endTime: end,
       purpose: purpose.trim(),
+      bookingType: resolvedBookingType,
       seatNumber:
         seatNumber ||
         (Array.isArray(selectedSeats) && selectedSeats.length > 0

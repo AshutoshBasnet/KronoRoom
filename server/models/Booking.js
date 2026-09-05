@@ -28,7 +28,7 @@ const bookingSchema = new mongoose.Schema(
     bookingType: {
       type: String,
       enum: ['Regular Class', 'Ad-hoc Booking', 'Study Session', 'Maintenance'],
-      default: 'Ad-hoc Booking'
+      default: 'Study Session'
     },
     status: {
       type: String,

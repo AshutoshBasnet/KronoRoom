@@ -73,15 +73,13 @@ export function AdaptiveNavigationBar({ className }: { className?: string }) {
   const collapseTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const lastScrollY = useRef<number>(0);
 
-  // Listen for seat details / modal open events to auto-hide floating bar
+  // Auto-hide floating navbar whenever any modal is open
   useEffect(() => {
-    const handleModalToggle = (e: any) => {
-      setIsModalOpen(Boolean(e.detail?.isOpen));
-    };
-    window.addEventListener("krono:modal-state", handleModalToggle as EventListener);
-    return () => {
-      window.removeEventListener("krono:modal-state", handleModalToggle as EventListener);
-    };
+    const checkModal = () => setIsModalOpen(document.body.classList.contains("modal-open"));
+    const observer = new MutationObserver(checkModal);
+    observer.observe(document.body, { attributes: true, attributeFilter: ["class"] });
+    checkModal();
+    return () => observer.disconnect();
   }, []);
 
   // Sync socket connection state

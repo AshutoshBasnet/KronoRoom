@@ -131,7 +131,7 @@ export const Landing = () => {
                 </li>
                 <li className="flex items-center gap-2">
                   <CheckCircle2 className="w-4 h-4 text-blue-400 shrink-0" />
-                  <span>Reserve up to 3 days in advance</span>
+                  <span>Reserve up to 1 days in advance</span>
                 </li>
                 <li className="flex items-center gap-2">
                   <CheckCircle2 className="w-4 h-4 text-blue-400 shrink-0" />

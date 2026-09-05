@@ -212,9 +212,9 @@ export const SeatMap = ({
         <div className="relative h-4 w-full flex items-center justify-center">
           <div className="w-4/5 h-2.5 rounded-t-full bg-gradient-to-r from-emerald-500/10 via-blue-500/80 to-emerald-500/10 shadow-[0_4px_24px_rgba(59,130,246,0.45)] border-t border-blue-400/40" />
         </div>
-        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-slate-900/90 border border-slate-700/80 text-xs font-mono font-semibold text-slate-200 tracking-wider shadow-sm">
+        <div className="inline-flex items-center gap-2 px-4 py-1 rounded-full bg-slate-900/90 border border-slate-700/80 text-xs font-mono font-bold text-slate-300 tracking-widest shadow-sm uppercase">
           <Monitor className="w-3.5 h-3.5 text-blue-400" />
-          <span>PANORAMIC 4K DISPLAY • INSTRUCTOR PODIUM & AUDIO</span>
+          <span>Screen</span>
         </div>
       </div>
 

@@ -39,7 +39,7 @@ Version 2.0 brings a bespoke institutional academic design system, interactive W
   - 🔵 **Selected (Royal Blue):** Current user's active seat selection.
 
 ### 2. Role-Based Access Control (RBAC)
-- **👨‍🎓 Students:** Maximum 2-hour sessions, advance reservation window up to 3 days. Accessible via `/login/student`.
+- **👨‍🎓 Students:** Maximum 2-hour sessions, advance reservation window up to 1 days. Accessible via `/login/student`.
 - **👨‍🏫 Faculty:** Extended 6-hour lecture/lab allocations, advance booking up to 30 days. Accessible via `/login/faculty`.
 - **🛡️ Administrators:** Full campus analytics, room CRUD inventory management, user controls, and force-cancellation overrides.
 
