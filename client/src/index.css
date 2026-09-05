@@ -2,24 +2,55 @@
 
 @layer base {
   body {
-    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     background-color: #0a0e17;
     color: #f8fafc;
     overflow-x: hidden;
   }
 
   h1, h2, h3, h4, .font-heading {
-    font-family: 'Outfit', sans-serif;
+    font-family: 'Inter', sans-serif;
   }
 
   .font-brand {
-    font-family: 'Space Grotesk', sans-serif;
+    font-family: 'Inter', sans-serif;
   }
 
   code, pre, .font-mono {
     font-family: 'JetBrains Mono', monospace;
   }
 }
+
+.pulse-dot {
+  animation: pulse-emerald 2s infinite;
+}
+@keyframes pulse-emerald {
+  0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+  70% { box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+}
+
+.seat-emerald {
+  background-color: #10b981;
+  border-color: #059669;
+}
+.seat-amber {
+  background-color: #f59e0b;
+  border-color: #d97706;
+}
+  .seat-rose { @apply bg-[#f43f5e] border-[#e11d48]; }
+  .seat-blue { @apply bg-blue-600 border-white ring-2 ring-blue-500 ring-offset-1; }
+
+  /* Hide floating adaptive navbar when seat details or modals are open */
+  body.seat-modal-open [data-adaptive-navbar],
+  body.modal-open [data-adaptive-navbar],
+  body[data-modal-open="true"] [data-adaptive-navbar] {
+    opacity: 0 !important;
+    pointer-events: none !important;
+    transform: translate(-50%, -120px) !important;
+    visibility: hidden !important;
+    transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
+  }
 
 /* KronoRoom Clean Slate Card System */
 .krono-card {

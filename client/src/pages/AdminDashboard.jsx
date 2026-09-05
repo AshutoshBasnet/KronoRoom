@@ -97,6 +97,30 @@ export const AdminDashboard = () => {
     };
   }, []);
 
+  useEffect(() => {
+    if (isRoomModalOpen) {
+      document.body.classList.add('modal-open');
+      document.body.setAttribute('data-modal-open', 'true');
+      window.dispatchEvent(
+        new CustomEvent('krono:modal-state', { detail: { isOpen: true, type: 'admin-room' } })
+      );
+    } else {
+      document.body.classList.remove('modal-open');
+      document.body.removeAttribute('data-modal-open');
+      window.dispatchEvent(
+        new CustomEvent('krono:modal-state', { detail: { isOpen: false, type: 'admin-room' } })
+      );
+    }
+
+    return () => {
+      document.body.classList.remove('modal-open');
+      document.body.removeAttribute('data-modal-open');
+      window.dispatchEvent(
+        new CustomEvent('krono:modal-state', { detail: { isOpen: false, type: 'admin-room' } })
+      );
+    };
+  }, [isRoomModalOpen]);
+
   const openCreateRoomModal = () => {
     setEditingRoom(null);
     setRoomFormData({
@@ -192,6 +216,14 @@ export const AdminDashboard = () => {
     return true;
   });
 
+  const totalCapacity = rooms.reduce((acc, r) => acc + (r.capacity || 0), 0);
+  const liveInSessionCount = bookings.filter(
+    (b) =>
+      b.status === 'confirmed' &&
+      new Date(b.startTime) <= new Date() &&
+      new Date(b.endTime) >= new Date()
+  ).length;
+
   return (
     <div className="min-h-screen bg-transparent text-slate-100 px-4 sm:px-6 lg:px-8 pt-24 sm:pt-28 pb-12 max-w-7xl mx-auto space-y-8">
       {/* Toast Alert */}
@@ -202,139 +234,198 @@ export const AdminDashboard = () => {
         </div>
       )}
 
-      {/* Header */}
+      {/* Header matching Stitch Admin Console */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2">
-            <h1 className="text-2xl sm:text-3xl font-extrabold text-white font-heading">
-              KronoRoom Admin Console
+          <div className="flex items-center gap-3 mb-1">
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+              Admin Management Console
             </h1>
-            <span className="px-2.5 py-0.5 rounded-full text-[10px] uppercase font-bold tracking-wider bg-rose-500/20 text-rose-300 border border-rose-500/30">
-              Admin Access
-            </span>
+            <div className="hidden sm:flex items-center gap-2 bg-emerald-950/60 border border-emerald-500/40 px-3 py-1 rounded-full shadow-sm">
+              <div className="w-2 h-2 rounded-full bg-[#10b981] pulse-dot" />
+              <span className="font-mono text-[11px] text-emerald-400 uppercase tracking-wider font-bold">
+                All Systems Operational
+              </span>
+            </div>
           </div>
-          <p className="text-xs text-slate-400 mt-1">
-            Manage classrooms & labs, monitor campus-wide booking utilization, and oversee schedule overrides.
+          <p className="text-xs text-slate-300">
+            London Metropolitan University Estates & IT • Central Campus Hub
           </p>
         </div>
 
         <div className="flex items-center gap-3">
           <button
             onClick={fetchData}
-            className="krono-btn krono-btn-ghost text-xs border border-slate-800 hover:border-slate-700 cursor-pointer"
+            className="p-2.5 rounded-xl bg-slate-900/90 hover:bg-slate-800 border border-slate-700/80 text-slate-300 hover:text-white transition-all shadow-sm cursor-pointer"
+            title="Refresh Data"
           >
-            <RefreshCw className="w-3.5 h-3.5" /> Refresh Data
+            <RefreshCw className="w-4 h-4" />
           </button>
           <button
             onClick={openCreateRoomModal}
-            className="krono-btn krono-btn-primary text-xs shadow-sm cursor-pointer"
+            className="px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs transition-all shadow-md flex items-center gap-2 cursor-pointer"
           >
-            <Plus className="w-4 h-4" /> Add New Room
+            <Plus className="w-4 h-4" />
+            <span>Register New Campus Room</span>
           </button>
         </div>
       </div>
 
-      {/* Statistics Cards */}
-      <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
-        <div className="krono-card p-4 rounded-xl border border-slate-800/80 bg-slate-900/70 shadow-sm">
-          <span className="text-[11px] text-slate-400 uppercase font-semibold">Total Bookings</span>
-          <p className="text-2xl font-bold font-mono text-white mt-1">{stats.total || 0}</p>
-        </div>
-        <div className="krono-card p-4 rounded-xl border border-emerald-500/30 bg-slate-900/70 shadow-sm">
-          <span className="text-[11px] text-emerald-400 uppercase font-semibold">Confirmed</span>
-          <p className="text-2xl font-bold font-mono text-emerald-400 mt-1">{stats.confirmed || 0}</p>
-        </div>
-        <div className="krono-card p-4 rounded-xl border border-blue-500/30 bg-slate-900/70 shadow-sm">
-          <span className="text-[11px] text-blue-400 uppercase font-semibold">Checked-In</span>
-          <p className="text-2xl font-bold font-mono text-blue-300 mt-1">{stats.checkedIn || 0}</p>
-        </div>
-        <div className="krono-card p-4 rounded-xl border border-rose-500/30 bg-slate-900/70 shadow-sm">
-          <span className="text-[11px] text-rose-400 uppercase font-semibold">Cancelled</span>
-          <p className="text-2xl font-bold font-mono text-rose-400 mt-1">{stats.cancelled || 0}</p>
-        </div>
-        <div className="krono-card p-4 rounded-xl border border-slate-800/80 bg-slate-900/70 shadow-sm">
-          <span className="text-[11px] text-slate-400 uppercase font-semibold">Check-In Rate</span>
-          <p className="text-2xl font-bold font-mono text-slate-200 mt-1">
-            {stats.total > 0 ? `${Math.round((stats.checkedIn / stats.total) * 100)}%` : '0%'}
-          </p>
-        </div>
-      </div>
-
-      {/* Campus Rooms Inventory */}
-      <div className="krono-card p-6 rounded-2xl space-y-4 border border-slate-800 bg-slate-900/70 shadow-sm">
-        <div className="flex items-center justify-between pb-2 border-b border-slate-800">
-          <div className="flex items-center gap-2">
-            <Building className="w-5 h-5 text-blue-400" />
-            <h2 className="text-lg font-bold text-white font-heading">
-              Classroom & Laboratory Inventory ({rooms.length})
-            </h2>
+      {/* KPI Metric Grid (Stitch Institutional Precision) */}
+      <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        {/* Metric 1 */}
+        <div className="bg-slate-900/80 backdrop-blur-md p-5 border border-slate-800/90 rounded-2xl flex items-center space-x-4 relative overflow-hidden group shadow-sm">
+          <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-blue-600 group-hover:w-2 transition-all" />
+          <div className="p-3 bg-blue-600/15 rounded-xl text-blue-400 border border-blue-500/20">
+            <Building className="w-6 h-6" />
+          </div>
+          <div>
+            <p className="font-mono text-[10px] text-slate-400 uppercase tracking-wider font-bold">
+              Active Campus Facilities
+            </p>
+            <p className="text-xl font-bold font-mono text-white mt-0.5">
+              {rooms.length} Rooms Online
+            </p>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {rooms.map((r) => (
-            <div
-              key={r._id}
-              className="p-4 rounded-xl bg-slate-950/80 border border-slate-800 flex items-center justify-between shadow-sm hover:border-slate-700 transition-colors"
-            >
-              <div>
-                <div className="flex items-center gap-2">
-                  <span className="font-mono font-bold text-base text-white">{r.roomNumber}</span>
-                  <span className="px-2 py-0.5 text-[10px] uppercase font-semibold rounded bg-slate-800 text-slate-300 border border-slate-700">
-                    {r.type?.replace('_', ' ')}
-                  </span>
-                </div>
-                <p className="text-xs text-slate-400 mt-0.5">
-                  {r.building} • {r.capacity} seats
-                </p>
-                <div className="flex flex-wrap gap-1 mt-2">
-                  {r.amenities?.slice(0, 2).map((a, i) => (
-                    <span key={i} className="text-[10px] px-1.5 py-0.5 bg-slate-900 rounded text-slate-400 border border-slate-800">
-                      {a}
+        {/* Metric 2 */}
+        <div className="bg-slate-900/80 backdrop-blur-md p-5 border border-slate-800/90 rounded-2xl flex items-center space-x-4 relative overflow-hidden group shadow-sm">
+          <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-blue-600 group-hover:w-2 transition-all" />
+          <div className="p-3 bg-blue-600/15 rounded-xl text-blue-400 border border-blue-500/20">
+            <Monitor className="w-6 h-6" />
+          </div>
+          <div>
+            <p className="font-mono text-[10px] text-slate-400 uppercase tracking-wider font-bold">
+              Total Capacity
+            </p>
+            <p className="text-xl font-bold font-mono text-white mt-0.5">
+              {totalCapacity} Workstations
+            </p>
+          </div>
+        </div>
+
+        {/* Metric 3 */}
+        <div className="bg-slate-900/80 backdrop-blur-md p-5 border border-slate-800/90 rounded-2xl flex items-center space-x-4 relative overflow-hidden group shadow-sm">
+          <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-amber-500 group-hover:w-2 transition-all" />
+          <div className="p-3 bg-amber-500/15 rounded-xl text-amber-400 border border-amber-500/20">
+            <Users className="w-6 h-6" />
+          </div>
+          <div>
+            <p className="font-mono text-[10px] text-slate-400 uppercase tracking-wider font-bold">
+              Live Occupancy
+            </p>
+            <p className="text-xl font-bold font-mono text-white mt-0.5">
+              {liveInSessionCount || stats.checkedIn || stats.confirmed || 0} In-Session
+            </p>
+          </div>
+        </div>
+
+        {/* Metric 4 */}
+        <div className="bg-slate-900/80 backdrop-blur-md p-5 border border-slate-800/90 rounded-2xl flex items-center space-x-4 relative overflow-hidden group shadow-sm">
+          <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-[#10b981] group-hover:w-2 transition-all" />
+          <div className="p-3 bg-emerald-500/15 rounded-xl text-emerald-400 border border-emerald-500/20">
+            <Shield className="w-6 h-6" />
+          </div>
+          <div>
+            <p className="font-mono text-[10px] text-slate-400 uppercase tracking-wider font-bold">
+              Real-Time Sync
+            </p>
+            <p className="text-xl font-bold font-mono text-emerald-400 mt-0.5">
+              100% Telemetry
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Room Inventory Management Section (Stitch Precision) */}
+      <section className="bg-slate-900/80 backdrop-blur-md border border-slate-800/90 rounded-2xl overflow-hidden shadow-sm">
+        <div className="p-5 border-b border-slate-800 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+          <div>
+            <h2 className="text-lg font-bold text-white tracking-tight">
+              Room Inventory Management
+            </h2>
+            <p className="text-xs text-slate-400">
+              Active physical classroom and lab resources across university blocks
+            </p>
+          </div>
+          <span className="font-mono text-xs text-slate-400 font-semibold px-3 py-1 rounded-full bg-slate-800 border border-slate-700">
+            {rooms.length} Registered Rooms
+          </span>
+        </div>
+
+        <div className="overflow-x-auto">
+          <table className="w-full text-left border-collapse">
+            <thead>
+              <tr className="bg-slate-950/80 font-mono text-[11px] text-slate-400 uppercase tracking-wider border-b border-slate-800">
+                <th className="py-3 px-5 font-bold">Room Name</th>
+                <th className="py-3 px-4 font-bold">Building</th>
+                <th className="py-3 px-4 font-bold">Capacity</th>
+                <th className="py-3 px-4 font-bold">Type</th>
+                <th className="py-3 px-4 font-bold">Amenities</th>
+                <th className="py-3 px-5 font-bold text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-800 text-xs text-slate-200">
+              {rooms.map((r) => (
+                <tr key={r._id} className="hover:bg-slate-800/40 transition-colors group">
+                  <td className="py-3.5 px-5 font-mono font-bold text-white text-sm">
+                    {r.roomNumber}
+                  </td>
+                  <td className="py-3.5 px-4 text-slate-300 font-medium">{r.building}</td>
+                  <td className="py-3.5 px-4 font-mono font-semibold text-slate-300">
+                    {r.capacity} Seats
+                  </td>
+                  <td className="py-3.5 px-4">
+                    <span className="px-2.5 py-1 rounded-full text-[11px] font-semibold bg-blue-600/15 text-blue-300 border border-blue-500/30 capitalize">
+                      {r.type?.replace('_', ' ')}
                     </span>
-                  ))}
-                </div>
-              </div>
-
-              <div className="flex items-center gap-1">
-                <button
-                  onClick={() => openEditRoomModal(r)}
-                  className="p-2 rounded-lg text-slate-400 hover:text-blue-400 hover:bg-slate-800 transition-colors cursor-pointer"
-                  title="Edit Room"
-                >
-                  <Edit2 className="w-4 h-4" />
-                </button>
-                <button
-                  onClick={() => handleDeleteRoom(r._id, r.roomNumber)}
-                  className="p-2 rounded-lg text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 transition-colors cursor-pointer"
-                  title="Deactivate Room"
-                >
-                  <Trash2 className="w-4 h-4" />
-                </button>
-              </div>
-            </div>
-          ))}
+                  </td>
+                  <td className="py-3.5 px-4 text-slate-400 max-w-xs truncate">
+                    {r.amenities?.join(', ') || 'Standard Academic Equipment'}
+                  </td>
+                  <td className="py-3.5 px-5 text-right space-x-2">
+                    <button
+                      onClick={() => openEditRoomModal(r)}
+                      className="text-blue-400 hover:text-blue-300 font-semibold cursor-pointer hover:underline"
+                    >
+                      Edit
+                    </button>
+                    <span className="text-slate-600">|</span>
+                    <button
+                      onClick={() => handleDeleteRoom(r._id, r.roomNumber)}
+                      className="text-rose-400 hover:text-rose-300 font-semibold cursor-pointer hover:underline"
+                    >
+                      Deactivate
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
-      </div>
+      </section>
 
-      {/* Campus-Wide Bookings Registry */}
-      <div className="krono-card p-6 rounded-2xl space-y-4 border border-slate-800 bg-slate-900/70 shadow-sm">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 pb-2 border-b border-slate-800">
-          <div className="flex items-center gap-2">
-            <Calendar className="w-5 h-5 text-blue-400" />
-            <h2 className="text-lg font-bold text-white font-heading">
-              All University Booking Records ({filteredBookings.length})
+      {/* Campus-Wide Bookings Audit Section (Stitch Precision) */}
+      <section className="bg-slate-900/80 backdrop-blur-md border border-slate-800/90 rounded-2xl overflow-hidden shadow-sm">
+        <div className="p-5 border-b border-slate-800 flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <h2 className="text-lg font-bold text-white tracking-tight">
+              Campus-Wide Bookings Audit
             </h2>
+            <p className="text-xs text-slate-400">
+              Live audit trail of reservations, active occupancies, and check-in verifications
+            </p>
           </div>
 
-          <div className="flex items-center gap-2 flex-wrap">
+          <div className="flex flex-wrap items-center gap-3">
             <div className="relative">
               <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
               <input
                 type="text"
                 value={bookingSearch}
                 onChange={(e) => setBookingSearch(e.target.value)}
-                placeholder="Search user, room..."
+                placeholder="Search user, room, purpose..."
                 className="bg-slate-950/80 border border-slate-800 rounded-xl pl-9 pr-3 py-1.5 text-xs text-white placeholder:text-slate-500 focus:outline-none focus:border-blue-500"
               />
             </div>
@@ -352,100 +443,140 @@ export const AdminDashboard = () => {
           </div>
         </div>
 
-        {/* Bookings Table */}
+        {/* Bookings Audit Table */}
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs border-collapse">
+          <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="border-b border-slate-800 text-slate-400 font-semibold uppercase text-[10px] tracking-wider bg-slate-950/80">
-                <th className="p-3">Room</th>
-                <th className="p-3">User & Department</th>
-                <th className="p-3">Schedule Date & Time</th>
-                <th className="p-3">Purpose / Type</th>
-                <th className="p-3">Status</th>
-                <th className="p-3">Check-In</th>
-                <th className="p-3 text-right">Actions</th>
+              <tr className="bg-slate-950/80 font-mono text-[11px] text-slate-400 uppercase tracking-wider border-b border-slate-800">
+                <th className="py-3 px-5 font-bold">Booking ID</th>
+                <th className="py-3 px-4 font-bold">Room & Seat</th>
+                <th className="py-3 px-4 font-bold">Booked By</th>
+                <th className="py-3 px-4 font-bold">Schedule / Purpose</th>
+                <th className="py-3 px-4 font-bold">Status</th>
+                <th className="py-3 px-4 font-bold">Check-In</th>
+                <th className="py-3 px-5 font-bold text-right">Administrative Override</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-800 text-slate-300">
-              {filteredBookings.map((b) => (
-                <tr key={b._id} className="hover:bg-slate-800/40 transition-colors">
-                  <td className="p-3 font-mono font-bold text-white">
-                    {b.room?.roomNumber || '—'}
-                    <span className="block font-sans text-[10px] font-normal text-slate-400">
-                      {b.room?.building}
-                    </span>
-                    {(b.selectedSeats?.length > 0 || b.seatNumber) && (
-                      <span className="inline-block mt-0.5 px-1.5 py-0.5 rounded bg-blue-600/15 text-blue-300 font-mono text-[9px] border border-blue-500/30">
-                        {b.selectedSeats?.length > 1
-                          ? `Seats: ${b.selectedSeats.join(', ')}`
-                          : `Seat #${b.seatNumber || b.selectedSeats?.[0]}`}
+            <tbody className="divide-y divide-slate-800 text-xs text-slate-200">
+              {filteredBookings.map((b) => {
+                const isCurrentSession =
+                  b.status === 'confirmed' &&
+                  new Date(b.startTime) <= new Date() &&
+                  new Date(b.endTime) >= new Date();
+
+                return (
+                  <tr key={b._id} className="hover:bg-slate-800/40 transition-colors">
+                    <td className="py-3.5 px-5 font-mono text-slate-400 text-xs">
+                      #BK-{b._id.slice(-4).toUpperCase()}
+                    </td>
+
+                    <td className="py-3.5 px-4 font-mono font-bold text-white">
+                      <div className="flex items-center gap-1.5">
+                        <span>{b.room?.roomNumber || '—'}</span>
+                        {(b.selectedSeats?.length > 0 || b.seatNumber) && (
+                          <>
+                            <span className="text-slate-600">—</span>
+                            <span className="text-blue-400 font-bold">
+                              {b.selectedSeats?.length > 1
+                                ? `Seats: ${b.selectedSeats.join(', ')}`
+                                : `Seat #${b.seatNumber || b.selectedSeats?.[0]}`}
+                            </span>
+                          </>
+                        )}
+                      </div>
+                      <span className="block font-sans text-[10px] font-normal text-slate-400 mt-0.5">
+                        {b.room?.building}
                       </span>
-                    )}
-                  </td>
+                    </td>
 
-                  <td className="p-3">
-                    <span className="font-semibold text-white">{b.user?.name}</span>
-                    <span className="block text-[10px] text-slate-400 font-mono">
-                      {b.user?.idCardNumber} • {b.user?.role}
-                    </span>
-                  </td>
+                    <td className="py-3.5 px-4">
+                      <span className="font-semibold text-white block">{b.user?.name}</span>
+                      <div className="flex items-center gap-2 mt-0.5">
+                        <span className="text-[10px] text-slate-400 font-mono">
+                          ID: {b.user?.idCardNumber || 'N/A'}
+                        </span>
+                        <span
+                          className={`px-1.5 py-0.2 rounded text-[9px] font-mono font-bold uppercase tracking-wider ${
+                            b.user?.role === 'faculty' || b.user?.role === 'admin'
+                              ? 'bg-blue-600/20 text-blue-300 border border-blue-500/30'
+                              : 'bg-slate-800 text-slate-300 border border-slate-700'
+                          }`}
+                        >
+                          {b.user?.role || 'STUDENT'}
+                        </span>
+                      </div>
+                    </td>
 
-                  <td className="p-3 font-mono text-[11px]">
-                    {format(new Date(b.startTime), 'dd MMM yyyy')}
-                    <span className="block text-slate-400">
-                      {format(new Date(b.startTime), 'HH:mm')} – {format(new Date(b.endTime), 'HH:mm')}
-                    </span>
-                  </td>
-
-                  <td className="p-3 max-w-[200px]">
-                    <span className="font-medium text-slate-200 block truncate">{b.purpose}</span>
-                    <span className="text-[10px] text-slate-400 uppercase">{b.bookingType}</span>
-                  </td>
-
-                  <td className="p-3">
-                    <span
-                      className={`px-2 py-0.5 rounded text-[10px] font-semibold uppercase ${
-                        b.status === 'confirmed'
-                          ? 'bg-emerald-500/15 text-emerald-300 border border-emerald-500/30'
-                          : b.status === 'cancelled'
-                          ? 'bg-rose-500/15 text-rose-300 border border-rose-500/30'
-                          : 'bg-slate-800 text-slate-300 border border-slate-700'
-                      }`}
-                    >
-                      {b.status}
-                    </span>
-                  </td>
-
-                  <td className="p-3">
-                    {b.checkedIn ? (
-                      <span className="text-emerald-400 flex items-center gap-1 font-semibold">
-                        <CheckCircle2 className="w-3.5 h-3.5" /> Yes
+                    <td className="py-3.5 px-4 max-w-xs">
+                      <span className="font-medium text-slate-100 block truncate">
+                        {b.purpose}
                       </span>
-                    ) : (
-                      <span className="text-amber-400 font-semibold">Pending</span>
-                    )}
-                  </td>
+                      <span className="font-mono text-[11px] text-slate-400 block mt-0.5">
+                        {format(new Date(b.startTime), 'dd MMM')} •{' '}
+                        {format(new Date(b.startTime), 'HH:mm')} –{' '}
+                        {format(new Date(b.endTime), 'HH:mm')}
+                      </span>
+                    </td>
 
-                  <td className="p-3 text-right">
-                    {b.status === 'confirmed' && (
-                      <button
-                        onClick={() => handleAdminCancelBooking(b._id, b.room?.roomNumber)}
-                        className="px-2.5 py-1 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/30 rounded-lg text-[10px] font-semibold transition-colors cursor-pointer"
-                      >
-                        Override Cancel
-                      </button>
-                    )}
-                  </td>
-                </tr>
-              ))}
+                    <td className="py-3.5 px-4">
+                      {isCurrentSession ? (
+                        <span className="px-2.5 py-1 bg-blue-600 text-white rounded-full text-[10px] font-bold tracking-wider flex items-center w-max gap-1.5 shadow-sm">
+                          <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
+                          <span>In-Session</span>
+                        </span>
+                      ) : (
+                        <span
+                          className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${
+                            b.status === 'confirmed'
+                              ? 'bg-emerald-500/15 text-emerald-300 border border-emerald-500/30'
+                              : b.status === 'cancelled'
+                              ? 'bg-rose-500/15 text-rose-300 border border-rose-500/30'
+                              : 'bg-slate-800 text-slate-300 border border-slate-700'
+                          }`}
+                        >
+                          {b.status}
+                        </span>
+                      )}
+                    </td>
+
+                    <td className="py-3.5 px-4">
+                      {b.checkedIn ? (
+                        <span className="text-emerald-400 flex items-center gap-1 font-semibold">
+                          <CheckCircle2 className="w-3.5 h-3.5" /> Checked In
+                        </span>
+                      ) : (
+                        <span className="text-amber-400 font-semibold text-[11px]">
+                          Pending
+                        </span>
+                      )}
+                    </td>
+
+                    <td className="py-3.5 px-5 text-right">
+                      {b.status === 'confirmed' && (
+                        <button
+                          onClick={() => handleAdminCancelBooking(b._id, b.room?.roomNumber)}
+                          className="px-3 py-1.5 border border-rose-500/40 hover:bg-rose-500/20 text-rose-300 rounded-lg text-xs font-semibold transition-all cursor-pointer shadow-sm"
+                        >
+                          Release Seat
+                        </button>
+                      )}
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>
-      </div>
+      </section>
 
       {/* Create / Edit Room Modal */}
       {isRoomModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md overflow-y-auto">
+        <div
+          className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md overflow-y-auto"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setIsRoomModalOpen(false);
+          }}
+        >
           <div className="krono-modal max-w-md w-full rounded-2xl p-6 space-y-4 border border-slate-800 bg-slate-900 shadow-2xl">
             <div className="flex items-center justify-between border-b border-slate-800 pb-3">
               <h3 className="text-base font-bold text-white font-heading">

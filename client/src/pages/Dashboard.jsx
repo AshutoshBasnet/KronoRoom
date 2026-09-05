@@ -146,30 +146,38 @@ export const Dashboard = () => {
         </div>
       )}
 
-      {/* Header */}
+      {/* Header matching Stitch Institutional Precision */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2 mb-1">
-            <h1 className="text-2xl sm:text-3xl font-extrabold text-white font-heading tracking-tight">
-              KronoRoom Live Room Status
+          <div className="flex items-center gap-2.5 mb-1">
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+              Campus Live Readings
             </h1>
-            <span className="px-2.5 py-0.5 rounded-full text-[10px] uppercase font-bold tracking-wider bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 flex items-center gap-1.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-              Live Synced
-            </span>
+            <div className="hidden sm:flex items-center gap-2 bg-emerald-950/60 border border-emerald-500/40 px-3 py-1 rounded-full shadow-sm">
+              <div className="w-2 h-2 rounded-full bg-[#10b981] pulse-dot" />
+              <span className="font-mono text-[11px] text-emerald-400 uppercase tracking-wider font-bold">
+                Live Socket Telemetry Active
+              </span>
+            </div>
           </div>
           <p className="text-xs text-slate-300">
-            Real-time classroom & laboratory occupancy across London Met campus with interactive seat details.
+            Real-time classroom & laboratory occupancy across London Met campus with interactive seat telemetry.
           </p>
         </div>
 
         <div className="flex items-center gap-3">
+          <div className="sm:hidden flex items-center gap-2 bg-emerald-950/60 border border-emerald-500/40 px-2.5 py-1 rounded-full shadow-sm">
+            <div className="w-2 h-2 rounded-full bg-[#10b981] pulse-dot" />
+            <span className="font-mono text-[10px] text-emerald-400 uppercase tracking-wider font-bold">
+              Live Active
+            </span>
+          </div>
           <span className="text-[11px] text-slate-400 font-mono">
             Synced: {lastUpdated.toLocaleTimeString()}
           </span>
           <button
             onClick={() => fetchLiveStatus('Data refreshed manually.')}
-            className="p-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 hover:text-white transition-all shadow-sm cursor-pointer"
+            className="p-2.5 rounded-xl bg-slate-900/90 hover:bg-slate-800 border border-slate-700/80 text-slate-300 hover:text-white transition-all shadow-sm cursor-pointer"
             title="Refresh Live Data"
           >
             <RefreshCw className="w-4 h-4" />
@@ -177,42 +185,42 @@ export const Dashboard = () => {
         </div>
       </div>
 
-      {/* KPI Cards */}
+      {/* KPI Cards (Stitch Institutional Precision) */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="krono-card p-4 rounded-xl border border-slate-800/80 bg-slate-900/70 shadow-sm">
+        <div className="rounded-2xl p-4 border border-slate-800/90 bg-slate-900/80 backdrop-blur-md shadow-sm">
           <div className="flex items-center justify-between text-slate-400 text-xs mb-1">
-            <span>Total Facilities</span>
+            <span className="font-medium">Total Facilities</span>
             <Building className="w-4 h-4 text-slate-400" />
           </div>
           <p className="text-2xl font-bold font-mono text-white">{totalRooms}</p>
-          <p className="text-[10px] text-slate-400 mt-1">3 Campus Buildings</p>
+          <p className="text-[11px] text-slate-400 mt-1 font-mono">3 Campus Buildings</p>
         </div>
 
-        <div className="krono-card p-4 rounded-xl border border-emerald-500/30 bg-slate-900/70 shadow-sm">
+        <div className="rounded-2xl p-4 border border-emerald-500/30 bg-slate-900/80 backdrop-blur-md shadow-sm">
           <div className="flex items-center justify-between text-emerald-400 text-xs mb-1">
-            <span>Available Now</span>
+            <span className="font-medium">Available Now</span>
             <CheckCircle2 className="w-4 h-4 text-emerald-400" />
           </div>
           <p className="text-2xl font-bold font-mono text-emerald-400">{availableRooms}</p>
-          <p className="text-[10px] text-emerald-400/80 mt-1">Ready for walk-in or booking</p>
+          <p className="text-[11px] text-emerald-400/80 mt-1 font-mono">Ready for walk-in / booking</p>
         </div>
 
-        <div className="krono-card p-4 rounded-xl border border-blue-500/30 bg-slate-900/70 shadow-sm">
+        <div className="rounded-2xl p-4 border border-blue-500/30 bg-slate-900/80 backdrop-blur-md shadow-sm">
           <div className="flex items-center justify-between text-blue-400 text-xs mb-1">
-            <span>In Session</span>
+            <span className="font-medium">In Session</span>
             <Activity className="w-4 h-4 text-blue-400" />
           </div>
           <p className="text-2xl font-bold font-mono text-blue-300">{occupiedRooms}</p>
-          <p className="text-[10px] text-blue-300/80 mt-1">Active lectures & labs</p>
+          <p className="text-[11px] text-blue-300/80 mt-1 font-mono">Active lectures & labs</p>
         </div>
 
-        <div className="krono-card p-4 rounded-xl border border-slate-800/80 bg-slate-900/70 shadow-sm">
+        <div className="rounded-2xl p-4 border border-slate-800/90 bg-slate-900/80 backdrop-blur-md shadow-sm">
           <div className="flex items-center justify-between text-slate-400 text-xs mb-1">
-            <span>Total Seat Capacity</span>
+            <span className="font-medium">Total Workstations</span>
             <Users className="w-4 h-4 text-slate-400" />
           </div>
           <p className="text-2xl font-bold font-mono text-slate-200">{totalCapacity}</p>
-          <p className="text-[10px] text-slate-400 mt-1">Simultaneous capacity</p>
+          <p className="text-[11px] text-slate-400 mt-1 font-mono">Synchronized capacity</p>
         </div>
       </div>
 

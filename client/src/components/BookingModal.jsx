@@ -84,7 +84,27 @@ export const BookingModal = ({
       setStartTime(formatH(nextHour));
       setEndTime(formatH(endHour === 0 ? 23 : endHour));
       setDate(format(now, 'yyyy-MM-dd'));
+
+      document.body.classList.add('modal-open');
+      document.body.setAttribute('data-modal-open', 'true');
+      window.dispatchEvent(
+        new CustomEvent('krono:modal-state', { detail: { isOpen: true, type: 'booking' } })
+      );
+    } else {
+      document.body.classList.remove('modal-open');
+      document.body.removeAttribute('data-modal-open');
+      window.dispatchEvent(
+        new CustomEvent('krono:modal-state', { detail: { isOpen: false, type: 'booking' } })
+      );
     }
+
+    return () => {
+      document.body.classList.remove('modal-open');
+      document.body.removeAttribute('data-modal-open');
+      window.dispatchEvent(
+        new CustomEvent('krono:modal-state', { detail: { isOpen: false, type: 'booking' } })
+      );
+    };
   }, [isOpen, initialSeat, user, isRoomPartiallyOrFullyOccupied]);
 
   if (!isOpen || !room) return null;
@@ -169,7 +189,12 @@ export const BookingModal = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md overflow-y-auto">
+    <div
+      className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md overflow-y-auto"
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
+    >
       <div className="krono-modal max-w-2xl w-full rounded-2xl p-6 text-slate-100 relative my-6 max-h-[92vh] overflow-y-auto border border-slate-800 bg-slate-900 shadow-2xl">
         {/* Header */}
         <div className="flex items-center justify-between pb-4 border-b border-slate-800">

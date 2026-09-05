@@ -155,10 +155,10 @@ export const Landing = () => {
           <div className="krono-card-hover rounded-2xl p-6 flex flex-col justify-between space-y-5">
             <div className="space-y-4">
               <div className="flex items-center justify-between">
-                <div className="w-11 h-11 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-200">
+                <div className="w-11 h-11 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-400">
                   <Users className="w-5 h-5" />
                 </div>
-                <span className="px-2.5 py-1 rounded-full text-xs font-semibold bg-slate-800 text-slate-300 border border-slate-700">
+                <span className="px-2.5 py-1 rounded-full text-xs font-semibold bg-blue-500/10 text-blue-300 border border-blue-500/20">
                   Faculty & Staff
                 </span>
               </div>
@@ -172,15 +172,15 @@ export const Landing = () => {
 
               <ul className="space-y-2 text-xs text-slate-300">
                 <li className="flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-slate-400 shrink-0" />
+                  <CheckCircle2 className="w-4 h-4 text-blue-400 shrink-0" />
                   <span>Extended 6-hour lecture slots per booking</span>
                 </li>
                 <li className="flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-slate-400 shrink-0" />
+                  <CheckCircle2 className="w-4 h-4 text-blue-400 shrink-0" />
                   <span>Book up to 30 days in advance</span>
                 </li>
                 <li className="flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-slate-400 shrink-0" />
+                  <CheckCircle2 className="w-4 h-4 text-blue-400 shrink-0" />
                   <span>Administrative overrides & resource allocation</span>
                 </li>
               </ul>
@@ -189,7 +189,7 @@ export const Landing = () => {
             <div className="pt-2">
               <Link
                 to="/login/faculty"
-                className="krono-btn krono-btn-oceanic w-full text-xs flex items-center justify-center gap-2 rounded-xl"
+                className="krono-btn krono-btn-primary w-full text-xs flex items-center justify-center gap-2 rounded-xl"
               >
                 <span>Enter Faculty Portal</span>
                 <ChevronRight className="w-4 h-4" />

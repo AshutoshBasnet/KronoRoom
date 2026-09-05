@@ -68,9 +68,21 @@ export function AdaptiveNavigationBar({ className }: { className?: string }) {
   const [hoveredTab, setHoveredTab] = useState<string | null>(null);
   const [isVisible, setIsVisible] = useState<boolean>(true);
   const [isSocketConnected, setIsSocketConnected] = useState<boolean>(socket.connected);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
   const collapseTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const lastScrollY = useRef<number>(0);
+
+  // Listen for seat details / modal open events to auto-hide floating bar
+  useEffect(() => {
+    const handleModalToggle = (e: any) => {
+      setIsModalOpen(Boolean(e.detail?.isOpen));
+    };
+    window.addEventListener("krono:modal-state", handleModalToggle as EventListener);
+    return () => {
+      window.removeEventListener("krono:modal-state", handleModalToggle as EventListener);
+    };
+  }, []);
 
   // Sync socket connection state
   useEffect(() => {
@@ -161,10 +173,11 @@ export function AdaptiveNavigationBar({ className }: { className?: string }) {
 
   return (
     <motion.header
+      data-adaptive-navbar=""
       initial={{ y: 0, opacity: 1 }}
       animate={{
-        y: isVisible ? 0 : -95,
-        opacity: isVisible ? 1 : 0,
+        y: isVisible && !isModalOpen ? 0 : -100,
+        opacity: isVisible && !isModalOpen ? 1 : 0,
       }}
       transition={{
         type: "spring",
@@ -172,7 +185,8 @@ export function AdaptiveNavigationBar({ className }: { className?: string }) {
         damping: 32,
       }}
       className={cn(
-        "fixed top-4 sm:top-5 left-1/2 -translate-x-1/2 z-50 flex items-center justify-center pointer-events-none w-full max-w-max px-4",
+        "fixed top-4 sm:top-5 left-1/2 -translate-x-1/2 z-40 flex items-center justify-center pointer-events-none w-full max-w-max px-4",
+        isModalOpen && "!pointer-events-none !hidden",
         className
       )}
     >
