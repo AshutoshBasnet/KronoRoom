@@ -17,29 +17,25 @@ export function App() {
   return (
     <AuthProvider>
       <Router>
-        <div className="relative min-h-screen text-slate-100 flex flex-col font-sans selection:bg-cyan-500 selection:text-white overflow-x-hidden">
-          {/* Universal Theme MetaBalls Background */}
-          <div className="fixed inset-0 w-full h-full pointer-events-none -z-10 overflow-hidden">
+        <div className="relative min-h-screen text-slate-100 flex flex-col font-sans selection:bg-blue-600 selection:text-white overflow-x-hidden bg-[#0a0e17]">
+          {/* Subtle Institutional Architectural Grid */}
+          <div className="fixed inset-0 pointer-events-none -z-10 bg-[linear-gradient(to_right,#1e293b18_1px,transparent_1px),linear-gradient(to_bottom,#1e293b18_1px,transparent_1px)] bg-[size:40px_40px]"></div>
+
+          {/* Ambient MetaBalls Background (Refined deep navy tone, subtle opacity) */}
+          <div className="fixed inset-0 w-full h-full pointer-events-none -z-10 overflow-hidden opacity-35">
             <MetaBalls
-              color="#2623a8"
-              cursorBallColor="#2623a8"
+              color="#1e3a8a"
+              cursorBallColor="#1d4ed8"
               cursorBallSize={0}
-              ballCount={15}
-              animationSize={30}
+              ballCount={12}
+              animationSize={28}
               enableMouseInteraction={false}
               enableTransparency={true}
               hoverSmoothness={0.05}
-              clumpFactor={1}
-              speed={0.25}
+              clumpFactor={1.2}
+              speed={0.18}
               useWindow={false}
             />
-          </div>
-
-          {/* Universal Ambient Oceanic Glows */}
-          <div className="fixed inset-0 overflow-hidden pointer-events-none -z-10">
-            <div className="absolute -top-40 -left-40 w-96 h-96 bg-cyan-500/15 rounded-full blur-3xl"></div>
-            <div className="absolute top-1/3 -right-40 w-96 h-96 bg-sky-600/10 rounded-full blur-3xl"></div>
-            <div className="absolute -bottom-40 left-1/3 w-96 h-96 bg-[#0077b6]/20 rounded-full blur-3xl"></div>
           </div>
 
           <Navbar />

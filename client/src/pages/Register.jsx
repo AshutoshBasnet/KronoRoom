@@ -58,18 +58,18 @@ export const Register = () => {
   };
 
   return (
-    <div className="min-h-screen bg-transparent flex items-center justify-center p-4 pt-24 pb-12 selection:bg-cyan-500 selection:text-white">
-      <div className="krono-card max-w-lg w-full p-8 rounded-3xl border border-cyan-500/25 bg-[#001d3d]/55 backdrop-blur-xl shadow-[0_15px_50px_rgba(0,8,20,0.8)] space-y-6">
+    <div className="min-h-screen bg-transparent flex items-center justify-center p-4 pt-24 pb-12 selection:bg-blue-600 selection:text-white">
+      <div className="krono-card max-w-lg w-full p-8 rounded-3xl border border-slate-800 bg-slate-900/80 shadow-2xl space-y-6">
         {/* Header */}
         <div className="text-center space-y-2">
-          <div className="w-14 h-14 rounded-2xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center mx-auto text-cyan-400 shadow-[0_0_15px_rgba(0,245,255,0.15)]">
+          <div className="w-14 h-14 rounded-2xl bg-blue-600/10 border border-blue-500/20 flex items-center justify-center mx-auto text-blue-400 shadow-sm">
             <UserPlus className="w-7 h-7" />
           </div>
           <h2 className="text-2xl font-bold text-white font-heading">
             Create KronoRoom Account
           </h2>
-          <p className="text-xs text-cyan-200/70">
-            Register your profile for London Met smart room booking
+          <p className="text-xs text-slate-400">
+            Register your profile for London Met room scheduling
           </p>
         </div>
 
@@ -87,7 +87,7 @@ export const Register = () => {
             {/* Full Name */}
             <div>
               <label className="block font-semibold text-slate-300 uppercase tracking-wider mb-1.5 flex items-center gap-1">
-                <User className="w-3.5 h-3.5 text-cyan-400" /> Full Name
+                <User className="w-3.5 h-3.5 text-slate-400" /> Full Name
               </label>
               <input
                 type="text"
@@ -95,7 +95,7 @@ export const Register = () => {
                 value={formData.name}
                 onChange={handleChange}
                 placeholder="e.g. Alex Henderson"
-                className="w-full bg-[#001833] border border-cyan-500/20 rounded-xl px-3.5 py-2.5 text-sm text-white placeholder:text-slate-500 focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400/30 transition-all shadow-inner"
+                className="w-full bg-slate-950/80 border border-slate-800 rounded-xl px-3.5 py-2.5 text-sm text-white placeholder:text-slate-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/20 transition-all"
                 required
               />
             </div>
@@ -103,13 +103,13 @@ export const Register = () => {
             {/* Role */}
             <div>
               <label className="block font-semibold text-slate-300 uppercase tracking-wider mb-1.5 flex items-center gap-1">
-                <Briefcase className="w-3.5 h-3.5 text-cyan-400" /> Role Type
+                <Briefcase className="w-3.5 h-3.5 text-slate-400" /> Role Type
               </label>
               <select
                 name="role"
                 value={formData.role}
                 onChange={handleChange}
-                className="w-full bg-[#001833] border border-cyan-500/20 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400/30 transition-all"
+                className="w-full bg-slate-950/80 border border-slate-800 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/20 transition-all"
               >
                 <option value="student">Student (2h session / 3-day advance max)</option>
                 <option value="teacher">Faculty & Staff (6h session / 30-day advance max)</option>
@@ -121,7 +121,7 @@ export const Register = () => {
             {/* Email */}
             <div>
               <label className="block font-semibold text-slate-300 uppercase tracking-wider mb-1.5 flex items-center gap-1">
-                <Mail className="w-3.5 h-3.5 text-cyan-400" /> University Email
+                <Mail className="w-3.5 h-3.5 text-slate-400" /> University Email
               </label>
               <input
                 type="email"
@@ -129,7 +129,7 @@ export const Register = () => {
                 value={formData.email}
                 onChange={handleChange}
                 placeholder="a.henderson@londonmet.ac.uk"
-                className="w-full bg-[#001833] border border-cyan-500/20 rounded-xl px-3.5 py-2.5 text-sm text-white placeholder:text-slate-500 focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400/30 transition-all shadow-inner"
+                className="w-full bg-slate-950/80 border border-slate-800 rounded-xl px-3.5 py-2.5 text-sm text-white placeholder:text-slate-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/20 transition-all"
                 required
               />
             </div>
@@ -137,7 +137,7 @@ export const Register = () => {
             {/* ID Card */}
             <div>
               <label className="block font-semibold text-slate-300 uppercase tracking-wider mb-1.5 flex items-center gap-1">
-                <CreditCard className="w-3.5 h-3.5 text-cyan-400" /> London Met ID
+                <CreditCard className="w-3.5 h-3.5 text-slate-400" /> London Met ID
               </label>
               <input
                 type="text"
@@ -145,7 +145,7 @@ export const Register = () => {
                 value={formData.idCardNumber}
                 onChange={handleChange}
                 placeholder="LM-2024-998"
-                className="w-full bg-[#001833] border border-cyan-500/20 rounded-xl px-3.5 py-2.5 text-sm font-mono text-white placeholder:text-slate-500 focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400/30 transition-all shadow-inner"
+                className="w-full bg-slate-950/80 border border-slate-800 rounded-xl px-3.5 py-2.5 text-sm font-mono text-white placeholder:text-slate-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/20 transition-all"
                 required
               />
             </div>
@@ -154,13 +154,13 @@ export const Register = () => {
           {/* Department */}
           <div>
             <label className="block font-semibold text-slate-300 uppercase tracking-wider mb-1.5 flex items-center gap-1">
-              <Building2 className="w-3.5 h-3.5 text-cyan-400" /> Department / School
+              <Building2 className="w-3.5 h-3.5 text-slate-400" /> Department / School
             </label>
             <select
               name="department"
               value={formData.department}
               onChange={handleChange}
-              className="w-full bg-[#001833] border border-cyan-500/20 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400/30 transition-all"
+              className="w-full bg-slate-950/80 border border-slate-800 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/20 transition-all"
             >
               {departments.map((dept, i) => (
                 <option key={i} value={dept}>
@@ -173,7 +173,7 @@ export const Register = () => {
           {/* Password */}
           <div>
             <label className="block font-semibold text-slate-300 uppercase tracking-wider mb-1.5 flex items-center gap-1">
-              <Lock className="w-3.5 h-3.5 text-cyan-400" /> Password (Min 6 chars)
+              <Lock className="w-3.5 h-3.5 text-slate-400" /> Password (Min 6 chars)
             </label>
             <input
               type="password"
@@ -181,7 +181,7 @@ export const Register = () => {
               value={formData.password}
               onChange={handleChange}
               placeholder="••••••••••••"
-              className="w-full bg-[#001833] border border-cyan-500/20 rounded-xl px-3.5 py-2.5 text-sm text-white placeholder:text-slate-500 focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400/30 transition-all font-mono shadow-inner"
+              className="w-full bg-slate-950/80 border border-slate-800 rounded-xl px-3.5 py-2.5 text-sm text-white placeholder:text-slate-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/20 transition-all font-mono"
               required
               minLength={6}
             />
@@ -190,7 +190,7 @@ export const Register = () => {
           <button
             type="submit"
             disabled={isLoading}
-            className="krono-btn krono-btn-cyan w-full py-3 text-xs font-bold shadow-[0_0_20px_rgba(0,180,216,0.35)]"
+            className="krono-btn krono-btn-primary w-full py-3 text-xs font-semibold shadow-sm cursor-pointer"
           >
             {isLoading ? (
               <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
@@ -204,9 +204,9 @@ export const Register = () => {
         </form>
 
         {/* Footer Navigation */}
-        <div className="pt-4 border-t border-cyan-500/15 text-center text-xs text-slate-400">
+        <div className="pt-4 border-t border-slate-800 text-center text-xs text-slate-400">
           Already have an account?{' '}
-          <Link to="/login/student" className="text-cyan-400 hover:text-cyan-300 font-semibold">
+          <Link to="/login/student" className="text-blue-400 hover:text-blue-300 font-semibold">
             Log in here
           </Link>
         </div>

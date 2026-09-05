@@ -3,13 +3,8 @@
 @layer base {
   body {
     font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    background-color: #000814;
-    color: #f0f9ff;
-    background-image: 
-      radial-gradient(circle at 50% 0%, rgba(0, 180, 216, 0.14) 0%, transparent 60%),
-      radial-gradient(circle at 100% 50%, rgba(0, 245, 255, 0.08) 0%, transparent 50%),
-      radial-gradient(circle at 0% 100%, rgba(2, 62, 138, 0.15) 0%, transparent 50%);
-    background-attachment: fixed;
+    background-color: #0a0e17;
+    color: #f8fafc;
     overflow-x: hidden;
   }
 
@@ -26,37 +21,37 @@
   }
 }
 
-/* KronoRoom Modern Card System */
+/* KronoRoom Clean Slate Card System */
 .krono-card {
-  background: rgba(0, 29, 61, 0.45);
+  background: rgba(15, 23, 42, 0.75);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(0, 245, 255, 0.15);
-  box-shadow: 0 4px 25px -2px rgba(0, 8, 20, 0.6);
+  border: 1px solid rgba(51, 65, 85, 0.6);
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.5);
 }
 
 .krono-card-hover {
-  background: rgba(0, 29, 61, 0.45);
+  background: rgba(15, 23, 42, 0.75);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(0, 245, 255, 0.15);
-  box-shadow: 0 4px 25px -2px rgba(0, 8, 20, 0.6);
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid rgba(51, 65, 85, 0.6);
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.5);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .krono-card-hover:hover {
-  background: rgba(0, 35, 75, 0.65);
-  border-color: rgba(0, 245, 255, 0.4);
-  transform: translateY(-3px);
-  box-shadow: 0 14px 35px -10px rgba(0, 217, 255, 0.25);
+  background: rgba(22, 33, 56, 0.9);
+  border-color: rgba(96, 165, 250, 0.4);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px -8px rgba(0, 0, 0, 0.7);
 }
 
 .krono-modal {
-  background: rgba(0, 18, 38, 0.95);
+  background: #0f172a;
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
-  border: 1px solid rgba(0, 245, 255, 0.2);
-  box-shadow: 0 25px 50px -12px rgba(0, 8, 20, 0.9);
+  border: 1px solid rgba(51, 65, 85, 0.8);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.85);
 }
 
 /* Modern Tactile Buttons */
@@ -67,8 +62,8 @@
   gap: 0.5rem;
   font-family: 'Plus Jakarta Sans', sans-serif;
   font-weight: 600;
-  border-radius: 0.75rem;
-  padding: 0.5rem 1rem;
+  border-radius: 0.625rem;
+  padding: 0.55rem 1.1rem;
   transition: all 0.15s ease;
   user-select: none;
   cursor: pointer;
@@ -78,83 +73,70 @@
   transform: scale(0.98);
 }
 
-.krono-btn-cyan {
-  background: linear-gradient(135deg, #00b4d8 0%, #0077b6 100%);
+.krono-btn-cyan,
+.krono-btn-primary {
+  background: #2563eb;
   color: #ffffff;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  box-shadow: 0 4px 20px 0 rgba(0, 180, 216, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 2px 8px 0 rgba(37, 99, 235, 0.25);
 }
-.krono-btn-cyan:hover {
-  background: linear-gradient(135deg, #0096c7 0%, #023e8a 100%);
-  box-shadow: 0 6px 25px 0 rgba(0, 180, 216, 0.5);
+.krono-btn-cyan:hover,
+.krono-btn-primary:hover {
+  background: #1d4ed8;
+  box-shadow: 0 4px 12px 0 rgba(37, 99, 235, 0.35);
 }
 
 .krono-btn-oceanic {
-  background: linear-gradient(135deg, #0077b6 0%, #023e8a 100%);
-  color: #ffffff;
-  border: 1px solid rgba(0, 245, 255, 0.25);
-  box-shadow: 0 4px 18px 0 rgba(0, 119, 182, 0.35);
+  background: #1e293b;
+  color: #f8fafc;
+  border: 1px solid #334155;
+  box-shadow: 0 2px 6px 0 rgba(0, 0, 0, 0.2);
 }
 .krono-btn-oceanic:hover {
-  background: linear-gradient(135deg, #005f9e 0%, #032a63 100%);
-  border-color: rgba(0, 245, 255, 0.45);
-  box-shadow: 0 6px 22px 0 rgba(0, 245, 255, 0.3);
-}
-
-.krono-btn-primary {
-  background: linear-gradient(135deg, #00b4d8 0%, #0077b6 100%);
-  color: #ffffff;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  box-shadow: 0 4px 18px 0 rgba(0, 180, 216, 0.35);
-}
-.krono-btn-primary:hover {
-  background: linear-gradient(135deg, #0096c7 0%, #023e8a 100%);
-  box-shadow: 0 6px 24px 0 rgba(0, 180, 216, 0.45);
+  background: #334155;
+  border-color: #475569;
 }
 
 .krono-btn-success {
-  background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+  background: #059669;
   color: #ffffff;
   border: 1px solid rgba(255, 255, 255, 0.15);
-  box-shadow: 0 4px 14px 0 rgba(16, 185, 129, 0.35);
+  box-shadow: 0 2px 6px 0 rgba(5, 150, 105, 0.25);
 }
 .krono-btn-success:hover {
-  background: linear-gradient(135deg, #047857 0%, #059669 100%);
-  box-shadow: 0 6px 20px 0 rgba(16, 185, 129, 0.45);
+  background: #047857;
 }
 
 .krono-btn-purple {
-  background: linear-gradient(135deg, #0077b6 0%, #023e8a 100%);
+  background: #4f46e5;
   color: #ffffff;
-  border: 1px solid rgba(0, 245, 255, 0.25);
-  box-shadow: 0 4px 14px 0 rgba(0, 180, 216, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 2px 6px 0 rgba(79, 70, 229, 0.25);
 }
 .krono-btn-purple:hover {
-  background: linear-gradient(135deg, #0096c7 0%, #0077b6 100%);
-  box-shadow: 0 6px 20px 0 rgba(0, 180, 216, 0.45);
+  background: #4338ca;
 }
 
 .krono-btn-danger {
-  background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);
+  background: #dc2626;
   color: #ffffff;
   border: 1px solid rgba(255, 255, 255, 0.15);
-  box-shadow: 0 4px 14px 0 rgba(239, 68, 68, 0.35);
+  box-shadow: 0 2px 6px 0 rgba(220, 38, 38, 0.25);
 }
 .krono-btn-danger:hover {
-  background: linear-gradient(135deg, #b91c1c 0%, #dc2626 100%);
-  box-shadow: 0 6px 20px 0 rgba(239, 68, 68, 0.45);
+  background: #b91c1c;
 }
 
 .krono-btn-ghost {
-  background: rgba(0, 29, 61, 0.4);
-  color: #e0f2fe;
-  border: 1px solid rgba(0, 245, 255, 0.2);
+  background: rgba(30, 41, 59, 0.6);
+  color: #e2e8f0;
+  border: 1px solid rgba(51, 65, 85, 0.7);
   backdrop-filter: blur(8px);
 }
 .krono-btn-ghost:hover {
-  background: rgba(0, 53, 102, 0.6);
+  background: rgba(51, 65, 85, 0.85);
   color: #ffffff;
-  border-color: rgba(0, 245, 255, 0.4);
+  border-color: rgba(100, 116, 139, 0.8);
 }
 
 /* Custom Sleek Scrollbars */
@@ -164,7 +146,7 @@
 }
 
 ::-webkit-scrollbar-track {
-  background: #090d16;
+  background: #0a0e17;
 }
 
 ::-webkit-scrollbar-thumb {

@@ -29,7 +29,7 @@ const navItems: NavItem[] = [
     label: "KronoRoom",
     id: "kronoroom",
     path: "/",
-    icon: <Clock className="w-4 h-4 text-cyan-400" />,
+    icon: <Clock className="w-4 h-4 text-blue-500" />,
   },
   {
     label: "Live Rooms",
@@ -184,15 +184,10 @@ export function AdaptiveNavigationBar({ className }: { className?: string }) {
         <motion.nav
           layout
           transition={springConfig}
-          style={{
-            background:
-              "linear-gradient(135deg, rgba(0, 24, 51, 0.92) 0%, rgba(0, 8, 20, 0.97) 100%)",
-            willChange: "transform, width",
-          }}
           className={cn(
-            "relative flex items-center gap-1.5 p-1.5 rounded-full select-none transform-gpu overflow-hidden",
-            "border border-cyan-500/30 backdrop-blur-2xl",
-            "shadow-[0_12px_40px_-5px_rgba(0,8,20,0.85),0_0_20px_rgba(0,245,255,0.18),inset_0_1px_0_rgba(255,255,255,0.15)]",
+            "relative flex items-center gap-2 p-1.5 rounded-full select-none transform-gpu overflow-hidden",
+            "bg-slate-950/90 border border-slate-800 backdrop-blur-xl",
+            "shadow-[0_8px_30px_rgba(0,0,0,0.65),inset_0_1px_0_rgba(255,255,255,0.06)]",
             "transition-colors duration-200"
           )}
         >
@@ -202,18 +197,16 @@ export function AdaptiveNavigationBar({ className }: { className?: string }) {
             onClick={() => setActiveTab("kronoroom")}
             className="flex items-center gap-2.5 px-3 py-1.5 rounded-full hover:opacity-90 transition-opacity shrink-0 z-10"
           >
-            <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-[#00b4d8] via-[#0077b6] to-cyan-400 p-[1px] shadow-[0_0_12px_rgba(0,245,255,0.35)] flex items-center justify-center shrink-0">
-              <div className="w-full h-full bg-[#000814] rounded-full flex items-center justify-center">
-                <Clock className="w-4 h-4 text-cyan-400" />
-              </div>
+            <div className="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center shrink-0 shadow-sm">
+              <Clock className="w-4 h-4 text-white" />
             </div>
 
             <div className="flex flex-col text-left pr-1">
               <div className="flex items-center gap-1.5">
                 <span className="font-brand font-bold text-sm tracking-tight text-white whitespace-nowrap">
-                  Krono<span className="text-cyan-400">Room</span>
+                  Krono<span className="text-blue-500">Room</span>
                 </span>
-                <span className="text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-full bg-cyan-500/15 text-cyan-300 border border-cyan-500/30 whitespace-nowrap">
+                <span className="text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-md bg-slate-800 text-slate-300 border border-slate-700 whitespace-nowrap">
                   London Met
                 </span>
               </div>
@@ -231,7 +224,7 @@ export function AdaptiveNavigationBar({ className }: { className?: string }) {
                   width: springConfig,
                   opacity: { duration: 0.2, ease: "easeInOut" },
                 }}
-                className="flex items-center gap-1 pl-2 border-l border-cyan-500/20 overflow-hidden whitespace-nowrap shrink-0"
+                className="flex items-center gap-1 pl-2 border-l border-slate-800 overflow-hidden whitespace-nowrap shrink-0"
               >
                 {navItems.slice(1).map((item) => {
                   const isActive = activeTab === item.id;
@@ -253,7 +246,7 @@ export function AdaptiveNavigationBar({ className }: { className?: string }) {
                       {isActive && (
                         <motion.div
                           layoutId="adaptive-nav-active-pill"
-                          className="absolute inset-0 rounded-full bg-gradient-to-r from-cyan-500/25 to-[#0077b6]/35 border border-cyan-400/40 shadow-[0_0_15px_rgba(0,245,255,0.25)] -z-10"
+                          className="absolute inset-0 rounded-full bg-blue-600 text-white -z-10 shadow-sm"
                           transition={springConfig}
                         />
                       )}
@@ -262,30 +255,28 @@ export function AdaptiveNavigationBar({ className }: { className?: string }) {
                       {!isActive && isHovered && (
                         <motion.div
                           layoutId="adaptive-nav-hover-pill"
-                          className="absolute inset-0 rounded-full bg-cyan-500/10 border border-cyan-400/20 -z-10"
+                          className="absolute inset-0 rounded-full bg-slate-800/80 -z-10"
                           transition={springConfig}
                         />
                       )}
 
                       <span className="shrink-0">{item.icon}</span>
-                      <span className={isActive ? "text-cyan-300" : ""}>
-                        {item.label}
-                      </span>
+                      <span>{item.label}</span>
                     </button>
                   );
                 })}
 
                 {/* Authenticated Links & Roles */}
                 {isAuthenticated ? (
-                  <div className="flex items-center gap-1 pl-1 border-l border-cyan-500/20 shrink-0">
+                  <div className="flex items-center gap-1 pl-1 border-l border-slate-800 shrink-0">
                     <Link
                       to="/my-bookings"
                       onClick={() => setActiveTab("my-bookings")}
                       className={cn(
                         "relative px-3 py-1.5 rounded-full text-xs font-semibold flex items-center gap-1.5 shrink-0 transition-all whitespace-nowrap",
                         activeTab === "my-bookings"
-                          ? "text-cyan-300 font-bold bg-cyan-500/20 border border-cyan-400/30"
-                          : "text-slate-300 hover:text-white hover:bg-white/5"
+                          ? "text-white font-bold bg-blue-600"
+                          : "text-slate-300 hover:text-white hover:bg-slate-800/60"
                       )}
                     >
                       <Calendar className="w-3.5 h-3.5" />
@@ -299,7 +290,7 @@ export function AdaptiveNavigationBar({ className }: { className?: string }) {
                         className={cn(
                           "relative px-3 py-1.5 rounded-full text-xs font-semibold flex items-center gap-1.5 shrink-0 transition-all whitespace-nowrap",
                           activeTab === "admin"
-                            ? "text-rose-300 font-bold bg-rose-500/20 border border-rose-400/30"
+                            ? "text-rose-200 font-bold bg-rose-600/30 border border-rose-500/40"
                             : "text-slate-300 hover:text-rose-300 hover:bg-rose-500/10"
                         )}
                       >
@@ -308,14 +299,14 @@ export function AdaptiveNavigationBar({ className }: { className?: string }) {
                       </Link>
                     )}
 
-                    <div className="flex items-center gap-2 pl-2 border-l border-cyan-500/20 pr-1 shrink-0">
-                      <span className="text-[11px] font-bold text-white max-w-[90px] truncate hidden md:inline-block">
+                    <div className="flex items-center gap-2 pl-2 border-l border-slate-800 pr-1 shrink-0">
+                      <span className="text-[11px] font-medium text-slate-300 max-w-[90px] truncate hidden md:inline-block">
                         {user?.name?.split(" ")[0]}
                       </span>
                       <button
                         onClick={handleLogout}
                         title="Sign Out"
-                        className="p-1.5 rounded-full text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 border border-transparent hover:border-rose-500/30 transition-all"
+                        className="p-1.5 rounded-full text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 transition-all cursor-pointer"
                       >
                         <LogOut className="w-3.5 h-3.5" />
                       </button>
@@ -324,20 +315,20 @@ export function AdaptiveNavigationBar({ className }: { className?: string }) {
                 ) : (
                   /* Live Sync status indicator */
                   <div
-                    className="flex items-center gap-1.5 pl-2.5 pr-2 py-1 text-[10px] font-mono text-cyan-300/80 shrink-0 whitespace-nowrap"
+                    className="flex items-center gap-1.5 pl-2.5 pr-2 py-1 text-[10px] font-mono text-slate-300 shrink-0 whitespace-nowrap"
                     title={isSocketConnected ? "Live sync active" : "Connecting..."}
                   >
-                    <span className="relative flex h-1.5 w-1.5">
+                    <span className="relative flex h-2 w-2">
                       {isSocketConnected && (
-                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                       )}
                       <span
-                        className={`relative inline-flex rounded-full h-1.5 w-1.5 ${
-                          isSocketConnected ? "bg-cyan-400" : "bg-amber-500"
+                        className={`relative inline-flex rounded-full h-2 w-2 ${
+                          isSocketConnected ? "bg-emerald-500" : "bg-amber-500"
                         }`}
                       ></span>
                     </span>
-                    <span className="hidden lg:inline-block">Live</span>
+                    <span className="hidden lg:inline-block text-slate-400">Live</span>
                   </div>
                 )}
               </motion.div>
@@ -352,9 +343,9 @@ export function AdaptiveNavigationBar({ className }: { className?: string }) {
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.6 }}
                 transition={{ duration: 0.2 }}
-                className="flex items-center pr-2 pl-0.5 text-cyan-400/80 shrink-0"
+                className="flex items-center pr-2 pl-0.5 text-slate-400 shrink-0"
               >
-                <Plus className="w-3.5 h-3.5 text-cyan-400" />
+                <Plus className="w-3.5 h-3.5" />
               </motion.div>
             )}
           </AnimatePresence>

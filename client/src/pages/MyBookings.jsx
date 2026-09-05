@@ -7,7 +7,6 @@ import {
   XCircle,
   AlertTriangle,
   RefreshCw,
-  Sparkles,
   ArrowRight,
   UserCheck
 } from 'lucide-react';
@@ -65,13 +64,13 @@ export const MyBookings = () => {
   const handleCheckIn = async (bookingId) => {
     setActionLoadingId(bookingId);
     try {
-      const { data } = await api.patch(`/bookings/${bookingId}/check-in`);
+      const { data } = await api.patch(`/bookings/${bookingId}/checkin`);
       if (data.success) {
-        showToast('Check-in confirmed! Your room occupancy is verified.');
+        showToast('Successfully checked in! Occupancy secured.');
         fetchMyBookings();
       }
     } catch (error) {
-      showToast(error.response?.data?.message || 'Failed to check in.');
+      showToast(error.response?.data?.message || 'Check-in failed.');
     } finally {
       setActionLoadingId(null);
     }
@@ -109,8 +108,8 @@ export const MyBookings = () => {
     <div className="min-h-screen bg-transparent text-slate-100 px-4 sm:px-6 lg:px-8 pt-24 sm:pt-28 pb-12 max-w-6xl mx-auto space-y-6">
       {/* Toast Alert */}
       {toastMessage && (
-        <div className="fixed bottom-6 right-6 z-50 p-4 rounded-2xl bg-[#001d3d]/95 backdrop-blur-xl border border-cyan-500/40 text-cyan-100 shadow-[0_0_30px_rgba(0,245,255,0.25)] flex items-center gap-3 animate-bounce">
-          <Sparkles className="w-5 h-5 text-cyan-400 shrink-0" />
+        <div className="fixed bottom-6 right-6 z-50 p-4 rounded-xl bg-slate-900 border border-slate-700 text-slate-100 shadow-2xl flex items-center gap-3 animate-bounce">
+          <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0" />
           <span className="text-xs font-semibold">{toastMessage}</span>
         </div>
       )}
@@ -121,21 +120,21 @@ export const MyBookings = () => {
           <h1 className="text-2xl sm:text-3xl font-extrabold text-white font-heading">
             My Campus Schedule
           </h1>
-          <p className="text-xs text-slate-300 mt-1">
+          <p className="text-xs text-slate-400 mt-1">
             Manage your bookings, check in upon arrival, and view past records.
           </p>
         </div>
 
         <button
           onClick={fetchMyBookings}
-          className="krono-btn krono-btn-ghost text-xs self-start sm:self-auto border border-cyan-500/20 hover:border-cyan-400/40"
+          className="krono-btn krono-btn-ghost text-xs self-start sm:self-auto border border-slate-800 hover:border-slate-700 cursor-pointer"
         >
           <RefreshCw className="w-3.5 h-3.5" /> Refresh
         </button>
       </div>
 
       {/* 15-Minute Auto-Release Warning Banner */}
-      <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/25 flex items-start gap-3 backdrop-blur-sm">
+      <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-start gap-3 backdrop-blur-sm">
         <AlertTriangle className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
         <div className="text-xs text-amber-200">
           <span className="font-bold">Check-in Grace Period (15 Minutes):</span>
@@ -148,12 +147,12 @@ export const MyBookings = () => {
       </div>
 
       {/* Tab Switcher */}
-      <div className="flex border-b border-cyan-500/20 gap-2">
+      <div className="flex border-b border-slate-800 gap-2">
         <button
           onClick={() => setFilterTab('upcoming')}
-          className={`pb-3 px-4 text-xs font-bold transition-all border-b-2 ${
+          className={`pb-3 px-4 text-xs font-semibold transition-all border-b-2 cursor-pointer ${
             filterTab === 'upcoming'
-              ? 'border-cyan-400 text-cyan-300 shadow-[0_2px_10px_rgba(0,245,255,0.2)]'
+              ? 'border-blue-500 text-blue-400 font-bold'
               : 'border-transparent text-slate-400 hover:text-slate-200'
           }`}
         >
@@ -161,9 +160,9 @@ export const MyBookings = () => {
         </button>
         <button
           onClick={() => setFilterTab('past')}
-          className={`pb-3 px-4 text-xs font-bold transition-all border-b-2 ${
+          className={`pb-3 px-4 text-xs font-semibold transition-all border-b-2 cursor-pointer ${
             filterTab === 'past'
-              ? 'border-cyan-400 text-cyan-300 shadow-[0_2px_10px_rgba(0,245,255,0.2)]'
+              ? 'border-blue-500 text-blue-400 font-bold'
               : 'border-transparent text-slate-400 hover:text-slate-200'
           }`}
         >
@@ -171,9 +170,9 @@ export const MyBookings = () => {
         </button>
         <button
           onClick={() => setFilterTab('all')}
-          className={`pb-3 px-4 text-xs font-bold transition-all border-b-2 ${
+          className={`pb-3 px-4 text-xs font-semibold transition-all border-b-2 cursor-pointer ${
             filterTab === 'all'
-              ? 'border-cyan-400 text-cyan-300 shadow-[0_2px_10px_rgba(0,245,255,0.2)]'
+              ? 'border-blue-500 text-blue-400 font-bold'
               : 'border-transparent text-slate-400 hover:text-slate-200'
           }`}
         >
@@ -184,19 +183,19 @@ export const MyBookings = () => {
       {/* Bookings List */}
       {isLoading ? (
         <div className="py-20 flex flex-col items-center justify-center gap-4">
-          <div className="w-10 h-10 border-4 border-cyan-500/20 border-t-cyan-400 rounded-full animate-spin"></div>
-          <p className="text-xs text-cyan-300/80 font-medium">Loading your bookings...</p>
+          <div className="w-10 h-10 border-4 border-slate-700 border-t-blue-500 rounded-full animate-spin"></div>
+          <p className="text-xs text-slate-400 font-medium">Loading your bookings...</p>
         </div>
       ) : filteredBookings.length === 0 ? (
-        <div className="krono-card rounded-2xl p-12 text-center space-y-3 border border-cyan-500/20 bg-[#001d3d]/45 backdrop-blur-md">
-          <Calendar className="w-12 h-12 text-cyan-400/60 mx-auto" />
+        <div className="krono-card rounded-2xl p-12 text-center space-y-3 border border-slate-800 bg-slate-900/70">
+          <Calendar className="w-12 h-12 text-slate-500 mx-auto" />
           <h3 className="text-base font-bold text-white">No bookings found in this category</h3>
-          <p className="text-xs text-slate-300 max-w-sm mx-auto">
+          <p className="text-xs text-slate-400 max-w-sm mx-auto">
             You don't have any reservations under the "{filterTab}" view.
           </p>
           <a
             href="/dashboard"
-            className="krono-btn krono-btn-cyan text-xs inline-flex items-center gap-2 mt-2 shadow-[0_0_15px_rgba(0,180,216,0.3)]"
+            className="krono-btn krono-btn-primary text-xs inline-flex items-center gap-2 mt-2 shadow-sm"
           >
             <span>Browse Rooms</span>
             <ArrowRight className="w-3.5 h-3.5" />
@@ -212,23 +211,23 @@ export const MyBookings = () => {
             return (
               <div
                 key={booking._id}
-                className="krono-card-hover rounded-2xl p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 border border-cyan-500/20 bg-[#001d3d]/50 backdrop-blur-md shadow-[0_4px_25px_rgba(0,8,20,0.5)]"
+                className="krono-card-hover rounded-2xl p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 border border-slate-800 bg-slate-900/70 shadow-sm"
               >
                 {/* Left Side */}
                 <div className="space-y-2">
                   <div className="flex items-center gap-2 flex-wrap">
-                    <span className="font-mono text-base font-bold text-white bg-[#001833] px-2.5 py-0.5 rounded-lg border border-cyan-500/30 shadow-sm">
+                    <span className="font-mono text-base font-bold text-white bg-slate-800 px-2.5 py-0.5 rounded-lg border border-slate-700 shadow-sm">
                       {booking.room?.roomNumber || 'Room'}
                     </span>
-                    <span className="text-xs text-cyan-200 font-semibold">
+                    <span className="text-xs text-slate-300 font-medium">
                       {booking.room?.building}
                     </span>
-                    <span className="px-2 py-0.5 text-[10px] font-semibold uppercase rounded-md bg-[#001833]/80 border border-cyan-500/15 text-slate-300">
+                    <span className="px-2 py-0.5 text-[10px] font-semibold uppercase rounded-md bg-slate-800 border border-slate-700 text-slate-300">
                       {booking.bookingType}
                     </span>
 
                     {(booking.selectedSeats?.length > 0 || booking.seatNumber) && (
-                      <span className="px-2 py-0.5 text-[10px] font-bold uppercase rounded-md bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 font-mono shadow-sm">
+                      <span className="px-2 py-0.5 text-[10px] font-bold uppercase rounded-md bg-blue-600/15 text-blue-300 border border-blue-500/30 font-mono shadow-sm">
                         {booking.selectedSeats?.length > 1
                           ? `Seats: ${booking.selectedSeats.join(', ')}`
                           : `Seat #${booking.seatNumber || booking.selectedSeats?.[0]}`}
@@ -237,27 +236,27 @@ export const MyBookings = () => {
 
                     {/* Status Pill */}
                     {booking.status === 'confirmed' ? (
-                      <span className="px-2 py-0.5 text-[10px] font-semibold uppercase rounded-md bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                      <span className="px-2 py-0.5 text-[10px] font-semibold uppercase rounded-md bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">
                         Confirmed
                       </span>
                     ) : booking.status === 'cancelled' ? (
-                      <span className="px-2 py-0.5 text-[10px] font-semibold uppercase rounded-md bg-rose-500/20 text-rose-300 border border-rose-500/30">
+                      <span className="px-2 py-0.5 text-[10px] font-semibold uppercase rounded-md bg-rose-500/15 text-rose-300 border border-rose-500/30">
                         Cancelled
                       </span>
                     ) : (
-                      <span className="px-2 py-0.5 text-[10px] font-semibold uppercase rounded-md bg-slate-800 text-slate-300 border border-white/5">
+                      <span className="px-2 py-0.5 text-[10px] font-semibold uppercase rounded-md bg-slate-800 text-slate-300 border border-slate-700">
                         Completed
                       </span>
                     )}
 
                     {/* Check-In Pill */}
                     {booking.checkedIn ? (
-                      <span className="px-2 py-0.5 text-[10px] font-semibold uppercase rounded-md bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 flex items-center gap-1">
+                      <span className="px-2 py-0.5 text-[10px] font-semibold uppercase rounded-md bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 flex items-center gap-1">
                         <CheckCircle2 className="w-3 h-3 text-emerald-400" />
                         Checked In
                       </span>
                     ) : booking.status === 'confirmed' ? (
-                      <span className="px-2 py-0.5 text-[10px] font-semibold uppercase rounded-md bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                      <span className="px-2 py-0.5 text-[10px] font-semibold uppercase rounded-md bg-amber-500/15 text-amber-300 border border-amber-500/30">
                         Check-in Pending
                       </span>
                     ) : null}
@@ -265,13 +264,13 @@ export const MyBookings = () => {
 
                   <p className="text-sm font-semibold text-slate-100">{booking.purpose}</p>
 
-                  <div className="flex items-center gap-4 text-xs text-slate-300 flex-wrap">
-                    <span className="flex items-center gap-1.5 font-mono text-cyan-200">
-                      <Calendar className="w-3.5 h-3.5 text-cyan-400" />
+                  <div className="flex items-center gap-4 text-xs text-slate-400 flex-wrap">
+                    <span className="flex items-center gap-1.5 font-mono text-slate-300">
+                      <Calendar className="w-3.5 h-3.5 text-slate-400" />
                       {format(start, 'EEE, dd MMM yyyy')}
                     </span>
-                    <span className="flex items-center gap-1.5 font-mono text-cyan-200">
-                      <Clock className="w-3.5 h-3.5 text-cyan-400" />
+                    <span className="flex items-center gap-1.5 font-mono text-slate-300">
+                      <Clock className="w-3.5 h-3.5 text-slate-400" />
                       {format(start, 'HH:mm')} – {format(end, 'HH:mm')}
                     </span>
                     <TimeElapsedBadge timestamp={booking.createdAt} prefix="Created" />
@@ -280,12 +279,12 @@ export const MyBookings = () => {
 
                 {/* Right Side Actions */}
                 {booking.status === 'confirmed' && (
-                  <div className="flex items-center gap-2 pt-2 md:pt-0 border-t md:border-t-0 border-cyan-500/15">
+                  <div className="flex items-center gap-2 pt-2 md:pt-0 border-t md:border-t-0 border-slate-800">
                     {!booking.checkedIn && (
                       <button
                         onClick={() => handleCheckIn(booking._id)}
                         disabled={actionLoadingId === booking._id}
-                        className="krono-btn krono-btn-success text-xs shadow-sm"
+                        className="krono-btn krono-btn-success text-xs shadow-sm cursor-pointer"
                       >
                         <UserCheck className="w-3.5 h-3.5" />
                         <span>Check In</span>
@@ -295,7 +294,7 @@ export const MyBookings = () => {
                     <button
                       onClick={() => handleCancel(booking._id)}
                       disabled={actionLoadingId === booking._id}
-                      className="krono-btn krono-btn-danger text-xs shadow-sm"
+                      className="krono-btn krono-btn-danger text-xs shadow-sm cursor-pointer"
                     >
                       <XCircle className="w-3.5 h-3.5" />
                       <span>Cancel</span>

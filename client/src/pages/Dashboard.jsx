@@ -140,8 +140,8 @@ export const Dashboard = () => {
     <div className="min-h-screen bg-transparent text-slate-100 px-4 sm:px-6 lg:px-8 pt-24 sm:pt-28 pb-12 max-w-7xl mx-auto space-y-6">
       {/* Toast Notification */}
       {toastMessage && (
-        <div className="fixed bottom-6 right-6 z-50 p-4 rounded-2xl bg-[#001d3d]/95 backdrop-blur-xl border border-cyan-500/40 text-cyan-100 shadow-[0_0_30px_rgba(0,245,255,0.25)] flex items-center gap-3 animate-bounce">
-          <Radio className="w-5 h-5 text-cyan-400 animate-pulse shrink-0" />
+        <div className="fixed bottom-6 right-6 z-50 p-4 rounded-xl bg-slate-900 border border-slate-700 text-slate-100 shadow-2xl flex items-center gap-3 animate-bounce">
+          <Radio className="w-5 h-5 text-blue-400 animate-pulse shrink-0" />
           <span className="text-xs font-semibold">{toastMessage}</span>
         </div>
       )}
@@ -153,23 +153,23 @@ export const Dashboard = () => {
             <h1 className="text-2xl sm:text-3xl font-extrabold text-white font-heading tracking-tight">
               KronoRoom Live Room Status
             </h1>
-            <span className="px-2.5 py-0.5 rounded-full text-[10px] uppercase font-bold tracking-wider bg-cyan-500/15 text-cyan-300 border border-cyan-500/30 flex items-center gap-1 shadow-[0_0_12px_rgba(0,245,255,0.15)]">
-              <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" />
+            <span className="px-2.5 py-0.5 rounded-full text-[10px] uppercase font-bold tracking-wider bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 flex items-center gap-1.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
               Live Synced
             </span>
           </div>
           <p className="text-xs text-slate-300">
-            Real-time classroom & laboratory occupancy across London Met campus with interactive cinema-style seat details.
+            Real-time classroom & laboratory occupancy across London Met campus with interactive seat details.
           </p>
         </div>
 
         <div className="flex items-center gap-3">
-          <span className="text-[11px] text-cyan-300/70 font-mono">
+          <span className="text-[11px] text-slate-400 font-mono">
             Synced: {lastUpdated.toLocaleTimeString()}
           </span>
           <button
             onClick={() => fetchLiveStatus('Data refreshed manually.')}
-            className="p-2.5 rounded-xl bg-[#001d3d]/60 hover:bg-[#003566]/80 border border-cyan-500/20 text-cyan-300 hover:text-white transition-all shadow-sm"
+            className="p-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 hover:text-white transition-all shadow-sm cursor-pointer"
             title="Refresh Live Data"
           >
             <RefreshCw className="w-4 h-4" />
@@ -179,16 +179,16 @@ export const Dashboard = () => {
 
       {/* KPI Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="krono-card p-4 rounded-2xl border border-cyan-500/20 bg-[#001d3d]/45 backdrop-blur-md shadow-[0_0_15px_rgba(0,245,255,0.06)]">
+        <div className="krono-card p-4 rounded-xl border border-slate-800/80 bg-slate-900/70 shadow-sm">
           <div className="flex items-center justify-between text-slate-400 text-xs mb-1">
             <span>Total Facilities</span>
-            <Building className="w-4 h-4 text-cyan-400" />
+            <Building className="w-4 h-4 text-slate-400" />
           </div>
           <p className="text-2xl font-bold font-mono text-white">{totalRooms}</p>
           <p className="text-[10px] text-slate-400 mt-1">3 Campus Buildings</p>
         </div>
 
-        <div className="krono-card p-4 rounded-2xl border border-emerald-500/30 bg-[#001d3d]/45 backdrop-blur-md shadow-[0_0_15px_rgba(16,185,129,0.1)]">
+        <div className="krono-card p-4 rounded-xl border border-emerald-500/30 bg-slate-900/70 shadow-sm">
           <div className="flex items-center justify-between text-emerald-400 text-xs mb-1">
             <span>Available Now</span>
             <CheckCircle2 className="w-4 h-4 text-emerald-400" />
@@ -197,22 +197,22 @@ export const Dashboard = () => {
           <p className="text-[10px] text-emerald-400/80 mt-1">Ready for walk-in or booking</p>
         </div>
 
-        <div className="krono-card p-4 rounded-2xl border border-cyan-500/30 bg-[#001d3d]/45 backdrop-blur-md shadow-[0_0_15px_rgba(0,245,255,0.1)]">
-          <div className="flex items-center justify-between text-cyan-400 text-xs mb-1">
+        <div className="krono-card p-4 rounded-xl border border-blue-500/30 bg-slate-900/70 shadow-sm">
+          <div className="flex items-center justify-between text-blue-400 text-xs mb-1">
             <span>In Session</span>
-            <Activity className="w-4 h-4 text-cyan-400" />
+            <Activity className="w-4 h-4 text-blue-400" />
           </div>
-          <p className="text-2xl font-bold font-mono text-cyan-300">{occupiedRooms}</p>
-          <p className="text-[10px] text-cyan-400/80 mt-1">Active lectures & labs</p>
+          <p className="text-2xl font-bold font-mono text-blue-300">{occupiedRooms}</p>
+          <p className="text-[10px] text-blue-300/80 mt-1">Active lectures & labs</p>
         </div>
 
-        <div className="krono-card p-4 rounded-2xl border border-sky-500/30 bg-[#001d3d]/45 backdrop-blur-md shadow-[0_0_15px_rgba(56,189,248,0.1)]">
-          <div className="flex items-center justify-between text-sky-400 text-xs mb-1">
+        <div className="krono-card p-4 rounded-xl border border-slate-800/80 bg-slate-900/70 shadow-sm">
+          <div className="flex items-center justify-between text-slate-400 text-xs mb-1">
             <span>Total Seat Capacity</span>
-            <Users className="w-4 h-4 text-sky-400" />
+            <Users className="w-4 h-4 text-slate-400" />
           </div>
-          <p className="text-2xl font-bold font-mono text-sky-300">{totalCapacity}</p>
-          <p className="text-[10px] text-sky-400/80 mt-1">Simultaneous capacity</p>
+          <p className="text-2xl font-bold font-mono text-slate-200">{totalCapacity}</p>
+          <p className="text-[10px] text-slate-400 mt-1">Simultaneous capacity</p>
         </div>
       </div>
 
@@ -236,12 +236,12 @@ export const Dashboard = () => {
       {/* Rooms Grid */}
       {isLoading ? (
         <div className="py-20 flex flex-col items-center justify-center gap-4">
-          <div className="w-10 h-10 border-4 border-cyan-500/20 border-t-cyan-400 rounded-full animate-spin"></div>
-          <p className="text-xs text-cyan-300/80 font-medium">Aggregating live room statuses...</p>
+          <div className="w-10 h-10 border-4 border-slate-700 border-t-blue-500 rounded-full animate-spin"></div>
+          <p className="text-xs text-slate-400 font-medium">Aggregating live room statuses...</p>
         </div>
       ) : filteredRooms.length === 0 ? (
-        <div className="krono-card rounded-2xl p-12 text-center my-6 space-y-3 border border-cyan-500/20 bg-[#001d3d]/40 backdrop-blur-md">
-          <AlertCircle className="w-12 h-12 text-cyan-400/60 mx-auto mb-2" />
+        <div className="krono-card rounded-2xl p-12 text-center my-6 space-y-3 border border-slate-800 bg-slate-900/70">
+          <AlertCircle className="w-12 h-12 text-slate-500 mx-auto mb-2" />
           <h3 className="text-lg font-bold text-white font-heading">No matching rooms found</h3>
           <p className="text-xs text-slate-300 max-w-md mx-auto">
             Try adjusting your search criteria or resetting filters to see available facilities.
@@ -254,7 +254,7 @@ export const Dashboard = () => {
               setMinCapacity(0);
               setOnlyAvailable(false);
             }}
-            className="krono-btn krono-btn-cyan text-xs mt-2"
+            className="krono-btn krono-btn-primary text-xs mt-2"
           >
             Reset Filters
           </button>

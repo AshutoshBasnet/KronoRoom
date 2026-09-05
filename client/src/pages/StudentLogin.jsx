@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { GraduationCap, Lock, Mail, ArrowRight, AlertCircle, Sparkles, UserCheck } from 'lucide-react';
+import { GraduationCap, Lock, Mail, ArrowRight, AlertCircle, UserCheck } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 export const StudentLogin = () => {
@@ -37,17 +37,17 @@ export const StudentLogin = () => {
   };
 
   return (
-    <div className="min-h-screen bg-transparent flex items-center justify-center p-4 pt-24 pb-12 selection:bg-cyan-500 selection:text-white">
-      <div className="krono-card max-w-md w-full p-8 rounded-3xl border border-cyan-500/25 bg-[#001d3d]/55 backdrop-blur-xl shadow-[0_15px_50px_rgba(0,8,20,0.8)] space-y-6">
+    <div className="min-h-screen bg-transparent flex items-center justify-center p-4 pt-24 pb-12 selection:bg-blue-600 selection:text-white">
+      <div className="krono-card max-w-md w-full p-8 rounded-3xl border border-slate-800 bg-slate-900/80 shadow-2xl space-y-6">
         {/* Header */}
         <div className="text-center space-y-2">
-          <div className="w-14 h-14 rounded-2xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center mx-auto text-cyan-400 shadow-[0_0_15px_rgba(0,245,255,0.15)]">
+          <div className="w-14 h-14 rounded-2xl bg-blue-600/10 border border-blue-500/20 flex items-center justify-center mx-auto text-blue-400 shadow-sm">
             <GraduationCap className="w-7 h-7" />
           </div>
           <h2 className="text-2xl font-bold text-white font-heading">
             KronoRoom Student Portal
           </h2>
-          <p className="text-xs text-cyan-200/70">
+          <p className="text-xs text-slate-400">
             London Metropolitan University • Student Room Reservation
           </p>
         </div>
@@ -61,10 +61,10 @@ export const StudentLogin = () => {
         )}
 
         {/* Quick Demo Student Fillers */}
-        <div className="p-3.5 rounded-2xl bg-[#001833]/80 border border-cyan-500/20 space-y-2">
+        <div className="p-3.5 rounded-2xl bg-slate-950/80 border border-slate-800 space-y-2">
           <div className="flex items-center justify-between text-xs text-slate-300">
-            <span className="font-semibold text-cyan-300 flex items-center gap-1">
-              <UserCheck className="w-3.5 h-3.5 text-cyan-400" /> Quick Demo Student Logins:
+            <span className="font-semibold text-slate-200 flex items-center gap-1.5">
+              <UserCheck className="w-3.5 h-3.5 text-blue-400" /> Quick Demo Student Logins:
             </span>
             <span className="text-[11px] text-slate-400">Password123</span>
           </div>
@@ -72,7 +72,7 @@ export const StudentLogin = () => {
             <button
               type="button"
               onClick={() => handleDemoFill('a.basnet@londonmet.ac.uk')}
-              className="px-2.5 py-1.5 rounded-lg bg-[#002447] hover:bg-[#003566] text-cyan-200 border border-cyan-500/20 truncate transition-colors text-center font-medium shadow-sm"
+              className="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 truncate transition-colors text-center font-medium cursor-pointer"
               title="Ashutosh Basnet (Computing & Digital Media)"
             >
               Ashutosh B.
@@ -80,7 +80,7 @@ export const StudentLogin = () => {
             <button
               type="button"
               onClick={() => handleDemoFill('a.poudel@londonmet.ac.uk')}
-              className="px-2.5 py-1.5 rounded-lg bg-[#002447] hover:bg-[#003566] text-cyan-200 border border-cyan-500/20 truncate transition-colors text-center font-medium shadow-sm"
+              className="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 truncate transition-colors text-center font-medium cursor-pointer"
               title="Anmol Poudel (Architecture & Engineering)"
             >
               Anmol P.
@@ -88,7 +88,7 @@ export const StudentLogin = () => {
             <button
               type="button"
               onClick={() => handleDemoFill('p.rai@londonmet.ac.uk')}
-              className="px-2.5 py-1.5 rounded-lg bg-[#002447] hover:bg-[#003566] text-cyan-200 border border-cyan-500/20 truncate transition-colors text-center font-medium shadow-sm"
+              className="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 truncate transition-colors text-center font-medium cursor-pointer"
               title="Parjun Rai (Business & Human Sciences)"
             >
               Parjun R.
@@ -100,28 +100,28 @@ export const StudentLogin = () => {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
-              <Mail className="w-3.5 h-3.5 text-cyan-400" /> Student Email
+              <Mail className="w-3.5 h-3.5 text-slate-400" /> Student Email
             </label>
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="e.g. a.basnet@londonmet.ac.uk"
-              className="w-full bg-[#001833] border border-cyan-500/20 rounded-xl px-3.5 py-2.5 text-sm text-white placeholder:text-slate-500 focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400/30 transition-all shadow-inner"
+              className="w-full bg-slate-950/80 border border-slate-800 rounded-xl px-3.5 py-2.5 text-sm text-white placeholder:text-slate-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/20 transition-all"
               required
             />
           </div>
 
           <div>
             <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
-              <Lock className="w-3.5 h-3.5 text-cyan-400" /> Password
+              <Lock className="w-3.5 h-3.5 text-slate-400" /> Password
             </label>
             <input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••••••"
-              className="w-full bg-[#001833] border border-cyan-500/20 rounded-xl px-3.5 py-2.5 text-sm text-white placeholder:text-slate-500 focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400/30 transition-all font-mono shadow-inner"
+              className="w-full bg-slate-950/80 border border-slate-800 rounded-xl px-3.5 py-2.5 text-sm text-white placeholder:text-slate-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/20 transition-all font-mono"
               required
             />
           </div>
@@ -129,7 +129,7 @@ export const StudentLogin = () => {
           <button
             type="submit"
             disabled={isLoading}
-            className="krono-btn krono-btn-cyan w-full py-3 text-xs font-bold shadow-[0_0_20px_rgba(0,180,216,0.35)]"
+            className="krono-btn krono-btn-primary w-full py-3 text-xs font-semibold shadow-sm cursor-pointer"
           >
             {isLoading ? (
               <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
@@ -143,8 +143,8 @@ export const StudentLogin = () => {
         </form>
 
         {/* Footer Navigation */}
-        <div className="pt-4 border-t border-cyan-500/15 flex items-center justify-between text-xs text-slate-400">
-          <Link to="/login/faculty" className="text-cyan-300 hover:text-cyan-200 transition-colors">
+        <div className="pt-4 border-t border-slate-800 flex items-center justify-between text-xs text-slate-400">
+          <Link to="/login/faculty" className="text-blue-400 hover:text-blue-300 transition-colors">
             Faculty Portal →
           </Link>
           <Link to="/register" className="text-slate-300 hover:text-white transition-colors">

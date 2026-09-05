@@ -6,7 +6,6 @@ import {
   Presentation,
   BookOpen,
   CalendarPlus,
-  Sparkles,
   UserCheck,
   Armchair
 } from 'lucide-react';
@@ -19,9 +18,9 @@ export const RoomCard = ({ roomData, onBookClick, onViewSeatsClick }) => {
   const getTypeIcon = (type) => {
     switch (type) {
       case 'computer_lab':
-        return <Monitor className="w-3.5 h-3.5 text-cyan-400" />;
+        return <Monitor className="w-3.5 h-3.5 text-blue-400" />;
       case 'lecture_hall':
-        return <Presentation className="w-3.5 h-3.5 text-purple-400" />;
+        return <Presentation className="w-3.5 h-3.5 text-indigo-400" />;
       default:
         return <BookOpen className="w-3.5 h-3.5 text-emerald-400" />;
     }
@@ -41,13 +40,13 @@ export const RoomCard = ({ roomData, onBookClick, onViewSeatsClick }) => {
   };
 
   return (
-    <div className="krono-card-hover rounded-2xl p-5 flex flex-col justify-between relative overflow-hidden group border border-cyan-500/20 bg-[#001d3d]/50 backdrop-blur-md shadow-[0_4px_25px_rgba(0,8,20,0.5)]">
-      {/* Top Accent Line */}
+    <div className="krono-card-hover rounded-2xl p-5 flex flex-col justify-between relative overflow-hidden group border border-slate-800/80 bg-slate-900/70 shadow-sm">
+      {/* Top Status Line */}
       <div
         className={`absolute top-0 left-0 right-0 h-1 ${
           isOccupied
-            ? 'bg-gradient-to-r from-rose-500 to-amber-500'
-            : 'bg-gradient-to-r from-[#00f5ff] via-[#00b4d8] to-[#0077b6]'
+            ? 'bg-rose-500'
+            : 'bg-emerald-500'
         }`}
       />
 
@@ -56,22 +55,22 @@ export const RoomCard = ({ roomData, onBookClick, onViewSeatsClick }) => {
         <div className="flex items-start justify-between gap-2 mb-3">
           <div>
             <div className="flex items-center gap-2">
-              <h3 className="text-xl font-bold font-mono text-white tracking-tight group-hover:text-cyan-400 transition-colors">
+              <h3 className="text-xl font-bold font-mono text-white tracking-tight group-hover:text-blue-400 transition-colors">
                 {room.roomNumber}
               </h3>
-              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#001833]/80 border border-cyan-500/20 text-xs font-semibold text-cyan-200">
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-slate-800 border border-slate-700 text-xs font-medium text-slate-300">
                 {getTypeIcon(room.type)}
                 {formatRoomType(room.type)}
               </span>
             </div>
-            <p className="text-xs text-slate-300 flex items-center gap-1 mt-1">
-              <MapPin className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
+            <p className="text-xs text-slate-400 flex items-center gap-1 mt-1">
+              <MapPin className="w-3.5 h-3.5 text-slate-400 shrink-0" />
               {room.building}
             </p>
           </div>
 
-          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-[#001833]/80 border border-cyan-500/20 text-xs font-semibold text-cyan-300 shadow-sm">
-            <Users className="w-3.5 h-3.5 text-cyan-400" />
+          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-slate-800/90 border border-slate-700/80 text-xs font-semibold text-slate-300 shadow-sm">
+            <Users className="w-3.5 h-3.5 text-slate-400" />
             <span>{room.capacity} seats</span>
           </div>
         </div>
@@ -87,7 +86,7 @@ export const RoomCard = ({ roomData, onBookClick, onViewSeatsClick }) => {
 
         {/* Current Occupant Details (if occupied) */}
         {isOccupied && currentBooking && (
-          <div className="mb-3.5 p-3 rounded-xl bg-rose-500/10 border border-rose-500/25 space-y-1.5 text-xs">
+          <div className="mb-3.5 p-3 rounded-xl bg-rose-500/10 border border-rose-500/20 space-y-1.5 text-xs">
             <div className="flex items-center justify-between text-slate-200">
               <span className="font-semibold text-rose-200 truncate max-w-[180px]">
                 {currentBooking.purpose}
@@ -98,7 +97,7 @@ export const RoomCard = ({ roomData, onBookClick, onViewSeatsClick }) => {
             </div>
             <div className="flex items-center justify-between text-slate-400 text-[11px]">
               <span className="flex items-center gap-1">
-                <UserCheck className="w-3 h-3 text-cyan-400" />
+                <UserCheck className="w-3 h-3 text-slate-400" />
                 {currentBooking.user?.name} ({currentBooking.user?.role})
               </span>
               <TimeElapsedBadge timestamp={currentBooking.createdAt} prefix="Booked" />
@@ -108,11 +107,11 @@ export const RoomCard = ({ roomData, onBookClick, onViewSeatsClick }) => {
 
         {/* Next Upcoming Booking (if free) */}
         {!isOccupied && nextBooking && (
-          <div className="mb-3.5 p-2.5 rounded-xl bg-[#001833]/70 border border-cyan-500/15 text-xs text-slate-300 flex items-center justify-between">
+          <div className="mb-3.5 p-2.5 rounded-xl bg-slate-800/60 border border-slate-700/70 text-xs text-slate-300 flex items-center justify-between">
             <span className="truncate max-w-[170px]">
-              Next: <strong className="text-cyan-200">{nextBooking.purpose}</strong>
+              Next: <strong className="text-slate-200">{nextBooking.purpose}</strong>
             </span>
-            <span className="font-mono text-cyan-400">
+            <span className="font-mono text-blue-400">
               {new Date(nextBooking.startTime).toLocaleTimeString([], {
                 hour: '2-digit',
                 minute: '2-digit'
@@ -127,7 +126,7 @@ export const RoomCard = ({ roomData, onBookClick, onViewSeatsClick }) => {
             room.amenities.map((amenity, idx) => (
               <span
                 key={idx}
-                className="px-2 py-0.5 rounded-md bg-[#001833]/80 border border-cyan-500/15 text-[11px] text-slate-300 font-medium"
+                className="px-2 py-0.5 rounded-md bg-slate-800/80 border border-slate-700/70 text-[11px] text-slate-300 font-medium"
               >
                 {amenity}
               </span>
@@ -136,22 +135,22 @@ export const RoomCard = ({ roomData, onBookClick, onViewSeatsClick }) => {
       </div>
 
       {/* Action Buttons */}
-      <div className="pt-3 border-t border-cyan-500/15 grid grid-cols-2 gap-2">
+      <div className="pt-3 border-t border-slate-800 grid grid-cols-2 gap-2">
         <button
           onClick={() => onViewSeatsClick(roomData)}
-          className="krono-btn krono-btn-ghost text-xs flex items-center justify-center gap-1.5 py-2.5 rounded-xl border border-cyan-500/20 hover:border-cyan-400/40 hover:bg-[#002b5c]/50 transition-all"
-          title="Inspect cinema seat details and availability"
+          className="krono-btn krono-btn-ghost text-xs flex items-center justify-center gap-1.5 py-2.5 rounded-xl border border-slate-700 hover:border-slate-600 hover:bg-slate-800/70 transition-all cursor-pointer"
+          title="Inspect seat layout and availability"
         >
-          <Armchair className="w-3.5 h-3.5 text-cyan-400" />
+          <Armchair className="w-3.5 h-3.5 text-slate-400" />
           <span>Seat Detail</span>
         </button>
 
         <button
           onClick={() => onBookClick(roomData)}
-          className={`py-2.5 px-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 ${
+          className={`py-2.5 px-3 rounded-xl text-xs font-semibold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
             isOccupied
-              ? 'krono-btn krono-btn-ghost text-cyan-200 border-cyan-500/20'
-              : 'krono-btn krono-btn-cyan text-white shadow-[0_0_15px_rgba(0,180,216,0.3)]'
+              ? 'krono-btn krono-btn-ghost text-slate-200 border-slate-700'
+              : 'krono-btn krono-btn-primary text-white shadow-sm'
           }`}
         >
           <CalendarPlus className="w-3.5 h-3.5" />

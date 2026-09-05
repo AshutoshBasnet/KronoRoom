@@ -169,34 +169,34 @@ export const BookingModal = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/85 backdrop-blur-md overflow-y-auto">
-      <div className="krono-modal max-w-2xl w-full rounded-2xl p-6 text-slate-100 relative my-6 max-h-[92vh] overflow-y-auto border border-cyan-500/30 bg-[#001428]/95 backdrop-blur-2xl shadow-[0_25px_50px_-12px_rgba(0,8,20,0.9)]">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md overflow-y-auto">
+      <div className="krono-modal max-w-2xl w-full rounded-2xl p-6 text-slate-100 relative my-6 max-h-[92vh] overflow-y-auto border border-slate-800 bg-slate-900 shadow-2xl">
         {/* Header */}
-        <div className="flex items-center justify-between pb-4 border-b border-cyan-500/15">
+        <div className="flex items-center justify-between pb-4 border-b border-slate-800">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-cyan-500/15 border border-cyan-500/30 flex items-center justify-center text-cyan-400 font-bold font-mono text-sm shadow-sm">
+            <div className="w-10 h-10 rounded-xl bg-blue-600/15 border border-blue-500/30 flex items-center justify-center text-blue-400 font-bold font-mono text-sm shadow-sm">
               {room.roomNumber}
             </div>
             <div>
               <h3 className="font-heading text-lg font-bold text-white">
                 Reserve Room {room.roomNumber}
               </h3>
-              <p className="text-xs text-slate-300">
+              <p className="text-xs text-slate-400">
                 {room.building} • Capacity: {room.capacity} seats
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-2 text-slate-400 hover:text-white rounded-lg hover:bg-white/10 transition-colors cursor-pointer"
+            className="p-2 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800 transition-colors cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Role Policy Hint */}
-        <div className="mt-4 p-3 rounded-xl bg-[#001d3d]/70 border border-cyan-500/25 text-xs text-cyan-200 flex items-center gap-2">
-          <Info className="w-4 h-4 text-cyan-400 shrink-0" />
+        <div className="mt-4 p-3 rounded-xl bg-slate-800/60 border border-slate-700/80 text-xs text-slate-300 flex items-center gap-2">
+          <Info className="w-4 h-4 text-blue-400 shrink-0" />
           <span>
             {user?.role === 'student' && 'Student Policy: Max 2h session • Book up to 3 days in advance'}
             {user?.role === 'teacher' && 'Faculty Policy: Max 6h session • Book up to 30 days in advance'}
@@ -227,7 +227,7 @@ export const BookingModal = ({
           {/* Date Picker */}
           <div>
             <label className="block text-slate-300 font-semibold uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
-              <Calendar className="w-3.5 h-3.5 text-cyan-400" /> Date of Reservation
+              <Calendar className="w-3.5 h-3.5 text-slate-400" /> Date of Reservation
             </label>
             <input
               type="date"
@@ -235,7 +235,7 @@ export const BookingModal = ({
               min={minDateStr}
               max={maxDateStr}
               onChange={(e) => setDate(e.target.value)}
-              className="w-full bg-[#001833] border border-cyan-500/20 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-cyan-400 font-mono transition-colors shadow-inner"
+              className="w-full bg-slate-950/80 border border-slate-800 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-blue-500 font-mono transition-colors"
               required
             />
           </div>
@@ -244,25 +244,25 @@ export const BookingModal = ({
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="block text-slate-300 font-semibold uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
-                <Clock className="w-3.5 h-3.5 text-cyan-400" /> Start Time
+                <Clock className="w-3.5 h-3.5 text-slate-400" /> Start Time
               </label>
               <input
                 type="time"
                 value={startTime}
                 onChange={(e) => setStartTime(e.target.value)}
-                className="w-full bg-[#001833] border border-cyan-500/20 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-cyan-400 font-mono transition-colors shadow-inner"
+                className="w-full bg-slate-950/80 border border-slate-800 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-blue-500 font-mono transition-colors"
                 required
               />
             </div>
             <div>
               <label className="block text-slate-300 font-semibold uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
-                <Clock className="w-3.5 h-3.5 text-cyan-400" /> End Time
+                <Clock className="w-3.5 h-3.5 text-slate-400" /> End Time
               </label>
               <input
                 type="time"
                 value={endTime}
                 onChange={(e) => setEndTime(e.target.value)}
-                className="w-full bg-[#001833] border border-cyan-500/20 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-cyan-400 font-mono transition-colors shadow-inner"
+                className="w-full bg-slate-950/80 border border-slate-800 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-blue-500 font-mono transition-colors"
                 required
               />
             </div>
@@ -276,7 +276,7 @@ export const BookingModal = ({
             <select
               value={bookingType}
               onChange={(e) => setBookingType(e.target.value)}
-              className="w-full bg-[#001833] border border-cyan-500/20 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-cyan-400 transition-colors"
+              className="w-full bg-slate-950/80 border border-slate-800 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-blue-500 transition-colors"
             >
               <option value="Study Session">Study Session</option>
               <option value="Ad-hoc Booking">Ad-hoc Booking</option>
@@ -302,17 +302,17 @@ export const BookingModal = ({
                 }}
                 className={`p-3 rounded-xl border flex flex-col items-start gap-1 transition-all text-left cursor-pointer ${
                   bookingScope === 'seats'
-                    ? 'bg-cyan-500/15 border-cyan-400 text-white shadow-sm shadow-cyan-500/20 ring-1 ring-cyan-400'
-                    : 'bg-[#001833]/80 border-cyan-500/15 text-slate-400 hover:text-slate-200 hover:border-cyan-500/30'
+                    ? 'bg-blue-600/15 border-blue-500 text-white shadow-sm ring-1 ring-blue-500'
+                    : 'bg-slate-950/80 border-slate-800 text-slate-400 hover:text-slate-200 hover:border-slate-700'
                 }`}
               >
                 <div className="flex items-center justify-between w-full">
                   <div className="flex items-center gap-1.5 font-bold text-xs">
-                    <Armchair className={`w-4 h-4 ${bookingScope === 'seats' ? 'text-cyan-400' : 'text-slate-400'}`} />
+                    <Armchair className={`w-4 h-4 ${bookingScope === 'seats' ? 'text-blue-400' : 'text-slate-400'}`} />
                     <span className={bookingScope === 'seats' ? 'text-white' : 'text-slate-300'}>Select Specific Seats</span>
                   </div>
                   {bookingScope === 'seats' && (
-                    <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+                    <span className="w-2 h-2 rounded-full bg-blue-400 animate-pulse"></span>
                   )}
                 </div>
                 <p className="text-[10px] text-slate-400 leading-tight mt-0.5">
@@ -332,10 +332,10 @@ export const BookingModal = ({
                 }}
                 className={`p-3 rounded-xl border flex flex-col items-start gap-1 transition-all text-left ${
                   isRoomPartiallyOrFullyOccupied
-                    ? 'opacity-50 cursor-not-allowed bg-[#001833]/40 border-white/5 text-slate-500'
+                    ? 'opacity-40 cursor-not-allowed bg-slate-950/40 border-white/5 text-slate-500'
                     : bookingScope === 'full_room'
-                    ? 'bg-sky-600/20 border-sky-400 text-white shadow-sm shadow-sky-500/20 ring-1 ring-sky-400 cursor-pointer'
-                    : 'bg-[#001833]/80 border-cyan-500/15 text-slate-400 hover:text-slate-200 hover:border-cyan-500/30 cursor-pointer'
+                    ? 'bg-blue-600/15 border-blue-500 text-white shadow-sm ring-1 ring-blue-500 cursor-pointer'
+                    : 'bg-slate-950/80 border-slate-800 text-slate-400 hover:text-slate-200 hover:border-slate-700 cursor-pointer'
                 }`}
                 title={
                   isRoomPartiallyOrFullyOccupied
@@ -345,7 +345,7 @@ export const BookingModal = ({
               >
                 <div className="flex items-center justify-between w-full">
                   <div className="flex items-center gap-1.5 font-bold text-xs">
-                    <Users className={`w-4 h-4 ${isRoomPartiallyOrFullyOccupied ? 'text-slate-500' : bookingScope === 'full_room' ? 'text-sky-400' : 'text-slate-400'}`} />
+                    <Users className={`w-4 h-4 ${isRoomPartiallyOrFullyOccupied ? 'text-slate-500' : bookingScope === 'full_room' ? 'text-blue-400' : 'text-slate-400'}`} />
                     <span className={isRoomPartiallyOrFullyOccupied ? 'text-slate-500 line-through' : bookingScope === 'full_room' ? 'text-white' : 'text-slate-300'}>
                       Full Room Session
                     </span>
@@ -355,7 +355,7 @@ export const BookingModal = ({
                       Unavailable
                     </span>
                   ) : bookingScope === 'full_room' ? (
-                    <span className="w-2 h-2 rounded-full bg-sky-400"></span>
+                    <span className="w-2 h-2 rounded-full bg-blue-400"></span>
                   ) : null}
                 </div>
                 <p className="text-[10px] text-slate-500 leading-tight mt-0.5">
@@ -369,9 +369,9 @@ export const BookingModal = ({
 
           {/* Full Room Notice Banner */}
           {bookingScope === 'full_room' && (
-            <div className="p-3.5 rounded-xl bg-sky-500/10 border border-sky-500/30 text-xs space-y-1">
-              <div className="flex items-center gap-2 font-bold text-sky-300">
-                <Users className="w-4 h-4 text-sky-400 shrink-0" />
+            <div className="p-3.5 rounded-xl bg-slate-800/60 border border-slate-700 text-xs space-y-1">
+              <div className="flex items-center gap-2 font-bold text-slate-200">
+                <Users className="w-4 h-4 text-blue-400 shrink-0" />
                 <span>Full Room Reservation ({room.capacity} Seats)</span>
               </div>
               <p className="text-[11px] text-slate-300">
@@ -382,15 +382,15 @@ export const BookingModal = ({
 
           {/* Interactive Multi-Seat Selector Section (Shown when in 'seats' mode) */}
           {bookingScope === 'seats' && (
-            <div className="p-3.5 rounded-xl bg-[#001833] border border-cyan-500/20 space-y-3">
+            <div className="p-3.5 rounded-xl bg-slate-950/80 border border-slate-800 space-y-3">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2 flex-wrap">
-                  <Armchair className="w-4 h-4 text-cyan-400" />
+                  <Armchair className="w-4 h-4 text-blue-400" />
                   <span className="font-semibold text-slate-200">
                     Interactive Seat Selector
                   </span>
                   {selectedSeats.length > 0 ? (
-                    <span className="px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 font-mono font-bold text-[11px] border border-cyan-500/30">
+                    <span className="px-2 py-0.5 rounded-full bg-blue-600/20 text-blue-300 font-mono font-bold text-[11px] border border-blue-500/30">
                       {selectedSeats.length === 1
                         ? `Seat #${selectedSeats[0]}`
                         : `${selectedSeats.length} Seats: #${selectedSeats.join(', #')}`}
@@ -404,7 +404,7 @@ export const BookingModal = ({
                 <button
                   type="button"
                   onClick={() => setShowSeatMap(!showSeatMap)}
-                  className="text-xs text-cyan-400 hover:text-cyan-300 font-semibold flex items-center gap-1 cursor-pointer"
+                  className="text-xs text-blue-400 hover:text-blue-300 font-semibold flex items-center gap-1 cursor-pointer"
                 >
                   <span>
                     {showSeatMap
@@ -418,7 +418,7 @@ export const BookingModal = ({
               </div>
 
               {showSeatMap && (
-                <div className="pt-2 border-t border-cyan-500/15">
+                <div className="pt-2 border-t border-slate-800">
                   <SeatMap
                     room={room}
                     isOccupied={isOccupied}
@@ -440,7 +440,7 @@ export const BookingModal = ({
           <div className="space-y-2">
             <div className="flex items-center justify-between">
               <label className="block text-slate-300 font-semibold uppercase tracking-wider flex items-center gap-1.5">
-                <BookOpen className="w-3.5 h-3.5 text-cyan-400" /> Module / Subject & Purpose
+                <BookOpen className="w-3.5 h-3.5 text-slate-400" /> Module / Subject & Purpose
               </label>
               <span className="text-[10px] text-slate-400 font-normal">Select or type custom</span>
             </div>
@@ -453,7 +453,7 @@ export const BookingModal = ({
                   setPurpose(e.target.value);
                 }
               }}
-              className="w-full bg-[#001833] border border-cyan-500/20 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-400"
+              className="w-full bg-slate-950/80 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-blue-500"
             >
               <option value="">-- Quick Select London Met Subject Module --</option>
               {SUBJECTS.map((sub) => (
@@ -469,24 +469,24 @@ export const BookingModal = ({
               value={purpose}
               onChange={(e) => setPurpose(e.target.value)}
               placeholder="e.g. CS5053NI: Cloud Computing and IoT Lab"
-              className="w-full bg-[#001833] border border-cyan-500/20 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder:text-slate-500 focus:outline-none focus:border-cyan-400 transition-colors shadow-inner"
+              className="w-full bg-slate-950/80 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder:text-slate-500 focus:outline-none focus:border-blue-500 transition-colors"
               required
             />
           </div>
 
           {/* Action Buttons */}
-          <div className="pt-3 border-t border-cyan-500/15 flex items-center justify-end gap-3">
+          <div className="pt-3 border-t border-slate-800 flex items-center justify-end gap-3">
             <button
               type="button"
               onClick={onClose}
-              className="krono-btn krono-btn-ghost text-xs"
+              className="krono-btn krono-btn-ghost text-xs cursor-pointer"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={isSubmitting}
-              className="krono-btn krono-btn-cyan text-xs flex items-center gap-2 font-bold shadow-[0_0_15px_rgba(0,180,216,0.3)]"
+              className="krono-btn krono-btn-primary text-xs flex items-center gap-2 font-semibold shadow-sm cursor-pointer"
             >
               {isSubmitting ? (
                 <>

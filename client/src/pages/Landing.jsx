@@ -6,10 +6,11 @@ import {
   Users,
   CheckCircle2,
   ChevronRight,
+  Building,
+  Clock,
+  ShieldCheck
 } from 'lucide-react';
 import api from '../utils/api';
-import { FlipFadeText } from '@/components/ui/flip-fade-text';
-import { CreepyButton } from '@/components/ui/creepy-button';
 
 export const Landing = () => {
   const [liveRooms, setLiveRooms] = useState([]);
@@ -36,73 +37,58 @@ export const Landing = () => {
   const availableCount = totalRooms - occupiedCount;
 
   return (
-    <div className="min-h-screen text-slate-100 flex flex-col selection:bg-cyan-500 selection:text-white">
+    <div className="min-h-screen text-slate-100 flex flex-col selection:bg-blue-600 selection:text-white">
       {/* Hero Section */}
       <section className="pt-36 sm:pt-40 pb-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full text-center space-y-6">
         {/* University Pill Badge */}
-        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-cyan-950/40 border border-cyan-500/30 text-cyan-400 text-xs font-semibold shadow-[0_0_15px_rgba(0,245,255,0.15)]">
-          <GraduationCap className="w-3.5 h-3.5 text-cyan-400" />
-          <span>KronoRoom • London Metropolitan University</span>
+        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-900 border border-slate-700/80 text-slate-200 text-xs font-medium shadow-sm">
+          <GraduationCap className="w-4 h-4 text-blue-400" />
+          <span>London Metropolitan University • KronoRoom Portal</span>
         </div>
 
-        {/* Dynamic FlipFade Headline */}
-        <div className="max-w-4xl mx-auto space-y-2">
+        {/* Confident, Professional Headline */}
+        <div className="max-w-4xl mx-auto space-y-4">
           <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight text-white font-heading leading-tight">
-            Intelligent Classroom & Lab
+            Classroom & Computer Lab <br className="hidden sm:inline" />
+            <span className="text-blue-500">Live Occupancy & Scheduling</span>
           </h1>
-          <div className="min-h-[70px] sm:min-h-[85px] flex items-center justify-center">
-            <FlipFadeText
-              words={[
-                "Booking & Occupancy System",
-                "Smart Room Allocation",
-                "Automated 15-Min Release",
-                "Real-Time Schedule Matrix"
-              ]}
-              interval={3000}
-              textClassName="text-3xl sm:text-5xl md:text-6xl font-extrabold bg-gradient-to-r from-[#00f5ff] via-[#38bdf8] to-[#00b4d8] bg-clip-text text-transparent tracking-tight font-heading normal-case"
-            />
-          </div>
+          <p className="text-base sm:text-lg text-slate-300 max-w-2xl mx-auto leading-relaxed">
+            Real-time room availability across Skill Block, London Block, and Kumari Block.
+            Eliminate booking conflicts with automated 15-minute check-in protection.
+          </p>
         </div>
-
-        {/* Subtitle */}
-        <p className="text-base sm:text-lg text-slate-300/90 max-w-2xl mx-auto leading-relaxed">
-          Real-time room availability across Skill Block, London Block, and Kumari Block.
-          Eliminate booking conflicts with automated 15-minute auto-release protection.
-        </p>
 
         {/* Action CTAs */}
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
-          <Link to="/dashboard" className="focus:outline-none">
-            <CreepyButton
-              className="rounded-full shadow-lg shadow-cyan-500/20 border border-cyan-400/30"
-              coverClassName="bg-gradient-to-r from-[#00b4d8] to-[#0077b6] hover:from-[#0096c7] hover:to-[#023e8a] text-white shadow-[0_0_20px_rgba(0,180,216,0.35)] px-8 py-3.5 text-sm font-bold flex items-center gap-2 rounded-full"
-            >
-              <span>Find Free Rooms Now</span>
-              <ArrowRight className="w-4 h-4" />
-            </CreepyButton>
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
+          <Link
+            to="/dashboard"
+            className="krono-btn krono-btn-primary px-7 py-3.5 text-sm font-semibold rounded-xl flex items-center gap-2"
+          >
+            <span>Explore Live Rooms</span>
+            <ArrowRight className="w-4 h-4" />
           </Link>
 
           <Link
             to="/login/student"
-            className="krono-btn krono-btn-ghost px-7 py-3.5 text-sm font-semibold rounded-full border border-cyan-500/20 hover:border-cyan-400/40 text-cyan-100 hover:text-white transition-all shadow-sm"
+            className="krono-btn krono-btn-ghost px-7 py-3.5 text-sm font-semibold rounded-xl text-slate-200 hover:text-white"
           >
             <span>Sign In to Portal</span>
           </Link>
         </div>
 
-        {/* Metric Pills */}
+        {/* Metric Cards */}
         <div className="grid grid-cols-3 gap-4 max-w-lg mx-auto pt-6">
-          <div className="krono-card p-4 rounded-2xl border border-cyan-500/20 bg-[#001d3d]/40 backdrop-blur-md text-center shadow-[0_0_15px_rgba(0,245,255,0.08)]">
+          <div className="krono-card p-4 rounded-xl text-center">
             <span className="text-2xl font-bold font-mono text-white">{totalRooms}</span>
             <p className="text-xs text-slate-400 mt-1">Total Rooms</p>
           </div>
-          <div className="krono-card p-4 rounded-2xl border border-emerald-500/30 bg-[#001d3d]/40 backdrop-blur-md text-center shadow-[0_0_15px_rgba(16,185,129,0.12)]">
+          <div className="krono-card p-4 rounded-xl text-center border-emerald-500/30">
             <span className="text-2xl font-bold font-mono text-emerald-400">{availableCount}</span>
             <p className="text-xs text-emerald-400/90 mt-1">Available Now</p>
           </div>
-          <div className="krono-card p-4 rounded-2xl border border-cyan-500/30 bg-[#001d3d]/40 backdrop-blur-md text-center shadow-[0_0_15px_rgba(0,245,255,0.12)]">
-            <span className="text-2xl font-bold font-mono text-cyan-400">{occupiedCount}</span>
-            <p className="text-xs text-cyan-400/90 mt-1">In Session</p>
+          <div className="krono-card p-4 rounded-xl text-center border-blue-500/30">
+            <span className="text-2xl font-bold font-mono text-blue-400">{occupiedCount}</span>
+            <p className="text-xs text-blue-300/90 mt-1">In Session</p>
           </div>
         </div>
       </section>
@@ -113,20 +99,20 @@ export const Landing = () => {
           <h2 className="text-2xl font-bold text-white font-heading tracking-tight">
             Dedicated University Portals
           </h2>
-          <p className="text-xs text-cyan-200/70 mt-1">
+          <p className="text-xs text-slate-400 mt-1">
             Tailored policies and credentials for students and academic staff
           </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
           {/* Student Portal Card */}
-          <div className="krono-card-hover rounded-2xl p-6 border border-cyan-500/20 bg-[#001d3d]/40 backdrop-blur-md flex flex-col justify-between space-y-5 shadow-[0_4px_25px_rgba(0,8,20,0.5)]">
+          <div className="krono-card-hover rounded-2xl p-6 flex flex-col justify-between space-y-5">
             <div className="space-y-4">
               <div className="flex items-center justify-between">
-                <div className="w-12 h-12 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400">
-                  <GraduationCap className="w-6 h-6" />
+                <div className="w-11 h-11 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-400">
+                  <GraduationCap className="w-5 h-5" />
                 </div>
-                <span className="px-2.5 py-1 rounded-full text-xs font-semibold bg-cyan-500/10 text-cyan-300 border border-cyan-500/30">
+                <span className="px-2.5 py-1 rounded-full text-xs font-semibold bg-blue-500/10 text-blue-300 border border-blue-500/20">
                   Student Policy
                 </span>
               </div>
@@ -138,17 +124,17 @@ export const Landing = () => {
                 </p>
               </div>
 
-              <ul className="space-y-2 text-xs text-slate-200">
+              <ul className="space-y-2 text-xs text-slate-300">
                 <li className="flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-cyan-400 shrink-0" />
+                  <CheckCircle2 className="w-4 h-4 text-blue-400 shrink-0" />
                   <span>Max 2 hours per reservation session</span>
                 </li>
                 <li className="flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-cyan-400 shrink-0" />
+                  <CheckCircle2 className="w-4 h-4 text-blue-400 shrink-0" />
                   <span>Reserve up to 3 days in advance</span>
                 </li>
                 <li className="flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-cyan-400 shrink-0" />
+                  <CheckCircle2 className="w-4 h-4 text-blue-400 shrink-0" />
                   <span>London Met Student ID authentication</span>
                 </li>
               </ul>
@@ -157,7 +143,7 @@ export const Landing = () => {
             <div className="pt-2">
               <Link
                 to="/login/student"
-                className="krono-btn krono-btn-cyan w-full text-xs flex items-center justify-center gap-2 rounded-xl hover:ring-2 hover:ring-cyan-400/20 transition-all"
+                className="krono-btn krono-btn-primary w-full text-xs flex items-center justify-center gap-2 rounded-xl"
               >
                 <span>Enter Student Portal</span>
                 <ChevronRight className="w-4 h-4" />
@@ -166,13 +152,13 @@ export const Landing = () => {
           </div>
 
           {/* Faculty Portal Card */}
-          <div className="krono-card-hover rounded-2xl p-6 border border-cyan-500/20 bg-[#001d3d]/40 backdrop-blur-md flex flex-col justify-between space-y-5 shadow-[0_4px_25px_rgba(0,8,20,0.5)]">
+          <div className="krono-card-hover rounded-2xl p-6 flex flex-col justify-between space-y-5">
             <div className="space-y-4">
               <div className="flex items-center justify-between">
-                <div className="w-12 h-12 rounded-xl bg-sky-500/10 border border-sky-500/20 flex items-center justify-center text-sky-400">
-                  <Users className="w-6 h-6" />
+                <div className="w-11 h-11 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-200">
+                  <Users className="w-5 h-5" />
                 </div>
-                <span className="px-2.5 py-1 rounded-full text-xs font-semibold bg-sky-500/10 text-sky-300 border border-sky-500/30">
+                <span className="px-2.5 py-1 rounded-full text-xs font-semibold bg-slate-800 text-slate-300 border border-slate-700">
                   Faculty & Staff
                 </span>
               </div>
@@ -184,17 +170,17 @@ export const Landing = () => {
                 </p>
               </div>
 
-              <ul className="space-y-2 text-xs text-slate-200">
+              <ul className="space-y-2 text-xs text-slate-300">
                 <li className="flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-sky-400 shrink-0" />
+                  <CheckCircle2 className="w-4 h-4 text-slate-400 shrink-0" />
                   <span>Extended 6-hour lecture slots per booking</span>
                 </li>
                 <li className="flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-sky-400 shrink-0" />
+                  <CheckCircle2 className="w-4 h-4 text-slate-400 shrink-0" />
                   <span>Book up to 30 days in advance</span>
                 </li>
                 <li className="flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-sky-400 shrink-0" />
+                  <CheckCircle2 className="w-4 h-4 text-slate-400 shrink-0" />
                   <span>Administrative overrides & resource allocation</span>
                 </li>
               </ul>
@@ -203,7 +189,7 @@ export const Landing = () => {
             <div className="pt-2">
               <Link
                 to="/login/faculty"
-                className="krono-btn krono-btn-oceanic w-full text-xs flex items-center justify-center gap-2 rounded-xl hover:ring-2 hover:ring-cyan-400/20 transition-all"
+                className="krono-btn krono-btn-oceanic w-full text-xs flex items-center justify-center gap-2 rounded-xl"
               >
                 <span>Enter Faculty Portal</span>
                 <ChevronRight className="w-4 h-4" />
@@ -214,9 +200,9 @@ export const Landing = () => {
       </section>
 
       {/* Footer */}
-      <footer className="relative z-10 mt-auto border-t border-cyan-500/10 bg-[#000814]/80 py-6 px-4 text-center text-xs text-slate-400">
+      <footer className="relative z-10 mt-auto border-t border-slate-800/80 bg-[#0a0e17] py-6 px-4 text-center text-xs text-slate-500">
         <p>
-          © 2026 KronoRoom — Smart Classroom & Lab Booking System (London Met). Built with MERN + Tailwind CSS v4.
+          © 2026 KronoRoom — London Metropolitan University Classroom & Lab Management System.
         </p>
       </footer>
     </div>
