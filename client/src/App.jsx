@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { AuthProvider } from './context/AuthContext';
 import Navbar from './components/Navbar';
 import ProtectedRoute from './components/ProtectedRoute';
-import ParticlesComponent from './components/ui/particles-bg';
+import MetaBalls from './components/ui/MetaBalls';
 
 import Landing from './pages/Landing';
 import StudentLogin from './pages/StudentLogin';
@@ -18,8 +18,22 @@ export function App() {
     <AuthProvider>
       <Router>
         <div className="relative min-h-screen text-slate-100 flex flex-col font-sans selection:bg-cyan-500 selection:text-white overflow-x-hidden">
-          {/* Universal Theme Particles Background */}
-          <ParticlesComponent />
+          {/* Universal Theme MetaBalls Background */}
+          <div className="fixed inset-0 w-full h-full pointer-events-none -z-10 overflow-hidden">
+            <MetaBalls
+              color="#2623a8"
+              cursorBallColor="#2623a8"
+              cursorBallSize={2}
+              ballCount={15}
+              animationSize={30}
+              enableMouseInteraction={true}
+              enableTransparency={true}
+              hoverSmoothness={0.05}
+              clumpFactor={1}
+              speed={0.3}
+              useWindow={true}
+            />
+          </div>
 
           {/* Universal Ambient Oceanic Glows */}
           <div className="fixed inset-0 overflow-hidden pointer-events-none -z-10">
