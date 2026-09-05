@@ -215,12 +215,14 @@ const MetaBalls = ({
     }
 
     const eventTarget = useWindow ? window : container;
-    eventTarget.addEventListener('pointermove', onPointerMove);
-    if (!useWindow) {
-      container.addEventListener('pointerenter', onPointerEnter);
-      container.addEventListener('pointerleave', onPointerLeave);
-    } else {
-      document.addEventListener('mouseleave', onPointerLeave);
+    if (enableMouseInteraction) {
+      eventTarget.addEventListener('pointermove', onPointerMove);
+      if (!useWindow) {
+        container.addEventListener('pointerenter', onPointerEnter);
+        container.addEventListener('pointerleave', onPointerLeave);
+      } else {
+        document.addEventListener('mouseleave', onPointerLeave);
+      }
     }
 
     const startTime = performance.now();
@@ -242,7 +244,7 @@ const MetaBalls = ({
       }
 
       let targetX, targetY;
-      if (pointerInside) {
+      if (pointerInside && enableMouseInteraction) {
         targetX = pointerX;
         targetY = pointerY;
       } else {
@@ -264,12 +266,14 @@ const MetaBalls = ({
     return () => {
       cancelAnimationFrame(animationFrameId);
       window.removeEventListener('resize', resize);
-      eventTarget.removeEventListener('pointermove', onPointerMove);
-      if (!useWindow) {
-        container.removeEventListener('pointerenter', onPointerEnter);
-        container.removeEventListener('pointerleave', onPointerLeave);
-      } else {
-        document.removeEventListener('mouseleave', onPointerLeave);
+      if (enableMouseInteraction) {
+        eventTarget.removeEventListener('pointermove', onPointerMove);
+        if (!useWindow) {
+          container.removeEventListener('pointerenter', onPointerEnter);
+          container.removeEventListener('pointerleave', onPointerLeave);
+        } else {
+          document.removeEventListener('mouseleave', onPointerLeave);
+        }
       }
       if (gl.canvas && container.contains(gl.canvas)) {
         container.removeChild(gl.canvas);

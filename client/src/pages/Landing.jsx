@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import {
-  Sparkles,
   ArrowRight,
   GraduationCap,
   Users,
@@ -42,7 +41,7 @@ export const Landing = () => {
       <section className="pt-36 sm:pt-40 pb-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full text-center space-y-6">
         {/* University Pill Badge */}
         <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-cyan-950/40 border border-cyan-500/30 text-cyan-400 text-xs font-semibold shadow-[0_0_15px_rgba(0,245,255,0.15)]">
-          <Sparkles className="w-3.5 h-3.5 text-cyan-400 animate-pulse" />
+          <GraduationCap className="w-3.5 h-3.5 text-cyan-400" />
           <span>KronoRoom • London Metropolitan University</span>
         </div>
 

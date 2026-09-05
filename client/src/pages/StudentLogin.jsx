@@ -64,7 +64,7 @@ export const StudentLogin = () => {
         <div className="p-3.5 rounded-2xl bg-[#001833]/80 border border-cyan-500/20 space-y-2">
           <div className="flex items-center justify-between text-xs text-slate-300">
             <span className="font-semibold text-cyan-300 flex items-center gap-1">
-              <Sparkles className="w-3.5 h-3.5 text-cyan-400" /> Quick Demo Student Logins:
+              <UserCheck className="w-3.5 h-3.5 text-cyan-400" /> Quick Demo Student Logins:
             </span>
             <span className="text-[11px] text-slate-400">Password123</span>
           </div>

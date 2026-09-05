@@ -11,7 +11,7 @@ import {
   Calendar,
   Shield,
   LogOut,
-  Sparkles,
+  Plus,
 } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 import socket from "../../utils/socket";
@@ -344,7 +344,7 @@ export function AdaptiveNavigationBar({ className }: { className?: string }) {
             )}
           </AnimatePresence>
 
-          {/* Hint sparkle when collapsed */}
+          {/* Hint plus when collapsed */}
           <AnimatePresence>
             {!isExpanded && (
               <motion.div
@@ -352,9 +352,9 @@ export function AdaptiveNavigationBar({ className }: { className?: string }) {
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.6 }}
                 transition={{ duration: 0.2 }}
-                className="flex items-center pr-2 pl-0.5 text-cyan-400/70 shrink-0"
+                className="flex items-center pr-2 pl-0.5 text-cyan-400/80 shrink-0"
               >
-                <Sparkles className="w-3.5 h-3.5 text-cyan-400 animate-pulse" />
+                <Plus className="w-3.5 h-3.5 text-cyan-400" />
               </motion.div>
             )}
           </AnimatePresence>

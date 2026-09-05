@@ -23,15 +23,15 @@ export function App() {
             <MetaBalls
               color="#2623a8"
               cursorBallColor="#2623a8"
-              cursorBallSize={2}
+              cursorBallSize={0}
               ballCount={15}
               animationSize={30}
-              enableMouseInteraction={true}
+              enableMouseInteraction={false}
               enableTransparency={true}
               hoverSmoothness={0.05}
               clumpFactor={1}
-              speed={0.3}
-              useWindow={true}
+              speed={0.25}
+              useWindow={false}
             />
           </div>
 
