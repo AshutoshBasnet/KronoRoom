@@ -11,30 +11,54 @@ import {
   ShieldCheck
 } from 'lucide-react';
 import api from '../utils/api';
+import socket from '../utils/socket';
 
 export const Landing = () => {
   const [liveRooms, setLiveRooms] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchRooms = async () => {
-      try {
-        const { data } = await api.get('/rooms/live-status');
-        if (data.success) {
-          setLiveRooms(data.data || []);
-        }
-      } catch (err) {
-        console.error('Error fetching rooms for landing:', err);
-      } finally {
-        setIsLoading(false);
+  const fetchRooms = async () => {
+    try {
+      const { data } = await api.get('/rooms/live-status');
+      if (data.success) {
+        setLiveRooms(data.data || []);
       }
-    };
+    } catch (err) {
+      console.error('Error fetching rooms for landing:', err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
     fetchRooms();
+
+    const handleUpdate = () => {
+      fetchRooms();
+    };
+
+    socket.on('booking:created', handleUpdate);
+    socket.on('booking:cancelled', handleUpdate);
+    socket.on('booking:checkedIn', handleUpdate);
+    socket.on('booking:autoReleased', handleUpdate);
+    socket.on('room:created', handleUpdate);
+    socket.on('room:updated', handleUpdate);
+    socket.on('room:deleted', handleUpdate);
+
+    return () => {
+      socket.off('booking:created', handleUpdate);
+      socket.off('booking:cancelled', handleUpdate);
+      socket.off('booking:checkedIn', handleUpdate);
+      socket.off('booking:autoReleased', handleUpdate);
+      socket.off('room:created', handleUpdate);
+      socket.off('room:updated', handleUpdate);
+      socket.off('room:deleted', handleUpdate);
+    };
   }, []);
 
-  const totalRooms = liveRooms.length || 6;
-  const occupiedCount = liveRooms.filter((r) => r.isOccupied).length || 1;
-  const availableCount = totalRooms - occupiedCount;
+  const totalRooms = liveRooms.length;
+  const occupiedCount = liveRooms.filter((r) => r.isOccupied).length;
+  const availableCount = Math.max(0, totalRooms - occupiedCount);
 
   return (
     <div className="min-h-screen text-slate-100 flex flex-col selection:bg-blue-600 selection:text-white">
@@ -54,7 +78,7 @@ export const Landing = () => {
           </h1>
           <p className="text-base sm:text-lg text-slate-300 max-w-2xl mx-auto leading-relaxed">
             Real-time room availability across Skill Block, London Block, and Kumari Block.
-            Eliminate booking conflicts with automated 15-minute check-in protection.
+            Eliminate booking conflicts with seamless scheduling and live occupancy tracking.
           </p>
         </div>
 

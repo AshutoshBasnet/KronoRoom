@@ -453,7 +453,6 @@ export const AdminDashboard = () => {
                 <th className="py-3 px-4 font-bold">Booked By</th>
                 <th className="py-3 px-4 font-bold">Schedule / Purpose</th>
                 <th className="py-3 px-4 font-bold">Status</th>
-                <th className="py-3 px-4 font-bold">Check-In</th>
                 <th className="py-3 px-5 font-bold text-right">Administrative Override</th>
               </tr>
             </thead>
@@ -535,18 +534,6 @@ export const AdminDashboard = () => {
                           }`}
                         >
                           {b.status}
-                        </span>
-                      )}
-                    </td>
-
-                    <td className="py-3.5 px-4">
-                      {b.checkedIn ? (
-                        <span className="text-emerald-400 flex items-center gap-1 font-semibold">
-                          <CheckCircle2 className="w-3.5 h-3.5" /> Checked In
-                        </span>
-                      ) : (
-                        <span className="text-amber-400 font-semibold text-[11px]">
-                          Pending
                         </span>
                       )}
                     </td>

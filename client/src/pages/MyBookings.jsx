@@ -5,10 +5,8 @@ import {
   MapPin,
   CheckCircle2,
   XCircle,
-  AlertTriangle,
   RefreshCw,
-  ArrowRight,
-  UserCheck
+  ArrowRight
 } from 'lucide-react';
 import { format } from 'date-fns';
 import api from '../utils/api';
@@ -45,13 +43,11 @@ export const MyBookings = () => {
 
     socket.on('booking:created', handleUpdate);
     socket.on('booking:cancelled', handleUpdate);
-    socket.on('booking:checkedIn', handleUpdate);
     socket.on('booking:autoReleased', handleUpdate);
 
     return () => {
       socket.off('booking:created', handleUpdate);
       socket.off('booking:cancelled', handleUpdate);
-      socket.off('booking:checkedIn', handleUpdate);
       socket.off('booking:autoReleased', handleUpdate);
     };
   }, []);
@@ -61,23 +57,12 @@ export const MyBookings = () => {
     setTimeout(() => setToastMessage(null), 4000);
   };
 
-  const handleCheckIn = async (bookingId) => {
-    setActionLoadingId(bookingId);
-    try {
-      const { data } = await api.patch(`/bookings/${bookingId}/checkin`);
-      if (data.success) {
-        showToast('Successfully checked in! Occupancy secured.');
-        fetchMyBookings();
-      }
-    } catch (error) {
-      showToast(error.response?.data?.message || 'Check-in failed.');
-    } finally {
-      setActionLoadingId(null);
-    }
-  };
+  const handleCancel = async (bookingId, isLiveNow = false) => {
+    const confirmMessage = isLiveNow
+      ? 'Are you sure you want to end this active session? The room will immediately become available for others.'
+      : 'Are you sure you want to cancel this booking? This will immediately free the slot for others.';
 
-  const handleCancel = async (bookingId) => {
-    if (!window.confirm('Are you sure you want to cancel this booking? This will immediately free the slot for others.')) {
+    if (!window.confirm(confirmMessage)) {
       return;
     }
 
@@ -85,7 +70,7 @@ export const MyBookings = () => {
     try {
       const { data } = await api.patch(`/bookings/${bookingId}/cancel`);
       if (data.success) {
-        showToast('Booking cancelled successfully.');
+        showToast(isLiveNow ? 'Session ended and room released successfully.' : 'Booking cancelled successfully.');
         fetchMyBookings();
       }
     } catch (error) {
@@ -121,7 +106,7 @@ export const MyBookings = () => {
             My Campus Schedule
           </h1>
           <p className="text-xs text-slate-400 mt-1">
-            Manage your bookings, check in upon arrival, and view past records.
+            Manage your bookings, cancel active or upcoming sessions, and view past records.
           </p>
         </div>
 
@@ -131,19 +116,6 @@ export const MyBookings = () => {
         >
           <RefreshCw className="w-3.5 h-3.5" /> Refresh
         </button>
-      </div>
-
-      {/* 15-Minute Auto-Release Warning Banner */}
-      <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-start gap-3 backdrop-blur-sm">
-        <AlertTriangle className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
-        <div className="text-xs text-amber-200">
-          <span className="font-bold">Check-in Grace Period (15 Minutes):</span>
-          <p className="mt-0.5 text-amber-200/80 leading-relaxed">
-            Please click "Check In" upon arriving at the room. If a booking remains unconfirmed 15
-            minutes after its scheduled start time, the system will automatically release the slot for
-            walk-in campus members.
-          </p>
-        </div>
       </div>
 
       {/* Tab Switcher */}
@@ -249,15 +221,15 @@ export const MyBookings = () => {
                       </span>
                     )}
 
-                    {/* Check-In Pill */}
-                    {booking.checkedIn ? (
-                      <span className="px-2 py-0.5 text-[10px] font-semibold uppercase rounded-md bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 flex items-center gap-1">
-                        <CheckCircle2 className="w-3 h-3 text-emerald-400" />
-                        Checked In
+                    {/* Active Session vs Upcoming Pill */}
+                    {isLiveNow ? (
+                      <span className="px-2 py-0.5 text-[10px] font-bold uppercase rounded-md bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 flex items-center gap-1.5 font-mono shadow-sm">
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                        In-Session Now
                       </span>
                     ) : booking.status === 'confirmed' ? (
-                      <span className="px-2 py-0.5 text-[10px] font-semibold uppercase rounded-md bg-amber-500/15 text-amber-300 border border-amber-500/30">
-                        Check-in Pending
+                      <span className="px-2 py-0.5 text-[10px] font-semibold uppercase rounded-md bg-blue-500/15 text-blue-300 border border-blue-500/30">
+                        Upcoming
                       </span>
                     ) : null}
                   </div>
@@ -280,24 +252,18 @@ export const MyBookings = () => {
                 {/* Right Side Actions */}
                 {booking.status === 'confirmed' && (
                   <div className="flex items-center gap-2 pt-2 md:pt-0 border-t md:border-t-0 border-slate-800">
-                    {!booking.checkedIn && (
-                      <button
-                        onClick={() => handleCheckIn(booking._id)}
-                        disabled={actionLoadingId === booking._id}
-                        className="krono-btn krono-btn-success text-xs shadow-sm cursor-pointer"
-                      >
-                        <UserCheck className="w-3.5 h-3.5" />
-                        <span>Check In</span>
-                      </button>
-                    )}
-
                     <button
-                      onClick={() => handleCancel(booking._id)}
+                      onClick={() => handleCancel(booking._id, isLiveNow)}
                       disabled={actionLoadingId === booking._id}
-                      className="krono-btn krono-btn-danger text-xs shadow-sm cursor-pointer"
+                      className={`text-xs py-2 px-3.5 rounded-xl font-semibold transition-all cursor-pointer flex items-center gap-1.5 shadow-sm ${
+                        isLiveNow
+                          ? 'bg-rose-600 hover:bg-rose-500 text-white shadow-rose-600/20'
+                          : 'krono-btn krono-btn-danger'
+                      }`}
+                      title={isLiveNow ? 'Cancel and immediately free this active room' : 'Cancel reservation'}
                     >
                       <XCircle className="w-3.5 h-3.5" />
-                      <span>Cancel</span>
+                      <span>{isLiveNow ? 'Cancel / End Session' : 'Cancel'}</span>
                     </button>
                   </div>
                 )}

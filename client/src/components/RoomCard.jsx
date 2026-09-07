@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   MapPin,
   Users,
@@ -8,13 +8,45 @@ import {
   CalendarPlus,
   UserCheck,
   Armchair,
-  Sparkles
+  Sparkles,
+  XCircle
 } from 'lucide-react';
+import api from '../utils/api';
+import { useAuth } from '../context/AuthContext';
 import LiveOccupancyBadge from './LiveOccupancyBadge';
 import TimeElapsedBadge from './TimeElapsedBadge';
 
-export const RoomCard = ({ roomData, onBookClick, onViewSeatsClick }) => {
+export const RoomCard = ({ roomData, onBookClick, onViewSeatsClick, onSessionCancelled }) => {
+  const { user } = useAuth();
+  const [isCancelling, setIsCancelling] = useState(false);
   const { room, isOccupied, currentBooking, nextBooking } = roomData;
+
+  const isMyActiveBooking =
+    isOccupied &&
+    currentBooking &&
+    user &&
+    (String(currentBooking.user?._id) === String(user._id) || user.role === 'admin');
+
+  const handleCancelMySession = async () => {
+    if (
+      !window.confirm(
+        `Are you sure you want to end your active session in Room ${room.roomNumber}? This will immediately release the room for other students and faculty.`
+      )
+    ) {
+      return;
+    }
+    setIsCancelling(true);
+    try {
+      const { data } = await api.patch(`/bookings/${currentBooking._id}/cancel`);
+      if (data.success && onSessionCancelled) {
+        onSessionCancelled(room.roomNumber);
+      }
+    } catch (error) {
+      alert(error.response?.data?.message || 'Failed to cancel session.');
+    } finally {
+      setIsCancelling(false);
+    }
+  };
 
   const getTypeIcon = (type) => {
     switch (type) {
@@ -140,27 +172,42 @@ export const RoomCard = ({ roomData, onBookClick, onViewSeatsClick }) => {
       </div>
 
       {/* Action Buttons (Stitch Precision) */}
-      <div className="pt-3.5 border-t border-slate-800/90 grid grid-cols-2 gap-2 pl-2">
-        <button
-          onClick={() => onViewSeatsClick(roomData)}
-          className="krono-btn krono-btn-ghost text-xs flex items-center justify-center gap-1.5 py-2.5 rounded-xl border border-slate-700/80 hover:border-blue-500/50 hover:bg-slate-800/80 text-slate-300 font-medium transition-all cursor-pointer"
-          title="Inspect seat layout and availability"
-        >
-          <Armchair className="w-3.5 h-3.5 text-blue-400" />
-          <span>Seat Detail</span>
-        </button>
+      <div className="pt-3.5 border-t border-slate-800/90 pl-2 space-y-2">
+        <div className="grid grid-cols-2 gap-2">
+          <button
+            onClick={() => onViewSeatsClick(roomData)}
+            className="krono-btn krono-btn-ghost text-xs flex items-center justify-center gap-1.5 py-2.5 rounded-xl border border-slate-700/80 hover:border-blue-500/50 hover:bg-slate-800/80 text-slate-300 font-medium transition-all cursor-pointer"
+            title="Inspect seat layout and availability"
+          >
+            <Armchair className="w-3.5 h-3.5 text-blue-400" />
+            <span>Seat Detail</span>
+          </button>
 
-        <button
-          onClick={() => onBookClick(roomData)}
-          className={`py-2.5 px-3 rounded-xl text-xs font-semibold transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-sm ${
-            isOccupied
-              ? 'krono-btn krono-btn-ghost text-slate-200 border-slate-700 hover:bg-slate-800/80'
-              : 'bg-blue-600 hover:bg-blue-500 text-white shadow-blue-600/20'
-          }`}
-        >
-          <CalendarPlus className="w-3.5 h-3.5" />
-          <span>{isOccupied ? 'Reserve Slot' : 'Book Room'}</span>
-        </button>
+          <button
+            onClick={() => onBookClick(roomData)}
+            className={`py-2.5 px-3 rounded-xl text-xs font-semibold transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-sm ${
+              isOccupied
+                ? 'krono-btn krono-btn-ghost text-slate-200 border-slate-700 hover:bg-slate-800/80'
+                : 'bg-blue-600 hover:bg-blue-500 text-white shadow-blue-600/20'
+            }`}
+          >
+            <CalendarPlus className="w-3.5 h-3.5" />
+            <span>{isOccupied ? 'Reserve Slot' : 'Book Room'}</span>
+          </button>
+        </div>
+
+        {/* Booker can cancel / end their active session directly from the card */}
+        {isMyActiveBooking && (
+          <button
+            onClick={handleCancelMySession}
+            disabled={isCancelling}
+            className="w-full py-2.5 px-3 rounded-xl text-xs font-semibold bg-rose-600 hover:bg-rose-500 text-white border border-rose-500/40 transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-sm shadow-rose-600/25"
+            title="Release this room and end your session immediately"
+          >
+            <XCircle className="w-3.5 h-3.5" />
+            <span>{isCancelling ? 'Ending Session...' : 'Cancel / End My Session'}</span>
+          </button>
+        )}
       </div>
     </div>
   );

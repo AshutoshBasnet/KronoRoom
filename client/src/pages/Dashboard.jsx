@@ -273,6 +273,9 @@ export const Dashboard = () => {
             <RoomCard
               key={roomData.room?._id || Math.random()}
               roomData={roomData}
+              onSessionCancelled={(roomNumber) =>
+                fetchLiveStatus(`Room ${roomNumber} session ended and room released!`)
+              }
               onViewSeatsClick={(data) => setSelectedRoomForSeatMap(data)}
               onBookClick={(data) => {
                 if (!user) {

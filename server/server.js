@@ -61,8 +61,8 @@ app.use('/api/auth', authRoutes);
 app.use('/api/rooms', roomRoutes);
 app.use('/api/bookings', bookingRoutes);
 
-// Start Background Auto-Release Cron
-startAutoReleaseCron();
+// Check-in Grace Period (15 Minutes) Auto-Release Cron (disabled for now)
+// startAutoReleaseCron();
 
 // Central Error Handling
 app.use(notFound);
