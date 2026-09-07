@@ -1,20 +1,20 @@
-# 🏛️ KronoRoom v2.0 — Intelligent Classroom & Lab Booking System
+# 🏛️ KronoRoom v2.1 — Intelligent Classroom & Lab Booking System
 
-**KronoRoom v2.0** is an enterprise-grade, real-time Full-Stack MERN (MongoDB Atlas, Express.js, React 19, Node.js) Classroom & Lab Booking Platform custom-engineered for **London Metropolitan University**.
+**KronoRoom v2.1** is an enterprise-grade, real-time Full-Stack MERN (MongoDB Atlas, Express.js, React 19, Node.js) Classroom & Lab Booking Platform custom-engineered for **London Metropolitan University**.
 
-Version 2.0 brings a bespoke institutional academic design system, interactive WebGL fluid background physics, real-time cinema-style seat reservation, live occupancy telemetry, sub-second socket synchronization, role-based booking policies, and automated lifecycle background workers.
+The platform provides a bespoke institutional academic design system, interactive WebGL fluid background physics, real-time cinema-style seat reservation, live occupancy telemetry, sub-second socket synchronization, role-based booking policies, and automated lifecycle background workers.
 
 ---
 
-## 🚀 What's New in Version 2.0
+## 🚀 Key Features & Capabilities
 
 - 🎓 **Bespoke Academic Design System:** High-contrast London Met university aesthetic utilizing Tailwind CSS v4, clean obsidian slate surfaces (`#0a0e17`, `#0f172a`), London Met Royal Blue accents (`#2563eb`), and subtle architectural grid depth.
+- ⚡ **Real-Time Live Telemetry & Socket Broadcasts:** Dynamic calculation of total facilities, available rooms, and active sessions on the landing page and dashboard, synchronized in real-time across all connected clients via `Socket.io` without requiring page reloads.
+- 💺 **Interactive Cinema-Style Seat Map:** Visual seat selection mapped to exact physical room capacities (50 workstations, 80 seminar seats, 100 auditorium seats) with instant multi-seat picking (`A1, A2, A3`) and architectural stage dividers.
+- ⏱️ **Live Occupancy Tracking & Dynamic Timers:** Real-time countdowns indicating time until session release (e.g., `Free in 24m 15s`) and elapsed session duration badges.
+- 🛡️ **Chair-Level Concurrency & Conflict Prevention:** Fine-grained time interval collision detection preventing overlapping seat bookings while permitting concurrent bookings in the same room.
+- 🤖 **Automated Auto-Release Daemon:** Background cron worker (`node-cron`) that monitors overdue bookings and releases unclaimed seats automatically after a 15-minute check-in grace period.
 - 🌊 **Interactive WebGL Fluid Physics:** Ambient fluid dynamics powered by custom WebGL shaders (`ogl`), rendered in signature fluid indigo (`#2623a8`) with atmospheric ambient glows.
-- 💺 **Interactive Cinema-Style Seat Map:** Visual seat selection mapped to exact room capacities (50 workstations, 80 seminar seats, 100 auditorium seats) with instant multi-seat picking (`A1, A2, A3`) and architectural stage dividers.
-- ⚡ **Real-Time WebSockets (`Socket.io`):** Instant campus-wide broadcast of seat reservations, cancellations, and check-ins without requiring manual page refreshes.
-- ⏱️ **Live Occupancy Telemetry & Dynamic Timers:** Real-time countdowns indicating time until session release (e.g., `Free in 24m 15s`) and elapsed session badges.
-- 🛡️ **Chair-Level Concurrency & Conflict Prevention:** Fine-grained time interval collision detection preventing overlapping seat bookings while allowing concurrent bookings in the same room.
-- 🤖 **Automated Auto-Release Daemon:** Background cron worker (`node-cron`) that monitors overdue bookings and releases unclaimed seats automatically every 5 minutes.
 - 💾 **Dual-Mode Zero-Config Database:** Seamlessly connects to MongoDB Atlas or automatically falls back to an embedded in-memory database with automatic seeding.
 
 ---
@@ -25,11 +25,41 @@ Version 2.0 brings a bespoke institutional academic design system, interactive W
 | :--- | :--- |
 | **Frontend** | React 19, Vite, Tailwind CSS v4, WebGL / OGL (Fluid Dynamics), Framer Motion, Lucide React, Axios, Socket.io Client, React Router v7, date-fns |
 | **Backend** | Node.js (ES Modules), Express.js, Socket.io, Mongoose (MongoDB Atlas), JSON Web Tokens (JWT), Bcrypt.js, Node-Cron, CORS |
-| **Architecture & Tools** | RESTful APIs, WebSockets, Role-Based Access Control (RBAC), Oxlint |
+| **Architecture & Tools** | RESTful APIs, WebSockets (Full-Duplex TCP), Role-Based Access Control (RBAC), Oxlint |
 
 ---
 
-## 🌟 Core Features & Modules
+## 🏗️ Architecture Overview
+
+```text
+┌─────────────────────────────────────────────────────────────────────────┐
+│                              CLIENT LAYER                               │
+│  React 19 (Vite) • Tailwind CSS v4 • WebGL MetaBalls • Interactive Map  │
+└──────────────────┬─────────────────────────────────────▲────────────────┘
+                   │ HTTP REST (Axios)                   │ WebSockets
+                   │ (Bearer JWT in Header)              │ (Socket.io Telemetry)
+                   ▼                                     │
+┌────────────────────────────────────────────────────────┴────────────────┐
+│                           APPLICATION SERVER                            │
+│  Node.js (ESM) • Express.js • Socket.io Event Bus • RBAC Middleware     │
+│  - /api/auth     : Authentication & Profile                             │
+│  - /api/rooms    : Catalog & Aggregated Live Status                     │
+│  - /api/bookings : Multi-Seat Collision Detection & Reservation         │
+└──────────────────┬─────────────────────────────────────▲────────────────┘
+                   │ Mongoose ODM                        │ Cron Lifecycle
+                   ▼                                     │ (Every 5 mins)
+┌────────────────────────────────────────────────────────┴────────────────┐
+│                          PERSISTENCE LAYER                              │
+│  MongoDB Atlas (Cloud Cluster) OR In-Memory MongoMemoryServer Fallback  │
+│  - Users Collection    : Hashed credentials & role identities           │
+│  - Rooms Collection    : Facilities, buildings, workstation capacities  │
+│  - Bookings Collection : Time intervals, seat arrays, check-in states   │
+└─────────────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## 🌟 Core Modules
 
 ### 1. Interactive Multi-Seat Reservation
 - Dynamic grid generation matching exact architectural layouts:
@@ -39,7 +69,7 @@ Version 2.0 brings a bespoke institutional academic design system, interactive W
   - 🔵 **Selected (Royal Blue):** Current user's active seat selection.
 
 ### 2. Role-Based Access Control (RBAC)
-- **👨‍🎓 Students:** Maximum 2-hour sessions, advance reservation window up to 1 days. Accessible via `/login/student`.
+- **👨‍🎓 Students:** Maximum 2-hour sessions, advance reservation window up to 1 day. Accessible via `/login/student`.
 - **👨‍🏫 Faculty:** Extended 6-hour lecture/lab allocations, advance booking up to 30 days. Accessible via `/login/faculty`.
 - **🛡️ Administrators:** Full campus analytics, room CRUD inventory management, user controls, and force-cancellation overrides.
 
@@ -114,7 +144,7 @@ npm run client
 ```bash
 npm run build
 ```
-> Verifies TypeScript / JSX bundle output in `client/dist`.
+> Verifies bundle output in `client/dist`.
 
 ---
 
@@ -164,9 +194,4 @@ npm run build
 - `GET /api/bookings/all` — Retrieve campus-wide booking logs *(Admin only)*
 - `PATCH /api/bookings/:id/cancel` — Cancel booking *(Owner or Admin)*
 - `PATCH /api/bookings/:id/check-in` — Confirm check-in upon room entry
-
----
-
-## 📄 License
-This project is developed for educational and campus management purposes at London Metropolitan University.
 
