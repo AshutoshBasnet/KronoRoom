@@ -132,17 +132,18 @@ export const BookingModal = ({
   const maxDateStr = format(addDays(new Date(), maxAllowedDays), 'yyyy-MM-dd');
   const minDateStr = format(new Date(), 'yyyy-MM-dd');
 
-  // Quick Date presets (Today, Tomorrow, etc.)
+  // Quick Date presets (Today and Tomorrow only)
   const quickDates = useMemo(() => {
-    const days = [];
-    const maxDays = Math.min(maxAllowedDays, 3);
-    for (let i = 0; i <= maxDays; i++) {
-      const d = addDays(new Date(), i);
-      const dateStr = format(d, 'yyyy-MM-dd');
+    const days = [
+      {
+        dateStr: format(new Date(), 'yyyy-MM-dd'),
+        label: 'Today'
+      }
+    ];
+    if (maxAllowedDays >= 1) {
       days.push({
-        dateStr,
-        label: i === 0 ? 'Today' : i === 1 ? 'Tomorrow' : format(d, 'EEE, d MMM'),
-        sub: format(d, 'd MMM')
+        dateStr: format(addDays(new Date(), 1), 'yyyy-MM-dd'),
+        label: 'Tomorrow'
       });
     }
     return days;
@@ -345,16 +346,16 @@ export const BookingModal = ({
               {/* Date Input with quick day chips */}
               <div className="space-y-1.5">
                 <div className="flex items-center justify-between">
-                  <label className="text-[10px] uppercase font-bold text-slate-400">
+                  <label className="text-[10px] uppercase font-bold text-slate-400 shrink-0">
                     Date
                   </label>
-                  <div className="flex items-center gap-1">
+                  <div className="flex items-center gap-1 shrink-0">
                     {quickDates.map((q) => (
                       <button
                         key={q.dateStr}
                         type="button"
                         onClick={() => setDate(q.dateStr)}
-                        className={`text-[10px] font-medium px-2 py-0.5 rounded transition-colors cursor-pointer ${
+                        className={`text-[10px] font-medium px-2 py-0.5 rounded transition-colors cursor-pointer shrink-0 ${
                           date === q.dateStr
                             ? 'bg-blue-600 text-white font-bold'
                             : 'bg-slate-900 text-slate-400 hover:text-slate-200 border border-slate-800'
@@ -410,15 +411,31 @@ export const BookingModal = ({
               {/* End Time with Quick Duration Chips */}
               <div className="space-y-1.5">
                 <div className="flex items-center justify-between">
-                  <label className="text-[10px] uppercase font-bold text-slate-400">
+                  <label className="text-[10px] uppercase font-bold text-slate-400 shrink-0">
                     End Time
                   </label>
-                  <div className="flex items-center gap-1">
+                  <div className="flex items-center gap-1 shrink-0">
+                    <button
+                      type="button"
+                      onClick={() => setEndTime(getCalculatedEndTime(startTime, 5))}
+                      title="Set end time to +5 mins"
+                      className="text-[10px] font-medium px-1.5 py-0.5 rounded bg-slate-900 text-slate-400 hover:text-white hover:border-slate-700 border border-slate-800 transition-colors cursor-pointer shrink-0"
+                    >
+                      +5
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setEndTime(getCalculatedEndTime(startTime, 30))}
+                      title="Set end time to +30 mins"
+                      className="text-[10px] font-medium px-1.5 py-0.5 rounded bg-slate-900 text-slate-400 hover:text-white hover:border-slate-700 border border-slate-800 transition-colors cursor-pointer shrink-0"
+                    >
+                      +30
+                    </button>
                     <button
                       type="button"
                       onClick={() => setEndTime(getCalculatedEndTime(startTime, 60))}
                       title="Set end time to +1 hour"
-                      className="text-[10px] font-medium px-1.5 py-0.5 rounded bg-slate-900 text-slate-400 hover:text-white hover:border-slate-700 border border-slate-800 transition-colors cursor-pointer"
+                      className="text-[10px] font-medium px-1.5 py-0.5 rounded bg-slate-900 text-slate-400 hover:text-white hover:border-slate-700 border border-slate-800 transition-colors cursor-pointer shrink-0"
                     >
                       +1h
                     </button>
@@ -426,7 +443,7 @@ export const BookingModal = ({
                       type="button"
                       onClick={() => setEndTime(getCalculatedEndTime(startTime, 120))}
                       title="Set end time to +2 hours"
-                      className="text-[10px] font-medium px-1.5 py-0.5 rounded bg-slate-900 text-slate-400 hover:text-white hover:border-slate-700 border border-slate-800 transition-colors cursor-pointer"
+                      className="text-[10px] font-medium px-1.5 py-0.5 rounded bg-slate-900 text-slate-400 hover:text-white hover:border-slate-700 border border-slate-800 transition-colors cursor-pointer shrink-0"
                     >
                       +2h
                     </button>
